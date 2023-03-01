@@ -1,0 +1,23 @@
+##############################
+#      Global Properties     #
+##############################
+global.properties: #TODO FOR DEVELOPER - CHANGE THIS ACCORDING TO THE API INVENTORY
+  appName: "mulesoft-template-api"
+  name: "Mulesoft Template API"
+  businessId: "" # Business Operation ID
+
+
+ 
+# JSON Logger Properties (should reflect what's on POM) 
+#TODO FOR DEVELOPER - CHANGE THIS BASED ON THE POM.XML
+json.logger.application:
+  name: "mulesoft-template-api" #pom > artifactId
+  version: "1.0.0"  #pom > version
+
+##############################
+#      Global Constants      #
+##############################
+#global.constants:  #TODO FOR DEVELOPER - ADD IF THERE ARE GLOBAL CONSTANTS TO BE USED
+
+log:
+  category: "com.titan.mulesoft"

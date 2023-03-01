@@ -1,0 +1,3 @@
+# Secured Properties
+sample:
+  client-secret: "![1234abcd]"

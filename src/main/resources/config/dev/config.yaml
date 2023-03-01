@@ -1,0 +1,34 @@
+###############################
+#  Application Properties     #
+###############################
+https:
+  port: "8081"
+  version: "v1"
+  path: "/api/${https.version}/*"
+  host: "0.0.0.0"
+
+###############################
+#  INBOUND                    #
+###############################
+api:
+  autodiscovery:
+    id: "" #TODO FOR DEVELOPER - CHANGE ACCORDINGLY THE DEFAULT CONFIGURATION
+
+###############################
+#  OUTBOUND                   #
+###############################
+
+#SAMPLE EXTERNAL SYSTEM
+#TODO FOR DEVELOPER - CHANGE ACCORDINGLY THE DEFAULT CONFIGURATION
+sample-ext-sys:
+  config:
+    host: "SAMPLE.COM"
+    port: "1234"
+    basePath: "/api/v1"
+    connectionTimeout: "60000"
+    responseTimeout: "60000"
+    credentials:                    #TODO FOR DEVELOPER - ADD SPECIFIC SYSTEM CREDENTAILS IF NEEDED
+      client-id: "SAMPLE12345"
+      client-secret: "SAMPLE12345"
+  endpoints:
+    sampleOp: "/sample/get"
