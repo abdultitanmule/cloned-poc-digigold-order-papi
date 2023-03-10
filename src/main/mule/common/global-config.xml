@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
-	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
-	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:dynamodb="http://www.mulesoft.org/schema/mule/dynamodb"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
 
-http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/dynamodb http://www.mulesoft.org/schema/mule/dynamodb/current/mule-dynamodb.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
 	
 	<!-- for the Global Properties "env" and "secure.key.titan", provide it in the runtime arguments as -Denv= and -Dsecure.key.titan= respectively -->
 	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="c797b4a2-707b-4a1e-b5b9-955ae9edc089" file="config/${env}/secure-config.yaml" key="${secure.key.titan}" />	
@@ -15,6 +17,12 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 	<configuration-properties doc:name="Configuration properties" doc:id="8b210480-8ee9-4f9f-907e-c9e06e30d10f" file="config/${env}/config.yaml" />
 	<configuration-properties doc:name="Configuration properties" doc:id="cc16829b-44b3-4cdb-9721-10d65290e038" file="config/global/config.yaml" />
 	<json-logger:config name="JSON_Logger_Config" doc:name="JSON Logger Config" doc:id="0a61b3aa-e837-4aff-b456-474fa1a03cf7" environment="${env}" />
+	<dynamodb:config name="Amazon_DynamoDB_Configuration" doc:name="Amazon DynamoDB Configuration" doc:id="5dd779d2-cf51-418b-a8a3-8c121930fb15" >
+		<dynamodb:basic-connection accessKey="${secure::dynamodb.accesskey}" secretKey="${secure::dynamodb.secretkey}" region="${dynamodb.regionendpoint}" />
+	</dynamodb:config>
+	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="747b6110-0dba-45b3-a6d8-ab3760ed312e" >
+		<sftp:connection workingDir="${titan.sftp.workingdir}" host="${titan.sftp.host}" port="${titan.sftp.port}" username="${secure::titan.sftp.username}" password="${secure::titan.sftp.password}" />
+	</sftp:config>
 	<!-- API Gateway has to be defined pointing to corresponding API ID -->
 <!-- 	<api-gateway:autodiscovery apiId="${api.autodiscovery.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="37e06122-aa1f-4d18-87dd-793dd8fe452c" flowRef="" /> -->
 

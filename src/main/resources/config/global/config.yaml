@@ -2,16 +2,16 @@
 #      Global Properties     #
 ##############################
 global.properties: #TODO FOR DEVELOPER - CHANGE THIS ACCORDING TO THE API INVENTORY
-  appName: "mulesoft-template-api"
-  name: "Mulesoft Template API"
-  businessId: "" # Business Operation ID
+  appName: "digigold-order-papi"
+  name: "Digigold Order PAPI"
+  businessId: "c3cf65b1-e732-48c6-b48e-b22effe859fa" # Business Operation ID
 
 
  
 # JSON Logger Properties (should reflect what's on POM) 
 #TODO FOR DEVELOPER - CHANGE THIS BASED ON THE POM.XML
 json.logger.application:
-  name: "mulesoft-template-api" #pom > artifactId
+  name: "digigold-order-papi-app" #pom > artifactId
   version: "1.0.0"  #pom > version
 
 ##############################
