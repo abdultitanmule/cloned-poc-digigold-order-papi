@@ -3,7 +3,8 @@
 <mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
 	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
 	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
 	<import doc:name="Import" doc:id="b7b96327-6c71-4089-bcc8-3c816ddf5209" file="error-common.xml" />
@@ -17,6 +18,58 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 	
 	import doc:name="Import" doc:id="64e8336e-4459-4891-8414-e880ddcd591e" file="error-common.xml"
 	-->
-	
+	<sub-flow name="common-set-error-details" doc:id="e9eb6947-fc1a-47dc-9eeb-02b8e434ee4f" >
+		<set-variable value="#[false]" doc:name="Set Successful" doc:id="0e50279f-189e-472f-8e66-574e22b838b0" variableName="successful" />
+		<ee:transform doc:name="Prepare Error Message" doc:id="f8292c02-6ae1-40a9-abf4-76978c12bc4a">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+if(error.muleMessage.payload != null)
+	error.muleMessage.payload
+else
+	payload]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
+output application/java
+---
+if(error.muleMessage.attributes.statusCode != null)
+	error.muleMessage.attributes.statusCode
+else
+	attributes.statusCode]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	errorType: (error.errorType.namespace default "" as String) ++ ":" ++ (error.errorType.identifier default "" as String),
+    errorDescription: error.description,
+    errorDetailedDescription: error.detailedDescription
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+	</sub-flow>
+	<error-handler name="digigold-papi-request-error-handler" doc:id="ba1a465a-1a80-4856-90ee-63d31932959a" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="fac6bfea-1a19-46c1-addc-018152350cc3" type="ANY" when="#[(['TOO_MANY_REQUESTS','SERVICE_UNAVAILABLE','TIMEOUT','CONNECTIVITY'] contains error.errorType.identifier)]" >
+			<flow-ref doc:name="common-set-error-details" doc:id="7a913847-c2ea-4ec1-99f7-6d65e885a54c" name="common-set-error-details" />
+		</on-error-propagate>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ae15ef15-67b1-4e91-9f33-beeed78d35a0" type="ANY" >
+			<flow-ref doc:name="common-set-error-details" doc:id="e122b791-23f5-4964-aac2-2405f1140561" name="common-set-error-details" />
+			<json-logger:logger doc:name="ERROR Sterling OMS API Request" doc:id="a0c9f0b7-b3f3-419a-833f-506c7e859095" config-ref="JSON_Logger_Config" message="ERROR Sterling OMS API Request" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}" >
+				<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+{
+	eventContext: {
+	businessID: "${global.properties.businessId}",
+	sourceChannel: vars.sourceChannel,
+	inboundURI: vars.inboundUri,
+	method: vars.httpMethod
+},
+  payload: JSONLoggerModule::stringifyNonJSON(payload),
+  (errorStatusCode: vars.httpStatus) if (vars.httpStatus != null),
+  errorDetails: JSONLoggerModule::stringifyNonJSON(vars.errorDetails)
+}]]]></json-logger:content>
+			</json-logger:logger>
+		</on-error-continue>
+	</error-handler>	
 	
 </mule>

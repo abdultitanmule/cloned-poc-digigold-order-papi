@@ -1,3 +1,3 @@
-# Secured Properties
-sample:
-  client-secret: "![1234abcd]"
+dynamoOrderSapi:
+  client_id: "![7HjVNfsJ/k9rhVrnlzozzTBV6+HDe11gS50B5lgxLGc8Y7rP4906NGxb20DzeW6l]"
+  client_secret: "![oMTPhZ3m5V5dDGYYNiIfRCLP2BpkhhQF7v1J9CGirm9chL2DZpElhJ1t6N5KO/yG]"
