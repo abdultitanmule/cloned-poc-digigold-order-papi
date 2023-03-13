@@ -12,23 +12,15 @@ https:
 ###############################
 api:
   autodiscovery:
-    id: "" #TODO FOR DEVELOPER - CHANGE ACCORDINGLY THE DEFAULT CONFIGURATION
+    id: "18549439"
 
 ###############################
 #  OUTBOUND                   #
 ###############################
-
 #SAMPLE EXTERNAL SYSTEM
-#TODO FOR DEVELOPER - CHANGE ACCORDINGLY THE DEFAULT CONFIGURATION
-sample-ext-sys:
-  config:
-    host: "SAMPLE.COM"
-    port: "1234"
-    basePath: "/api/v1"
-    connectionTimeout: "60000"
-    responseTimeout: "60000"
-    credentials:                    #TODO FOR DEVELOPER - ADD SPECIFIC SYSTEM CREDENTAILS IF NEEDED
-      client-id: "SAMPLE12345"
-      client-secret: "SAMPLE12345"
-  endpoints:
-    sampleOp: "/sample/get"
+dynamoOrderSapi:
+  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basepath: "/api/v1/"
+  endpoint: "transactions"
+    

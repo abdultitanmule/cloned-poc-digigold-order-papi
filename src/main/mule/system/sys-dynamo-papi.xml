@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="dynamo-order-sapi-request" doc:id="249c1123-12f3-4adb-bf69-a903e7ead41a" >
+		<json-logger:logger doc:name="BEFORE Http request to DynamoOrderSapi" doc:id="872845af-19b9-4f6b-9c70-84908778f55c" config-ref="JSON_Logger_Config" message="BEFORE Http request to DynamoOrderSapi for Fetch Transactions" tracePoint="BEFORE_REQUEST" category="${log.category}"/>
+		<try doc:name="Try" doc:id="f85d37d3-6d4c-4b83-b55f-9e05b94dab83" >
+			<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="69b41abf-82a8-4329-b381-448aad6a970f" millisBetweenRetries="${until.millisBetweenRetries}" >
+				<try doc:name="Try" doc:id="09e62282-bd95-4c81-874d-b1855a92abf7" >
+					<http:request method="#[vars.dynamoSapiMethodAndPath.method]" doc:name="httpRequestToDynamoOrderSapi" doc:id="3bca39c6-fa25-4050-a86f-b85c1d972e08" config-ref="dynamoOrderSapiRequestConfig" path="#[vars.dynamoSapiMethodAndPath.path]" sendCorrelationId="ALWAYS" correlationId="#[vars.correlationId]" targetValue="#[message]" >
+						<http:headers ><![CDATA[#[vars.sapiHeaders]]]></http:headers>
+					</http:request>
+					
+					
+				<error-handler ref="digigold-papi-request-error-handler"> </error-handler>
+			
+
+				</try>
+			</until-successful>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9434e05b-bff8-4a4d-baea-7731d1e9a3c4" >
+					<json-logger:logger doc:name="Error while connecting to DynamoOrderSapi" doc:id="c590ee4b-b874-46a5-ac04-993375ad1a7d" config-ref="JSON_Logger_Config" message="Error while connecting to DynamoOrderSapi" tracePoint="EXCEPTION" category="${log.category}" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<json-logger:logger doc:name="AFTER Http request to DynamoOrderSapi" doc:id="9eef7b36-e984-496a-a45e-8299f45b79d4" config-ref="JSON_Logger_Config" message="AFTER Http request to DynamoOrderSapi for Fetch Transactions" tracePoint="AFTER_REQUEST" category="${log.category}" />
+	</sub-flow>
+	</mule>

@@ -11,7 +11,7 @@ global.properties: #TODO FOR DEVELOPER - CHANGE THIS ACCORDING TO THE API INVENT
 # JSON Logger Properties (should reflect what's on POM) 
 #TODO FOR DEVELOPER - CHANGE THIS BASED ON THE POM.XML
 json.logger.application:
-  name: "mulesoft-template-api" #pom > artifactId
+  name: "digigold-sfcc-eapi" #pom > artifactId
   version: "1.0.0"  #pom > version
 
 ##############################
@@ -21,3 +21,27 @@ json.logger.application:
 
 log:
   category: "com.titan.mulesoft"
+  
+  
+api:
+  resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.4:raml:zip:digigold-order-papi.raml"
+ 
+papi:
+  connectionIdleTimeOut: "30000"
+  responseTimeOut: "50000"
+
+until:
+  retries: "0"
+  millisBetweenRetries: "5000"
+  
+createTransactions:
+  successMessage: "Transaction posted successfully"
+  errorMessage: "Transaction can not be posted now. Please try after some time."
+  errorCode: "DIGORDCREPAPI01"
+
+fetchTransactions:
+  successMessage: ""
+  errorMessage: "Unable to fetch records now. Please try after some time."
+  errorCode: "DIGORDFETPAPI01"
+  
+  

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<flow name="impl-fetch-transactions-flow" doc:id="ab863fc4-ed8c-428a-a717-1600d591c769" >
+		<ee:transform doc:name="setRequestHeaders" doc:id="b0a27639-c1bf-428f-9f1b-d9e45272568a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="dynamoSapiMethodAndPath" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+"method": "GET",
+"path": Mule::p('dynamoOrderSapi.endpoint')
+
+}]]></ee:set-variable>
+				<ee:set-variable resource="dwl/fetchTransactionHeaders.dwl" variableName="sapiHeaders" />
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="dynamo-order-sapi-request" doc:id="3a1763f0-a69c-47ec-9533-da028f86f307" name="dynamo-order-sapi-request"/>
+		<json-logger:logger doc:name="BEFORE response mapping for fetch transaction" doc:id="08994cac-0b43-4ebe-9f8a-95cf5f7c17e4" config-ref="JSON_Logger_Config" message="BEFORE response mapping for fetch transaction" tracePoint="BEFORE_TRANSFORM" category="${log.category}" />
+		<ee:transform doc:name="setResponse" doc:id="402beb92-bc93-4045-a807-6cd64c8cb51d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import p from Mule
+
+fun formatDateTime(localTime: DateTime) = localTime as String {format: "yyyy-MM-dd HH:mm:ss.SSS"}
+
+output application/json
+---
+
+if (attributes.statusCode == 200)
+
+if (!(payload.errorCode?))
+payload - "items" ++
+
+({
+"items":  payload.items map ((item, index) -> {
+            "TransactionId": item.TRANSACTION_ID,
+            "DgorderId": item.DGORDER_ID,
+            "MemberId": item.MEMBER_ID,
+            "TransactionType": item.TRANSACTION_TYPE,
+            "TransactionDate": item.TRANSACTION_DATE,
+            "RateId": item.RATE_ID,
+            "GoldRate":item.GOLD_RATE,
+            "GramsPurchased":item.GRAMS_PURCHASED,
+            "PaymentGateway": item.PAYMENT_GATEWAY,
+            "PaymentMethod": item.PAYMENT_METHOD,
+            "TotalGoldAmount": item.TOTAL_GOLD_AMOUNT, 
+            "Channel": item.CHANNEL,
+            "TransactionStatus": item.TRANSACTION_STATUS,
+            "LastUpdatedDate": item.LASTUPDATED_INMILLIS,
+            "PrecheckoutInitiated": item.PRECHECKOUT_INITATED,
+            "PreGstBuyPrice":item.PRE_GST_BUY_PRICE,
+            "GstAmount": item.GST_AMOUNT,
+            "InvoiceId": item.INVOICE_ID,
+            "SalesOrderId": item.ADDITIONAL_FIELD2, 
+            "PaymentId": item.ADDITIONAL_FIELD3 
+} filterObject ((value, key, index) -> value != null)) 
+})
+else payload
+
+else 
+
+{
+	transacionId: vars.correlationId,
+	message: "DIGI Transaction Fetch failed",
+	errorCode: p('fetchTransactions.errorCode'),
+	errorMessage: p('fetchTransactions.errorMessage'),
+	timestamp:formatDateTime(now())
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="AFTER response mapping for fetch transaction" doc:id="e0b8eb8f-941a-45bc-8cf1-30b8c5c77bcf" config-ref="JSON_Logger_Config" message="AFTER response mapping for fetch transaction" tracePoint="AFTER_TRANSFORM" category="${log.category}" />
+	</flow>
+</mule>
