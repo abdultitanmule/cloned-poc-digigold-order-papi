@@ -58,7 +58,7 @@ payload - "items" ++
             "TotalGoldAmount": item.TOTAL_GOLD_AMOUNT, 
             "Channel": item.CHANNEL,
             "TransactionStatus": item.TRANSACTION_STATUS,
-            "LastUpdatedDate": item.LASTUPDATED_INMILLIS,
+            "LastUpdatedDate": item.LASTUPDATED,
             "PrecheckoutInitiated": item.PRECHECKOUT_INITATED,
             "PreGstBuyPrice":item.PRE_GST_BUY_PRICE,
             "GstAmount": item.GST_AMOUNT,
