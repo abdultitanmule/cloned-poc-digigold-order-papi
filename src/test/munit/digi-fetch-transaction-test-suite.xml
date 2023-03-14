@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="api-test-suite.xml" >
+	</munit:config>
+	<munit:test name="digi-fetch-transaction-test-suite-successful" doc:id="a8005ece-b5a0-43e4-9d4b-40b9dd6484ea" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="02af9453-e218-4108-9410-8b2cb59e9f0b" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dynamoOrderSapiRequestConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[MunitTools::getResourceAsString("test-outputs/fetch-transactions-success-response1.json")]' mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[{&#10;	statusCode: 200 as Number&#10;}]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="800fb9db-6f15-4ac8-aa23-1db7af859cc5" >
+				<munit:attributes value='#[MunitTools::getResourceAsString("test-inputs/fetch-transactions-request2-1.json")]' encoding="UTF-8" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="get:\transactions:digigold-order-papi-config" doc:id="3cfea850-1f0f-4f10-b4a3-3af79f027d63" name="get:\transactions:digigold-order-papi-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="16e81938-2f4a-4ff7-849c-4dfad3828c11" is="#[MunitTools::notNullValue()]" expression="#[payload.items]"/>
+		</munit:validation>
+	</munit:test>
+	
+	
+	
+	<munit:test name="digi-fetch-transaction-test-suite-key-successful" doc:id="41aaba20-a958-4e9b-a4c4-c78f0259369f" >
+	<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="259a54e2-4471-4335-bf6c-29dda3305e87" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dynamoOrderSapiRequestConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[MunitTools::getResourceAsString("test-outputs/fetch-transactions-success-response1.json")]' mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[{&#10;	statusCode: 200 as Number&#10;}]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="4cffb92a-d4e3-4a55-a879-219f082a7f90" >
+				<munit:attributes value='#[MunitTools::getResourceAsString("test-inputs/fetch-transactions-request-key.json")]' encoding="UTF-8" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="get:\transactions:digigold-order-papi-config" doc:id="6c5e22eb-3c09-42ba-9e4a-ea43c10e9b28" name="get:\transactions:digigold-order-papi-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-that doc:name="Assert that" doc:id="6fe2b0c2-f379-4ce9-b9c0-f8b55a1b1e1f" is="#[MunitTools::notNullValue()]" expression="#[payload.items]" />
+		</munit:validation>
+		</munit:test>
+		
+		
+	<munit:test name="digi-fetch-transaction-test-suite-key-successful-negative" doc:id="1badb9f3-0cac-4c89-abee-4c36b7d1d287">
+	<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ac9516b8-b5f5-43bd-8d9c-e5922a925195" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dynamoOrderSapiRequestConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[MunitTools::getResourceAsString("test-outputs/fetch-transactions-success-response2.json")]' mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value="#[{&#10;	statusCode: 200 as Number&#10;}]" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="46263920-cb0e-4970-ada4-62c7d494a9d1" >
+				<munit:attributes value='#[MunitTools::getResourceAsString("test-inputs/fetch-transactions-request-key.json")]' encoding="UTF-8" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="get:\transactions:digigold-order-papi-config" doc:id="0aee0032-55c2-46a9-ad89-04317e3044e9" name="get:\transactions:digigold-order-papi-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="b8a48193-a975-4a2d-b296-20cffdacd147" actual="#[payload.errorCode]" expected='#["DIGORDFETSAPI01"]'/>
+		</munit:validation>
+		</munit:test>
+	<munit:test name="digi-fetch-transaction-test-suite-connectivity-error" doc:id="374eb704-bacb-470e-a53a-3a54312a1a22">
+	<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="80856bc0-5fbd-415a-a642-6ec40b417849" processor="http:request">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dynamoOrderSapiRequestConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="HTTP:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="aae14a4e-dd08-4227-84c2-496f466947d5" >
+				<munit:attributes value='#[MunitTools::getResourceAsString("test-inputs/fetch-transactions-request-key.json")]' encoding="UTF-8" mediaType="application/json" />
+			</munit:set-event>
+			<flow-ref doc:name="get:\transactions:digigold-order-papi-config" doc:id="017a9bd9-b7c0-41db-afc0-f4b06d0009bc" name="get:\transactions:digigold-order-papi-config" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="1e8fae24-69bd-4356-b8d8-bfd1939b8f05" actual="#[payload.errorCode]" expected='#["DIGORDFETPAPI01"]' />
+		</munit:validation>
+		</munit:test>
+
+</mule>
