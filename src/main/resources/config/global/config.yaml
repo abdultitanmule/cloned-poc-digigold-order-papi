@@ -2,8 +2,8 @@
 #      Global Properties     #
 ##############################
 global.properties: #TODO FOR DEVELOPER - CHANGE THIS ACCORDING TO THE API INVENTORY
-  appName: "mulesoft-template-api"
-  name: "Mulesoft Template API"
+  appName: "digigold-order-papi"
+  name: "Digigold Order Process API"
   businessId: "" # Business Operation ID
 
 
@@ -11,7 +11,7 @@ global.properties: #TODO FOR DEVELOPER - CHANGE THIS ACCORDING TO THE API INVENT
 # JSON Logger Properties (should reflect what's on POM) 
 #TODO FOR DEVELOPER - CHANGE THIS BASED ON THE POM.XML
 json.logger.application:
-  name: "digigold-sfcc-eapi" #pom > artifactId
+  name: "digigold-order-papi" #pom > artifactId
   version: "1.0.0"  #pom > version
 
 ##############################
@@ -24,7 +24,7 @@ log:
   
   
 api:
-  resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.4:raml:zip:digigold-order-papi.raml"
+  resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.5:raml:zip:digigold-order-papi.raml"
  
 papi:
   connectionIdleTimeOut: "30000"
