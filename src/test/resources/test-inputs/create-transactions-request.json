@@ -1,0 +1,22 @@
+{
+    "TransactionId": 175666712,
+    "DgorderId": 5779049,
+    "MemberId": 2917246,
+    "TransactionType": "B",
+    "TransactionDate": "12/30/2022 12:19:15",
+    "RateId": 1087366397,
+    "GoldRate": 5526.86,
+    "GramsPurchased": 3.636,
+    "PaymentGateway": "RazorPay",
+    "PaymentMethod": "UPIRazorPay",
+    "TotalGoldAmount": 20095.67,
+    "Channel": "WEB",
+    "TransactionStatus": "buy confirmed",
+    "LastUpdatedDate": "3/13/2023 12:19:15",
+    "PrecheckoutInitiated": "Yes",
+    "PreGstBuyPrice": 12,
+    "GstAmount": 12,
+    "InvoiceId": "SG230104120254175665133",
+    "SalesOrderId": "1344",
+    "PaymentId": "45533"
+}

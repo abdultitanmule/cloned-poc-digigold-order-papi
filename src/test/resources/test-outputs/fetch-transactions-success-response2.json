@@ -1,0 +1,8 @@
+{
+	"transacionId": 1234,
+	"message": "DIGI Transaction Fetch failed",
+	"errorCode": "DIGORDFETSAPI01",
+	"errorMessage": "Unable to fetch records now. Please try after some time.",
+	"timestamp": "2023-03-10T09:36:28.295Z"
+
+}

@@ -1,0 +1,25 @@
+
+{
+	"headers":
+		{
+			"X-Correlation-Id":1234,
+			"x-source-channel":"OMS",
+			"x-target-channel":"SFCC",
+			"client_id":"216cb39126214342ade52bf0ddca2729",
+			"client_secret":"B9a21abe68C443B09371D9dF1b6b0ac1",
+			"TransactionStatus":"sell verify, buy verify",
+			"ReportType":"Oracle Report",
+			"StartDate":"1/4/2023 12:04:09",
+			"EndDate":"1/8/2023 12:04:09"
+			
+			
+		}
+}
+
+
+
+
+
+
+
+

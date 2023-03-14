@@ -8,7 +8,7 @@
 	<artifactId>digigold-order-papi-app</artifactId>
 	<!-- Artifact ID should always have app appended in the end.
 	Ex: If the API name is oauth-sfcc-sapi, then artifactId should be oauth-sfcc-sapi-app -->
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 	<packaging>mule-application</packaging>
 
 	<name>digigold-order-papi</name>
@@ -50,6 +50,10 @@
 		<deployment.name>${project.name}</deployment.name>
 		<deployment.timeoutMillis>1000000</deployment.timeoutMillis>
 		<api.layer>{{Set API Layer}}</api.layer>
+		
+		
+	
+		
 
 	</properties>
 
@@ -91,7 +95,15 @@
 
 							<anypoint.platform.client_id>${ap.client_id}</anypoint.platform.client_id>
 							<anypoint.platform.client_secret>${ap.client_secret}</anypoint.platform.client_secret>
-
+							<log.s3.frequency>${log.s3.frequency}</log.s3.frequency>				
+							<log.s3.aws.region>${log.s3.aws.region}</log.s3.aws.region>
+							<log.s3.bucket>${log.s3.bucket}</log.s3.bucket>						
+							<log.s3.compress>${log.s3.compress}</log.s3.compress>				
+							<log.s3.storageClass>${log.s3.storageClass}</log.s3.storageClass>			
+							<log.s3.aws.accessKey>${log.s3.aws.accessKey}</log.s3.aws.accessKey>		
+							<log.s3.aws.secureKey>${log.s3.aws.secureKey}</log.s3.aws.secureKey>
+							<deployment.name>${deployment.name}</deployment.name>
+							
 							<!-- concrete Mule apps can provide their own props which will be merged with the props given here -->
 						</properties>
 						<secureProperties>
@@ -211,6 +223,38 @@
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>
+		<dependency>
+		<groupId>c3cf65b1-e732-48c6-b48e-b22effe859fa</groupId> 
+		<artifactId>appender-log4j2</artifactId>
+		<version>1.0.1</version>   
+		<exclusions>
+			<exclusion>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>com.amazonaws</groupId>
+				<artifactId>aws-java-sdk-s3</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-storage</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-solrj</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.elasticsearch.client</groupId>
+				<artifactId>elasticsearch-rest-high-level-client</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+	<dependency>
+		<groupId>com.amazonaws</groupId>
+		<artifactId>aws-java-sdk-s3</artifactId>
+		<version>1.12.261</version>
+	</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
