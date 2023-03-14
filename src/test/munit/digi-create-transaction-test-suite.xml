@@ -55,7 +55,7 @@
 			<flow-ref doc:name="post:\transactions:application\json:digigold-order-papi-config" doc:id="ea0a2355-bc4c-4045-8248-d12e5559562d" name="post:\transactions:application\json:digigold-order-papi-config" />
 		</munit:execution>
 		<munit:validation>
-			<munit-tools:assert-equals doc:name="Assert equals" doc:id="7ecdedbc-f12a-4eb3-81b9-b2bcac545051" actual="#[payload.errorCode]" expected='#["DIGORDCRTSAPI01"]'/>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="7ecdedbc-f12a-4eb3-81b9-b2bcac545051" actual="#[payload.errorCode]" expected='#["DIGORDCRESAPI01"]'/>
 		</munit:validation>
 	</munit:test>
 	
