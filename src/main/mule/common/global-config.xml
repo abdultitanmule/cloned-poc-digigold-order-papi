@@ -29,6 +29,7 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 	<configuration-properties doc:name="Configuration properties" doc:id="8b210480-8ee9-4f9f-907e-c9e06e30d10f" file="config/${env}/config.yaml" />
 	<configuration-properties doc:name="Configuration properties" doc:id="cc16829b-44b3-4cdb-9721-10d65290e038" file="config/global/config.yaml" />
 	<json-logger:config name="JSON_Logger_Config" doc:name="JSON Logger Config" doc:id="0a61b3aa-e837-4aff-b456-474fa1a03cf7" environment="${env}" />
+	<api-gateway:autodiscovery apiId="${api.autodiscovery.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="5f49e25a-9f4c-49f5-b6b1-768dc10b2ad4" flowRef="digigold-order-papi-main" />
 	<!-- API Gateway has to be defined pointing to corresponding API ID -->
 <!-- 	<api-gateway:autodiscovery apiId="${api.autodiscovery.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="37e06122-aa1f-4d18-87dd-793dd8fe452c" flowRef="" /> -->
 
