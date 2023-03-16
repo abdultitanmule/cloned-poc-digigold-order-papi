@@ -1,0 +1,59 @@
+{
+    "scannedCount": 2836,
+    "count": 1402,
+    "lastEvaluatedKey": {
+        "LASTUPDATED_INMILLIS": {
+            "n": "1672424292000"
+        },
+        "STATIC_ATTR": {
+            "n": "1"
+        },
+        "TRANSACTION_ID": {
+            "n": "173796230"
+        }
+    },
+    "items": [
+        {
+            "PAYMENT_GATEWAY": "RazorPay",
+            "TRANSACTION_DATE": "1/4/2023 12:02:09",
+            "LASTUPDATED_INMILLIS": "1672833775000",
+            "GOLD_RATE": "5714.51",
+            "TRANSACTION_DATE_INMILLIS": "1672833729000",
+            "PRECHECKOUT_INITATED": "Yes",
+            "LASTUPDATED": "1/4/2023 12:02:55",
+            "PAYMENT_METHOD": "UPIRazorPay",
+            "TOTAL_GOLD_AMOUNT": "1000",
+            "TRANSACTION_TYPE": "B",
+            "TRANSACTION_STATUS": "buy confirmed",
+            "GRAMS_PURCHASED": "0.1698",
+            "RATE_ID": "1087364496",
+            "INVOICE_ID": "SG230104120254175665133",
+            "CHANNEL": "M-APP-JW",
+            "STATIC_ATTR": "1",
+            "MEMBER_ID": "25621233",
+            "DGORDER_ID": "5786025",
+            "TRANSACTION_ID": "175665133"
+        },
+        {
+            "PAYMENT_GATEWAY": "RazorPay",
+            "TRANSACTION_DATE": "1/4/2023 11:57:42",
+            "LASTUPDATED_INMILLIS": "1672833495000",
+            "GOLD_RATE": "5714.51",
+            "TRANSACTION_DATE_INMILLIS": "1672833462000",
+            "PRECHECKOUT_INITATED": "Yes",
+            "LASTUPDATED": "1/4/2023 11:58:15",
+            "PAYMENT_METHOD": "UPIRazorPay",
+            "TOTAL_GOLD_AMOUNT": "500",
+            "TRANSACTION_TYPE": "B",
+            "TRANSACTION_STATUS": "buy confirmed",
+            "GRAMS_PURCHASED": "0.0849",
+            "RATE_ID": "1087360091",
+            "INVOICE_ID": "SG230104115815175661603",
+            "CHANNEL": "WEB",
+            "STATIC_ATTR": "1",
+            "MEMBER_ID": "54106002",
+            "DGORDER_ID": "5779047",
+            "TRANSACTION_ID": "175661603"
+        }
+    ]
+}

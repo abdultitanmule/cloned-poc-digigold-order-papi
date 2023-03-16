@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+	<flow name="impl-generate-oracle-report" doc:id="3359e058-6b64-4ad2-a9ad-e919a5e7e90e" >
+		<json-logger:logger doc:name="Flow Log" doc:id="8d827cfa-0523-43ad-b983-9f74c63b13f4" config-ref="JSON_Logger_Config" tracePoint="FLOW" category="${log.category}" message="oracle report generation started"/>
+		<flow-ref doc:name="call to order-dynamo-sapi" doc:id="cd63f9ab-3f4e-4315-aea4-5a4441cac590" name="call-to-order-dynamo-sapi" target="dynamoResponse"/>
+		<validation:is-null doc:name="Is null" doc:id="e23d42cf-6095-401a-a0de-370c54207a0e" value="#[vars.successful]" message="Failure encountered in digigold-dynamo-sapi"/>
+		<ee:transform doc:name="Consolidate mule message" doc:id="77a2876e-27ab-4be0-83ed-5cd48134a9a1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    count: vars.dynamoResponse.count default 0,
+    variables: payload.variables,
+    ("lastEvaluatedKey": vars.dynamoResponse.lastEvaluatedKey) if (vars.dynamoResponse.lastEvaluatedKey?),   
+    "items":  (vars.previousRunPayload.items default []) ++ vars.dynamoResponse.items
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<vm:publish doc:name="Publish Dynamo  Response" doc:id="b6ea8dc6-f292-40dd-bb77-b444a9f918a3" sendCorrelationId="ALWAYS" queueName="oracleExtractQueue" config-ref="transactions_vm_Config"/>
+		<error-handler ref="global-error-handler" />
+
+	</flow>
+	<flow name="listen-dynamo-response" doc:id="6d158d7e-55b8-4719-abbc-6e79a0e576ef" >
+		<vm:listener doc:name="Listener" doc:id="e904f7d4-f6bb-4d71-83e1-a903760e7355" queueName="oracleExtractQueue" config-ref="transactions_vm_Config"/>
+		<os:retrieve doc:name="Fetch Report File Name" doc:id="7ded5c1b-d570-4bda-8a37-c72761889a7e" key="oracleReportName" objectStore="reportNameObjectStore" target="oracleReportName">
+			<os:default-value><![CDATA[#[{
+	reportSequenceNumber: Mule::p('default.reportSequenceNumber'),
+	date: now() as Date
+}]]]></os:default-value>
+		</os:retrieve>
+		<ee:transform doc:name="Capture Previous Run Payload" doc:id="7812cd21-1d19-4b3f-8ce7-c72744e61c7b" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="previousRunPayload" ><![CDATA[%dw 2.0
+output application/json
+---
+payload default {}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="07560036-3979-4637-aa68-5c123a84dd1a" >
+			<when expression="#[payload.lastEvaluatedKey != null and vars.successful == null]">
+				<flow-ref doc:name="recall to dynamo-sapi" doc:id="93fff44d-c216-43e1-8781-1ef0b97dd7eb" name="call-to-order-dynamo-sapi"/>
+				<validation:is-null doc:name="Is null" doc:id="a54b84a6-53ac-44c8-959e-905626b9720a" value="#[vars.successful]" message="Failure encountered in digigold-dynamo-sapi"/>
+				<ee:transform doc:name="AggregatedPayload" doc:id="92369cf0-1f18-4c6d-b510-4817a1991259">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+    count: (vars.previousRunPayload.count default 0 ) + (payload.count default 0),
+    variables: vars.previousRunPayload.variables,
+    ("lastEvaluatedKey": payload.lastEvaluatedKey) if (payload.lastEvaluatedKey?),   
+    "items":  (vars.previousRunPayload.items default []) ++ payload.items
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<vm:publish doc:name="Republish Dynamo  Response" doc:id="8095ba88-7c45-4013-948f-be7926dfe082" sendCorrelationId="ALWAYS" queueName="oracleExtractQueue" config-ref="transactions_vm_Config"/>
+			</when>
+			<when expression="#[payload.lastEvaluatedKey == null]">
+				<choice doc:name="Choice" doc:id="d2ff4515-e691-49f5-b67d-09609ac33826">
+					<when expression="#[sizeOf(payload.items) &gt; 0]">
+						<ee:transform doc:name="Set Params" doc:id="95e4bb12-c5c0-44ce-92d7-71040495fbb6">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+vars.previousRunPayload]]></ee:set-payload>
+					</ee:message>
+							<ee:variables >
+								<ee:set-variable variableName="outputReportName" ><![CDATA[%dw 2.0
+output application/json
+
+fun getFinancialYearForReportName(date :Date) = do {
+    var firstQuarter = 1 to 3
+    var otherQuarter = 4 to 12
+    ---
+	if (firstQuarter contains (date as String { format: "M"} as Number))
+    ((date as String {format: "yy"} as Number - 1) as String)
+    else (date as String {format: "yy"} as String)
+
+    }
+---
+'DIGIGL' ++ getFinancialYearForReportName(now() as Date) ++ (dw::core::Strings::leftPad(vars.oracleReportName.reportSequenceNumber +1,6,0))
+    ]]></ee:set-variable>
+								<ee:set-variable variableName="folderName" ><![CDATA[%dw 2.0
+output application/json
+---
+payload.variables.startDate as LocalDateTime {format: "M/d/yyyy H:m:s"} as String {format: "ddMMyyyy"}
+    ]]></ee:set-variable>
+							</ee:variables>
+				</ee:transform>
+						<ee:transform doc:name="Pipe delimited data for report" doc:id="e58522c5-c93a-4446-b539-753f08a89ef6">
+					<ee:message>
+								<ee:set-payload resource="dwl/reporting.dwl" />
+					</ee:message>
+				</ee:transform>
+						<sftp:create-directory doc:name="Create directory for Report Generation" doc:id="03676976-3dcb-422a-9d52-cdc3ae1a481e" config-ref="SFTP_Config" directoryPath="#[p('titan.sftp.workingdir.oracleReport') ++ &quot;/&quot; ++ vars.folderName]" />
+						<flow-ref doc:name="call to sftp-sapi" doc:id="051371c4-54b7-4edd-8e64-d8a1e5194d06" name="call-to-sftp-sapi" />
+						<os:store doc:name="Store outputReportSequence" doc:id="f5297d5e-d645-4a18-bdba-92c82a8438b2" key="oracleReportName" objectStore="reportNameObjectStore">
+							<os:value ><![CDATA[#[{
+	reportSequenceNumber: vars.oracleReportName.reportSequenceNumber as Number + 1,
+	date: now() as Date
+}]]]></os:value>
+						</os:store>
+					</when>
+					<otherwise >
+						<json-logger:logger doc:name="End Logger " doc:id="84b3717b-a467-4618-9d1f-77b89430577d" config-ref="JSON_Logger_Config" message="End Logger - No Records Found for reporting" tracePoint="END" category="${log.category}"/>
+						<ee:transform doc:name="Set notification params" doc:id="9e15bc54-44e5-48d2-b8cf-ad8ce100d28e">
+							<ee:message />
+							<ee:variables>
+								<ee:set-variable variableName="emailSubject"><![CDATA[%dw 2.0
+output text/plain
+---
+p('email.errorSubject')]]></ee:set-variable>
+								<ee:set-variable variableName="errorDescription"><![CDATA[%dw 2.0
+output text/plain
+---
+error.description default "Skipped Oracle Report Generation - No Records"]]></ee:set-variable>
+							</ee:variables>
+						</ee:transform>
+						<flow-ref doc:name="call to notification-sapi" doc:id="64b7124d-b0e1-4304-ac3f-75f9ce1e4feb" name="call-notification-service"/>
+					</otherwise>
+				</choice>
+			</when>
+			<otherwise >
+				<json-logger:logger doc:name="End Logger" doc:id="9cc8e0c3-503d-4170-b6b7-1abe7c4cb901" config-ref="JSON_Logger_Config" message="End Logger " tracePoint="END" category="${log.category}"/>
+				<ee:transform doc:name="Set notification params" doc:id="3ce697f0-4873-4e4b-85a3-458c39422b50" >
+					<ee:message />
+					<ee:variables >
+						<ee:set-variable variableName="emailSubject" ><![CDATA[%dw 2.0
+output text/plain
+---
+p('email.errorSubject')]]></ee:set-variable>
+						<ee:set-variable variableName="errorDescription" ><![CDATA[%dw 2.0
+output text/plain
+---
+error.description default "Encountered Invalid Case"]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<flow-ref doc:name="call to notification-sapi" doc:id="a35368f4-8cc4-4192-9090-b55d5d749185" name="call-notification-service" />
+			</otherwise>
+		</choice>
+		<error-handler ref="global-error-handler" />
+	</flow>
+</mule>

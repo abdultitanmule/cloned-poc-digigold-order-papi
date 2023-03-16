@@ -1,6 +1,13 @@
 ###############################
 #  INBOUND                    #
 ###############################
+
+https:
+  port: "8081"
+  version: "v1"
+  path: "/api/${https.version}/*"
+  host: "0.0.0.0"
+
 api:
   autodiscovery:
     id: "" #TODO FOR DEVELOPER - CHANGE ACCORDINGLY THE DEFAULT CONFIGURATION
@@ -11,12 +18,77 @@ api:
 dynamodb:
   regionendpoint: "ap-south-1"
 
+#Titan SFTP Server 
 titan:
  sftp:
   host: "172.30.5.115"
   port: "22"
-  workingdir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/input"
+  workingdir: 
+    txnMigration: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/input"
+    oracleReport: "home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/oraclefeed"
+    transactionReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transaction"
+    dropOrderReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/droporder"
   filenamepattern: "*.csv"
-  archivedir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/archive"
+  archivedir:
+    txnMigration: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/archive"
   pollingfrequency: "10" # in Minutes
+  
+#COMMON SFTP SAPI
+
+sftp-sapi:
+  connectionTimeout: "60000"
+  responseTimeout: "30000"
+  sourceChannel: "digigoldOrderPAPI"
+  host: "sftp-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basePath: "/api/v1"
+  endpoints:
+    post:
+      sftpWrite: "/write"
+      sftpMethod: "POST"
+   
+#Dynamo SAPI
+dynamo-sapi:
+  connectionTimeout: "60000"
+  responseTimeout: "10000"
+  sourceChannel: "digigoldOrderPAPI"
+  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basePath: "/api/v1"
+  endpoints:
+    get:
+      transactionsPath: "/transactions"
+      transactionsMethod: "GET"
+    
+#COMMON Notification SAPI
+notification-sapi:
+  connectionTimeout: "60000"
+  responseTimeout: "10000"
+  sourceChannel: "digigoldOrderPAPI"
+  host: "notification-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basePath: "/api/v1"
+  endpoints:
+    post:
+      notificationPath: "/notifications"
+      notificationMethod: "POST"
+      queryParameter: "Email"
+      
+#Notification Email IDs
+email:
+  to: "amanney@salesforce.com"
+  from: "ecomas@titan.co.in"
+  cc: ""
+  oracleErrorSubject: "Oracle Report Generation Failure Notification - "
+  contentType: "text/html"
+
+order-papi:
+  buyConfirmed:
+    debit: "245154"
+    credit: "153891"
+  redemption:
+    debit: "245170"
+    credit: "151633"
+  
+  
   

@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
 	xmlns:dynamodb="http://www.mulesoft.org/schema/mule/dynamodb"
 	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os"
 	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
 
@@ -21,8 +29,44 @@ http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sft
 		<dynamodb:basic-connection accessKey="${secure::dynamodb.accesskey}" secretKey="${secure::dynamodb.secretkey}" region="${dynamodb.regionendpoint}" />
 	</dynamodb:config>
 	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="747b6110-0dba-45b3-a6d8-ab3760ed312e" >
-		<sftp:connection workingDir="${titan.sftp.workingdir}" host="${titan.sftp.host}" port="${titan.sftp.port}" username="${secure::titan.sftp.username}" password="${secure::titan.sftp.password}" />
+		<sftp:connection host="${titan.sftp.host}" port="${titan.sftp.port}" username="${secure::titan.sftp.username}" password="${secure::titan.sftp.password}" />
 	</sftp:config>
+	<http:listener-config name="apiHttpListenerConfig" doc:name="HTTP Listener config" doc:id="77b57ee9-a1a6-4f1e-a6e7-0b24efd96aaa">
+		<http:listener-connection host="${https.host}" port="${https.port}" />
+	</http:listener-config>
+	<apikit:config name="digigold-order-papi-config" api="resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.0:raml:zip:digigold-order-papi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+   <import doc:name="Import error configs" doc:id="2a1825bc-2e7a-4bb9-886b-602984474997" file="error-common.xml" />
+	<import doc:name="Import error log" doc:id="c51c2d99-268b-4c29-acf5-ecfaee712770" file="logging-common.xml" />
+	
+	<http:request-config name="sftpSAPIRequestConfig" doc:name="HTTP Request configuration" doc:id="47ad82b2-7d42-4f1f-9502-f0496dbc22f3" basePath="${sftp-sapi.basePath}" responseTimeout="${sftp-sapi.responseTimeout}">
+		<http:request-connection protocol="HTTPS" host="${sftp-sapi.host}" port="${sftp-sapi.port}">
+			<reconnection >
+				<reconnect />
+			</reconnection>
+		</http:request-connection>
+	</http:request-config>
+	<http:request-config name="dynamoSAPIRequestConfig" doc:name="HTTP Request configuration" doc:id="721029ed-aa3d-469d-8c9f-aea83428f1b8" basePath="${dynamo-sapi.basePath}" responseTimeout="${dynamo-sapi.responseTimeout}">
+		<http:request-connection protocol="HTTPS" host="${dynamo-sapi.host}" port="${dynamo-sapi.port}">
+			<reconnection >
+				<reconnect />
+			</reconnection>
+		</http:request-connection>
+	</http:request-config>
+	<http:request-config name="notificationSAPIRequestConfig" doc:name="HTTP Request configuration" doc:id="df83e4b1-4ab2-4001-8f88-d9047d4ba8b6" basePath="${notification-sapi.basePath}" responseTimeout="${notification-sapi.responseTimeout}">
+		<http:request-connection protocol="HTTPS" host="${notification-sapi.host}" port="${notification-sapi.port}">
+			<reconnection >
+				<reconnect />
+			</reconnection>
+		</http:request-connection>
+	</http:request-config>
+	
+	<os:config name="ObjectStore_Config" doc:name="ObjectStore Config" doc:id="40b92684-bc13-4a5e-a579-66f5ad4b8c12" />
+	<os:object-store name="reportNameObjectStore" doc:name="Object store" doc:id="ec664c41-d969-4021-8818-cf1c78d68923" config-ref="ObjectStore_Config" />
+	<vm:config name="transactions_vm_Config" doc:name="VM Config" doc:id="781d9927-44ca-4070-a539-2674ad0bb99c" sendCorrelationId="ALWAYS" >
+		<vm:queues >
+			<vm:queue queueName="oracleExtractQueue" queueType="PERSISTENT" />
+		</vm:queues>
+	</vm:config>
 	<!-- API Gateway has to be defined pointing to corresponding API ID -->
 <!-- 	<api-gateway:autodiscovery apiId="${api.autodiscovery.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="37e06122-aa1f-4d18-87dd-793dd8fe452c" flowRef="" /> -->
 

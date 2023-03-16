@@ -1,27 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+     <flow name="digigold-order-papi-main">
+        <http:listener config-ref="apiHttpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <ee:transform doc:name="Capture common headers" doc:id="e65e3019-0fac-4eff-a343-f7266a6bdd9a" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="sourceChannel" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.headers.'x-source-channel']]></ee:set-variable>
+				<ee:set-variable variableName="httpMethod" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.method]]></ee:set-variable>
+				<ee:set-variable variableName="inboundUri" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.requestUri]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<apikit:router config-ref="digigold-order-papi-config" />
+		<error-handler ref="api-main-error-handler" />
+    </flow>
+    <flow name="digigold-order-papi-console">
+        <http:listener config-ref="apiHttpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="digigold-order-papi-config" />
+		<error-handler ref="api-console-error-handler" />
+    </flow>
+    <flow name="post:\reports:application\json:digigold-order-papi-config">
+        <json-logger:logger doc:name="start log" doc:id="ef9be23d-4230-4da1-aade-9538032fac5b" config-ref="JSON_Logger_Config" message="start log - generate oracle report" category="${log.category}"/>
+		<ee:transform doc:name="Set start and end date" doc:id="4ce6c21e-e604-4358-809d-5fa91239146f">
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  variables:{
+	"startDate": payload.date as Date as String {format: "M/d/yyyy 0:0:0"},
+	"endDate": payload.date as Date as String {format: "M/d/yyyy 23:59:0"}
+	}
+}
 
-<mule xmlns:sftp-sapi="http://www.mulesoft.org/schema/mule/sftp-sapi" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
-	xmlns:dynamodb="http://www.mulesoft.org/schema/mule/dynamodb"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
-http://www.mulesoft.org/schema/mule/dynamodb http://www.mulesoft.org/schema/mule/dynamodb/current/mule-dynamodb.xsd
-http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
-http://www.mulesoft.org/schema/mule/sftp-sapi http://www.mulesoft.org/schema/mule/sftp-sapi/current/mule-sftp-sapi.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="8f1c5a8c-0e5d-4a52-9549-b3d3533100af" >
-		<http:listener-connection host="0.0.0.0" port="8082" />
-	</http:listener-config>
-	<flow name="digigold-order-papi-flow" doc:id="00e9e298-4b25-46a6-a654-fa357959e437" >
-		<sftp:listener doc:name="On New or Updated File" doc:id="7572e625-4cc4-4bf4-ab24-edc0793d2e1f" config-ref="SFTP_Config" directory="${titan.sftp.workingdir}" autoDelete="true" moveToDirectory="${titan.sftp.archivedir}">
+
+
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="call to impl-generate-oracle-report" doc:id="657a0273-e945-40f5-92e2-ccdd432acf7f" name="impl-generate-oracle-report"/>
+		<json-logger:logger doc:name="end log" doc:id="320ca9be-2df2-4319-865b-8c05012d9b9d" config-ref="JSON_Logger_Config" message="end log - generate oracle report" category="${log.category}"/>
+    </flow>
+	<flow name="digigold-order-daily-oracle-report-generation" doc:id="ba577b05-b621-4a76-824d-a6f264fb9964" >
+		<scheduler doc:name="Scheduler" doc:id="36145a30-6fe7-4b75-a291-35296901e394" >
+			<scheduling-strategy >
+				<cron expression="${scheduler.oracleReportGeneration}" timeZone="${scheduler.timeZone}"/>
+			</scheduling-strategy>
+		</scheduler>
+		<ee:transform doc:name="Set start and end date" doc:id="fe32a1f0-d7bb-424b-842b-53b7d1ac46a9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+import * from dw::core::Dates
+---
+{
+  variables:{
+	"startDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 0:0:0"},
+	"endDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 23:59:0"}
+	}
+}
+
+
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="call to impl-generate-oracle-report" doc:id="93368b82-3091-40a7-b199-6e2b1a71dc9e" name="impl-generate-oracle-report"/>
+	</flow>
+	<flow name="digigold-order-transaction-migration" doc:id="3ad5e209-012f-41bf-8def-3f0557e8e937" initialState="stopped">
+		<sftp:listener doc:name="On New or Updated File" doc:id="9c0db443-175c-4bd9-85ef-5934f8791161" config-ref="SFTP_Config" autoDelete="true" moveToDirectory="${titan.sftp.archivedir.txnMigration}" overwrite="true" directory="${titan.sftp.workingdir.txnMigration}">
 			<scheduling-strategy >
 				<fixed-frequency frequency="${titan.sftp.pollingfrequency}" timeUnit="MINUTES"/>
 			</scheduling-strategy>
 			<sftp:matcher filenamePattern="${titan.sftp.filenamepattern}" directories="EXCLUDE"/>
 		</sftp:listener>
-		<set-variable value='#["Starting Digigold Migration Process. Start Timestamp is: " ++ now()]' doc:name="logMessage" doc:id="cb687cdb-73d9-4731-abe6-13dd11fb6d4d" variableName="logMessage"/>
-		<json-logger:logger doc:name="START Log" doc:id="294bdbd4-45ba-4226-baf9-2b7efac6183b" config-ref="JSON_Logger_Config" message="Log Message" category="${log.category}" >
+		<set-variable value='#["Starting Digigold Migration Process. Start Timestamp is: " ++ now()]' doc:name="logMessage" doc:id="88dd11e7-4a51-4a88-a53a-13b51f6960a3" variableName="logMessage"/>
+		<json-logger:logger doc:name="START Log" doc:id="9d0a9dc0-096f-43b1-9086-26be7d0ad2c2" config-ref="JSON_Logger_Config" message="Log Message" category="${log.category}" >
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
 {
 	eventContext: {
@@ -38,116 +123,7 @@ http://www.mulesoft.org/schema/mule/sftp-sapi http://www.mulesoft.org/schema/mul
   //No sensitive information should be logged in plain text
 }]]]></json-logger:content>
 		</json-logger:logger>
-		<batch:job jobName="digigold-order-papi-batch-job" doc:id="305a56ca-60af-4319-8485-06cabddd19ae" >
-			<batch:process-records >
-				<batch:step name="Batch_Step" doc:id="37961fba-9279-4bcc-b086-11febedd1671" >
-					<ee:transform doc:name="FormatMessage" doc:id="fbfcc63d-1a5b-465c-a6c0-8b03628d3630">
-						<ee:message>
-							<ee:set-payload><![CDATA[%dw 2.0
-import * from dw::util::Timer
-import isWhitespace from dw::core::Strings
-
-fun convertStringtoDatetime(sdate)=
-  sdate as LocalDateTime {format: "M/d/yyyy H:m:s"} as DateTime
-fun generateStringField(fieldName,fieldValue)=
-  ("$(fieldName)":{"S": fieldValue}) if(!isWhitespace(fieldValue))
-fun generateNumberField(fieldName,fieldValue)=
-  ("$(fieldName)":{"N": fieldValue}) if(!isWhitespace(fieldValue))
-output application/json
----
-payload map ((row) -> {
-	(generateNumberField("TRANSACTION_ID",row.TRANSACTION_ID)),
-	(generateNumberField("DGORDER_ID",row.DGORDER_ID)),
-	(generateNumberField("MEMBER_ID",row.MEMBER_ID)),
-	(generateNumberField("STATIC_ATTR",1)),
-	(generateStringField("TRANSACTION_TYPE",row.TRANSACTION_TYPE)),
-	(generateStringField("TRANSACTION_DATE",row.TRANSACTION_DATE)),
-	(generateNumberField("TRANSACTION_DATE_INMILLIS",toMilliseconds(convertStringtoDatetime(row.TRANSACTION_DATE)))),
-	(generateNumberField("RATE_ID",row.RATE_ID)),
-	(generateNumberField("GOLD_RATE",row.GOLD_RATE)),
-	(generateNumberField("GRAMS_PURCHASED",row.GRAMS_PURCHASED)),
-	(generateStringField("PAYMENT_GATEWAY",row.PAYMENT_GATEWAY)),
-	(generateStringField("PAYMENT_METHOD",row.PAYMENT_METHOD)),
-	(generateNumberField("TOTAL_GOLD_AMOUNT",row.TOTAL_GOLD_AMOUNT)),
-	(generateStringField("CHANNEL",row.CHANNEL)),
-	(generateStringField("TRANSACTION_STATUS",row.TRANSACTION_STATUS)),
-	(generateStringField("LASTUPDATED",row.LASTUPDATED)),
-	(generateNumberField("LASTUPDATED_INMILLIS",toMilliseconds(convertStringtoDatetime(row.LASTUPDATED)))),
-	(generateStringField("PRECHECKOUT_INITATED",row.PRECHECKOUT_INITATED)),
-	(generateNumberField("PRE_GST_BUY_PRICE",row.PRE_GST_BUY_PRICE)),
-	(generateNumberField("GST_AMOUNT",row.GST_AMOUNT)),
-	(generateStringField("INVOICE_ID",row.INVOICE_ID)),
-	(generateStringField("ADDITIONAL_FIELD1",row.ADDITIONAL_FIELD1)),
-	(generateStringField("ADDITIONAL_FIELD2",row.ADDITIONAL_FIELD2)),
-	(generateStringField("ADDITIONAL_FIELD3",row.ADDITIONAL_FIELD3)),
-	(generateNumberField("ADDITIONAL_FIELD4",row.ADDITIONAL_FIELD4)),
-	(generateNumberField("ADDITIONAL_FIELD5",row.ADDITIONAL_FIELD5)),
-	(generateStringField("ADDITIONAL_FIELD6",row.ADDITIONAL_FIELD6))
-	}
-)
-
-]]></ee:set-payload>
-						</ee:message>
-					</ee:transform>
-					<batch:aggregator doc:name="Batch Aggregator" doc:id="7e3db1de-5c8c-42e8-9275-f8c23ede4737" size="25" preserveMimeTypes="true">
-						<ee:transform doc:name="Transform MessageForBulkPut" doc:id="3dc91101-527f-4675-8e34-0a3b1c6254f0" >
-							<ee:message >
-								<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
----
-"DEV_XDG_TRANSACTION": 
-payload map ((row) -> {
- "PutRequest":
- 	{
-	(row)
-	}
- } as Object {class: "org.mule.extension.dynamodb.api.model.WriteRequest"}
-)
-]]></ee:set-payload>
-							</ee:message>
-						</ee:transform>
-						<dynamodb:batch-put-item doc:name="Batch put item" doc:id="7bb59ba8-b214-41e1-9ded-f90b3c02ef5f" requestPutItems="#[payload]" config-ref="Amazon_DynamoDB_Configuration"/>
-					</batch:aggregator>
-				</batch:step>
-			</batch:process-records>
-			<batch:on-complete >
-				<json-logger:logger doc:name="ON Log" doc:id="ce25b3b6-daec-4d83-97f9-9cc33f883bf8" config-ref="JSON_Logger_Config" message="Log Message" category="${log.category}" tracePoint="AFTER_REQUEST">
-					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
-{
-	eventContext: {
-	businessID: "${global.properties.businessId}",
-	clientId: attributes.headers.'x-source-channel', // Change accordingly
-	inboundURI: attributes.requestUri,
-	method: attributes.method,
-	muleCorrelationId: vars.muleCorrelationId,
-	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
-	
-},
-  payload: JSONLoggerModule::stringifyNonJSON(payload)
-  //Optional - DO NOT LOG whole payload as it will be huge. Log it only when necessary;
-  //No sensitive information should be logged in plain text
-}]]]></json-logger:content>
-				</json-logger:logger>
-			</batch:on-complete>
-		</batch:job>
-		<set-variable value='#["Completing Digigold Migration Process. End Timestamp is: " ++ now()]' doc:name="logMessage" doc:id="e4b2093a-d5d1-47ac-b8eb-90b0908bfcb8" variableName="logMessage" />
-		<json-logger:logger doc:name="END Log" doc:id="763a86c6-2003-4a70-8d86-20d34e1102e9" config-ref="JSON_Logger_Config" message="Log Message" category="${log.category}" tracePoint="END">
-			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
-{
-	eventContext: {
-	businessID: "${global.properties.businessId}",
-	clientId: attributes.headers.'x-source-channel', // Change accordingly
-	inboundURI: attributes.requestUri,
-	method: attributes.method,
-	muleCorrelationId: vars.muleCorrelationId,
-	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
-	
-}
-  //payload: JSONLoggerModule::stringifyNonJSON(payload)
-  //Optional - DO NOT LOG whole payload as it will be huge. Log it only when necessary;
-  //No sensitive information should be logged in plain text
-}]]]></json-logger:content>
-		</json-logger:logger>
-		<error-handler ref="global-http-error-handler" />
+		<flow-ref doc:name="batch-process-insert-dynamodb" doc:id="7f79b139-96ab-4f4a-947f-4dc55cb533e1" name="batch-process-insert-dynamodb"/>
+		<error-handler ref="error-handler-migration" />
 	</flow>
 </mule>

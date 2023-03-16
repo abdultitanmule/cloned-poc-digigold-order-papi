@@ -6,5 +6,15 @@ titan:
  sftp:
   username: "![ZibIQHduKBhWhwM1G4K8VA==]" 
   password: "![EO09WjxFFEVguFoFeXdW3A==]"
+
+# ClientId and ClientSecret of digigoldOrderPAPI
+digigold-order-papi:
+  clientId: "![WBrD6JW/RmSIv6EAk1Pl/p56Vi0kDFTVO5/sJrlP2g6pq2aTVX8MMLiy4Y69SA+z]"
+  clientSecret: "![VMKloGwils2yctHfN8Fb27obH/xSBkFNAScdwbjME3oNvJQSRY1ttO0QLojXZ3WQ]"
+  
+aes:
+  password: "![BKj8cVo3c9xUhGWQptxgCODmgNZJn1a3LvRUru4U6b0=]" 
+  
+
   
   
