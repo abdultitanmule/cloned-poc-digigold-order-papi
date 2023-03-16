@@ -3,15 +3,15 @@
 ##############################
 global.properties: #TODO FOR DEVELOPER - CHANGE THIS ACCORDING TO THE API INVENTORY
   appName: "digigold-order-papi"
-  name: "Digigold Order PAPI"
-  businessId: "c3cf65b1-e732-48c6-b48e-b22effe859fa" # Business Operation ID
+  name: "Digigold Order Process API"
+  businessId: "" # Business Operation ID
 
 
  
 # JSON Logger Properties (should reflect what's on POM) 
 #TODO FOR DEVELOPER - CHANGE THIS BASED ON THE POM.XML
 json.logger.application:
-  name: "digigold-order-papi-app" #pom > artifactId
+  name: "digigold-order-papi" #pom > artifactId
   version: "1.0.0"  #pom > version
 
 ##############################
@@ -34,3 +34,23 @@ until:
 scheduler:
   oracleReportGeneration: "0 0 5 ? * *"
   timeZone: "Asia/Kolkata"
+  
+  
+api:
+  resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.5:raml:zip:digigold-order-papi.raml"
+ 
+papi:
+  connectionIdleTimeOut: "30000"
+  responseTimeOut: "50000"
+  
+createTransactions:
+  successMessage: "Transaction posted successfully"
+  errorMessage: "Transaction can not be posted now. Please try after some time."
+  errorCode: "DIGORDCREPAPI01"
+
+fetchTransactions:
+  successMessage: ""
+  errorMessage: "Unable to fetch records now. Please try after some time."
+  errorCode: "DIGORDFETPAPI01"
+  
+  

@@ -4,7 +4,8 @@
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
      <flow name="digigold-order-papi-main">
-        <http:listener config-ref="apiHttpListenerConfig" path="/api/*">
+        <http:listener config-ref="apiHttpListenerConfig" path="${https.path}">
+
             <http:response statusCode="#[vars.httpStatus default 200]">
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
@@ -13,22 +14,35 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
                 <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <ee:transform doc:name="Capture common headers" doc:id="e65e3019-0fac-4eff-a343-f7266a6bdd9a" >
+
+        <ee:transform doc:name="captureCommonHeaders" doc:id="58960ffa-0250-438a-98b7-4ce9ed6fd8e5" >
 			<ee:message >
+				
 			</ee:message>
 			<ee:variables >
 				<ee:set-variable variableName="sourceChannel" ><![CDATA[%dw 2.0
 output application/java
 ---
-attributes.headers.'x-source-channel']]></ee:set-variable>
-				<ee:set-variable variableName="httpMethod" ><![CDATA[%dw 2.0
-output application/java
----
-attributes.method]]></ee:set-variable>
+attributes.headers.'x-source-channel'
+]]></ee:set-variable>
 				<ee:set-variable variableName="inboundUri" ><![CDATA[%dw 2.0
 output application/java
 ---
-attributes.requestUri]]></ee:set-variable>
+attributes.requestUri
+]]></ee:set-variable>
+				<ee:set-variable variableName="httpMethod" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.method
+]]></ee:set-variable>
+				<ee:set-variable variableName="correlationId" ><![CDATA[%dw 2.0
+output application/java
+---
+attributes.headers.'X-Correlation-Id']]></ee:set-variable>
+				<ee:set-variable variableName="targetChannel"><![CDATA[%dw 2.0
+output application/java
+---
+attributes.headers."x-target-channel"]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<apikit:router config-ref="digigold-order-papi-config" />
@@ -126,4 +140,16 @@ import * from dw::core::Dates
 		<flow-ref doc:name="batch-process-insert-dynamodb" doc:id="7f79b139-96ab-4f4a-947f-4dc55cb533e1" name="batch-process-insert-dynamodb"/>
 		<error-handler ref="error-handler-migration" />
 	</flow>
+
+    <flow name="get:\transactions:digigold-order-papi-config">
+		<json-logger:logger doc:name="START of fetch transactions flow" doc:id="6aca92d5-8a03-4519-9f70-213423aee697" config-ref="JSON_Logger_Config" message="START of fetch transactions flow" category="${log.category}" />
+		<flow-ref doc:name="impl-fetch-transactions-flow" doc:id="e65c27fe-657a-4c46-a832-b3f3e35d002b" name="impl-fetch-transactions-flow"/>
+		<json-logger:logger doc:name="END of fetch transactions flow" doc:id="e07cdaa3-9021-4c89-bc19-3629160579aa" config-ref="JSON_Logger_Config" message="END of fetch transactions flow" category="${log.category}" tracePoint="END"/>
+    </flow>
+    <flow name="post:\transactions:application\json:digigold-order-papi-config">
+		<json-logger:logger doc:name="START of create transactions flow" doc:id="c2f399b7-6393-4eab-9f46-b62ed5818b01" config-ref="JSON_Logger_Config" message="START of create transactions flow" category="${log.category}"/>
+		<flow-ref doc:name="impl-create-transactions-flow" doc:id="d7ab65c2-38f1-49e0-a68c-483ad8e2a509" name="impl-create-transactions-flow"/>
+		<json-logger:logger doc:name="END of create transactions flow" doc:id="d3ffdb01-f771-429d-92bd-f2ed1e96d4e6" config-ref="JSON_Logger_Config" message="END of create transactions flow" tracePoint="END" category="${log.category}" />
+    </flow>
+
 </mule>

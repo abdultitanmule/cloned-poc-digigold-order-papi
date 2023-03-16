@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="dynamo-order-sapi-apikit-test-suite.xml" >
+		<munit:parameterizations file="apikitErrors/parameterizations.yaml" />
+	</munit:config>
+	<munit:test name="dynamo-order-sapi-apikit-test" doc:id="59e973be-3eb2-45a9-a043-83837cfa0616" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Simulate Returning Error In HTTP Listener" doc:id="f7b7b5db-ba7a-46b9-ab2f-2a5d47a14e56" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="digigold-order-papi-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="${error}" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+		
+		<munit:set-event doc:name="Set Event" doc:id="bb701ae0-de75-43ab-9781-c8e2c6e7ec92" >
+				<munit:payload value='#[{"type" : "user"}]' mediaType="application/json" />
+			</munit:set-event>
+			<try doc:name="Try" doc:id="5e84dd9f-83e4-4f60-961b-3f1b79b3f000" >
+				<flow-ref doc:name="digigold-sfcc-eapi-main" doc:id="8a58ece2-d281-4346-902f-efae3f6be581" name="digigold-order-papi-main" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ab2f9e6a-a228-4d9e-955a-a92052abdcd3" />
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Validate generated responseCode" doc:id="2db1fc92-c6cd-4693-a6a5-60a637749736" actual="#[vars.httpStatus as String]" expected="${httpStatusCode}" message="Error In Validating HTTP Status Code"/>
+		</munit:validation>
+	</munit:test>
+
+</mule>

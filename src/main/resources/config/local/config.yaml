@@ -3,19 +3,16 @@
 ###############################
 api:
   autodiscovery:
-    id: "" #TODO FOR DEVELOPER - CHANGE ACCORDINGLY THE DEFAULT CONFIGURATION
+    id: "18549439"
 
 ###############################
 #  OUTBOUND                   #
 ###############################
-dynamodb:
-  regionendpoint: "ap-south-1"
 
-titan:
- sftp:
-  host: "172.30.5.115"
-  port: "22"
-  workingdir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/input"
-  filenamepattern: "*.csv"
-  archivedir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/archive"
-  pollingfrequency: "10" # in Minutes
+
+#SAMPLE EXTERNAL SYSTEM
+dynamoOrderSapi:
+  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basepath: "/api/v1/"
+  endpoint: "transactions"

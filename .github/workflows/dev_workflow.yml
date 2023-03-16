@@ -34,7 +34,7 @@ jobs:
       CLOUDHUB_PRIVATE_SPACE: "${{ vars.MULE_NONPROD_CLOUDHUB_PRIVATE_SPACE }}"
       CLOUDHUB_PUBLIC_URL: "" #Provide the Endpoint URL if custom public endpoint is needed
       GENERATE_PUBLIC_URL_FLAG: "false" #Set to true only if the app has public Endpoint URL; in all other cases this should be false
-      APP_LAYER: ${{ vars.MULE_EXP_API_LAYER }}
+      APP_LAYER: ${{ vars.MULE_PROC_API_LAYER }}
     secrets:
       EX_CONNECTED_APP_ID: "${{ secrets.MULE_EX_CONNECTED_APP_ID }}"
       EX_CONNECTED_APP_SECRET: "${{ secrets.MULE_EX_CONNECTED_APP_SECRET }}"
@@ -42,5 +42,5 @@ jobs:
       CH_CONNECTED_APP_SECRET: "${{ secrets.MULE_NONPROD_CH_CONNECTED_APP_SECRET }}"
       MULE_AP_CLIENT_ID: "${{ secrets.MULE_AP_CLIENT_ID }}"
       MULE_AP_CLIENT_SECRET: "${{ secrets.MULE_AP_CLIENT_SECRET }}"
-      TITAN_BIZ_GROUP: "${{ secrets.MULE_TITAN_BIZ_GROUP }}"
+      TITAN_BIZ_GROUP: "${{ secrets.MULE_TITAN_BIZ_GROUP_JEWELLERY }}"
       SECURE_ENCRYPT_KEY: "${{ secrets.MULE_DEV_SECURE_ENCRYPT_KEY }}"

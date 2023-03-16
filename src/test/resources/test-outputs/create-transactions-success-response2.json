@@ -1,0 +1,8 @@
+{
+	"transacionId": 1234,
+	"message": "DIGIGOLD Transaction Creation failed",
+	"errorCode": "DIGORDCRESAPI01",
+	"errorMessage": "Unable to post transactions now. Please try after some time.",
+	"timestamp": "2023-03-10T09:36:28.295Z"
+
+}

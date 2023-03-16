@@ -1,3 +1,4 @@
+
 # Secured Properties
 dynamodb:
   accesskey: "![n1z+OPkpA1Jsc+RzqqWMxyhKb+88ORWlzlCrkOMDuoo=]"
@@ -7,8 +8,8 @@ titan:
   username: "![ZibIQHduKBhWhwM1G4K8VA==]" 
   password: "![EO09WjxFFEVguFoFeXdW3A==]"
 
-# ClientId and ClientSecret of digigoldOrderPAPI
-digigold-order-papi:
+# ClientId and ClientSecret of digigoldOrderPAPI ## Final Client APP for digigold-order-papi. ## do not duplicate
+digigold-order-papi: 
   clientId: "![WBrD6JW/RmSIv6EAk1Pl/p56Vi0kDFTVO5/sJrlP2g6pq2aTVX8MMLiy4Y69SA+z]"
   clientSecret: "![VMKloGwils2yctHfN8Fb27obH/xSBkFNAScdwbjME3oNvJQSRY1ttO0QLojXZ3WQ]"
   
@@ -16,5 +17,7 @@ aes:
   password: "![BKj8cVo3c9xUhGWQptxgCODmgNZJn1a3LvRUru4U6b0=]" 
   
 
-  
-  
+dynamoOrderSapi:
+  client_id: "![7HjVNfsJ/k9rhVrnlzozzTBV6+HDe11gS50B5lgxLGc8Y7rP4906NGxb20DzeW6l]"
+  client_secret: "![oMTPhZ3m5V5dDGYYNiIfRCLP2BpkhhQF7v1J9CGirm9chL2DZpElhJ1t6N5KO/yG]"
+

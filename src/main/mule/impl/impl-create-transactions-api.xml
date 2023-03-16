@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<flow name="impl-create-transactions-flow" doc:id="e79040b3-5cd4-4304-bf1c-7c6ed57d7582" >
+		<json-logger:logger doc:name="BEFORE payload mapping for create transaction" doc:id="02aaef50-eac8-4817-b38d-0ed3a02c8847" config-ref="JSON_Logger_Config" message="BEFORE payload mapping for create transaction" tracePoint="BEFORE_TRANSFORM" category="${log.category}"/>
+		<ee:transform doc:name="setPayload" doc:id="664c428c-6c3c-42ae-a238-0f3db60db682" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+
+
+fun formatDateTime(localTime: DateTime) = localTime as String {format: "yyyy-MM-dd HH:mm:ss.SSS"}
+
+output application/json
+---
+
+{
+"TRANSACTION_ID": payload.TransactionId,
+"DGORDER_ID": payload.DgorderId,
+"MEMBER_ID":  payload.MemberId,
+"TRANSACTION_TYPE": payload.TransactionType,
+"TRANSACTION_DATE": payload.TransactionDate,
+"RATE_ID": payload.RateId,
+"GOLD_RATE": payload.GoldRate,
+"GRAMS_PURCHASED": payload.GramsPurchased,
+"PAYMENT_GATEWAY": payload.PaymentGateway,
+"PAYMENT_METHOD": payload.PaymentMethod,
+"TOTAL_GOLD_AMOUNT": payload.TotalGoldAmount,
+"CHANNEL": payload.Channel,
+"TRANSACTION_STATUS": payload.TransactionStatus,
+"LASTUPDATED": payload.LastUpdatedDate,
+"PRECHECKOUT_INITATED": payload.PrecheckoutInitiated,
+"PRE_GST_BUY_PRICE":payload.PreGstBuyPrice,
+"GST_AMOUNT":payload.GstAmount,
+"INVOICE_ID": payload.InvoiceId,
+"ADDITIONAL_FIELD1":"",
+"ADDITIONAL_FIELD2":payload.SalesOrderId,
+"ADDITIONAL_FIELD3":payload.PaymentId,
+"ADDITIONAL_FIELD4":"",
+"ADDITIONAL_FIELD5":"",
+"ADDITIONAL_FIELD6":""
+}
+
+
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="dynamoSapiMethodAndPath" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+"method": "POST",
+"path": Mule::p('dynamoOrderSapi.endpoint')
+
+}]]></ee:set-variable>
+				<ee:set-variable resource="dwl/createTransactionHeaders.dwl" variableName="sapiHeaders" />
+			</ee:variables>
+		</ee:transform>
+		<json-logger:logger doc:name="AFTER payload mapping for create transaction" doc:id="d620b29f-7070-4654-bf28-bed7d5736869" config-ref="JSON_Logger_Config" message="AFTER payload mapping for create transaction" tracePoint="AFTER_TRANSFORM" category="${log.category}" />
+		<flow-ref doc:name="dynamo-order-sapi-request" doc:id="b727921f-6339-4274-8923-2cb25a4573a5" name="dynamo-order-sapi-request"/>
+		<ee:transform doc:name="setResponse" doc:id="3b163f63-0aad-4c27-8841-17e6666c9279" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import p from Mule
+
+fun formatDateTime(localTime: DateTime) = localTime as String {format: "yyyy-MM-dd HH:mm:ss.SSS"}
+
+output application/json
+---
+
+if ((attributes.statusCode == 200))
+
+payload
+
+else 
+
+{
+	transacionId: vars.correlationId,
+	message: "DIGI Order Creation failed",
+	errorCode: p('createTransactions.errorCode'),
+	errorMessage: p('createTransactions.errorMessage'),
+	timestamp:formatDateTime(now()>>'IST')
+
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

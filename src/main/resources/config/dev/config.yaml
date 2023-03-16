@@ -10,11 +10,12 @@ https:
 
 api:
   autodiscovery:
-    id: "" #TODO FOR DEVELOPER - CHANGE ACCORDINGLY THE DEFAULT CONFIGURATION
+    id: "18556760"
 
 ###############################
 #  OUTBOUND                   #
 ###############################
+
 dynamodb:
   regionendpoint: "ap-south-1"
 
@@ -90,5 +91,11 @@ order-papi:
     debit: "245170"
     credit: "151633"
   
-  
-  
+#SAMPLE EXTERNAL SYSTEM
+dynamoOrderSapi:
+  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basepath: "/api/v1/"
+  endpoint: "transactions"
+    
+

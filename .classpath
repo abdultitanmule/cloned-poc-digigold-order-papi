@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+
 	<classpathentry kind="con" path="MULE_LIB/org.mule.modules/mule-apikit-module/1.6.1"/>
 	<classpathentry kind="con" path="MULE_LIB/com.mulesoft.connectors/mule-amazon-dynamodb-connector/1.5.0"/>
 	<classpathentry kind="con" path="MULE_LIB/org.mule.connectors/mule-sftp-connector/1.6.1"/>
