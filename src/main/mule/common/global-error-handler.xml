@@ -74,7 +74,10 @@ output application/json
 					
 					<error-handler name="error-handler-migration" doc:id="d5941d27-b0b3-47c8-92e1-d3b2fe62c554" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2ded639e-05d1-4e06-8a53-c343f8b075c1" type="ANY">
-			<json-logger:logger doc:name="ON Log" doc:id="c1468898-8fe6-4df2-8037-6e53f31b515d" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" category="${log.category}" priority="ERROR">
+			<json-logger:logger doc:name="ON Log" doc:id="c1468898-8fe6-4df2-8037-6e53f31b515d" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" category="${log.category}" priority="ERROR" />
+		</on-error-propagate>
+	</error-handler>
+	
 	<sub-flow name="common-set-error-details" doc:id="e9eb6947-fc1a-47dc-9eeb-02b8e434ee4f" >
 		<set-variable value="#[false]" doc:name="Set Successful" doc:id="0e50279f-189e-472f-8e66-574e22b838b0" variableName="successful" />
 		<ee:transform doc:name="Prepare Error Message" doc:id="f8292c02-6ae1-40a9-abf4-76978c12bc4a">
