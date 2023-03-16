@@ -1,3 +1,14 @@
+
+# Secured Properties
+dynamodb:
+  accesskey: "![n1z+OPkpA1Jsc+RzqqWMxyhKb+88ORWlzlCrkOMDuoo=]"
+  secretkey: "![CdTrP88+5PVUwd9LLoWYt7mj4kCZn3WCjpmwFhx5I+q8FLN7pmysdfDuJ/aMQ0YZ]"
+titan:
+ sftp:
+  username: "![ZibIQHduKBhWhwM1G4K8VA==]" 
+  password: "![EO09WjxFFEVguFoFeXdW3A==]"
+
 dynamoOrderSapi:
   client_id: "![7HjVNfsJ/k9rhVrnlzozzTBV6+HDe11gS50B5lgxLGc8Y7rP4906NGxb20DzeW6l]"
   client_secret: "![oMTPhZ3m5V5dDGYYNiIfRCLP2BpkhhQF7v1J9CGirm9chL2DZpElhJ1t6N5KO/yG]"
+

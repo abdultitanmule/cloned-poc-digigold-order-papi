@@ -8,9 +8,8 @@
 	<artifactId>digigold-order-papi-app</artifactId>
 	<!-- Artifact ID should always have app appended in the end.
 	Ex: If the API name is oauth-sfcc-sapi, then artifactId should be oauth-sfcc-sapi-app -->
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 	<packaging>mule-application</packaging>
-
 	<name>digigold-order-papi</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,6 +22,7 @@
 		<secure.config.module.version>1.2.5</secure.config.module.version>
 		<json.logger.version>2.1.0</json.logger.version>
 		<apps.commons.version>1.0.0</apps.commons.version>
+		<api.kit.version>1.6.1</api.kit.version>
 
 		<!-- Cloudhub 2.0 default properties to be added -->
 		<ap.uri>https://anypoint.mulesoft.com</ap.uri>
@@ -50,10 +50,7 @@
 		<deployment.name>${project.name}</deployment.name>
 		<deployment.timeoutMillis>1000000</deployment.timeoutMillis>
 		<api.layer>{{Set API Layer}}</api.layer>
-		
-		
-	
-		
+
 
 	</properties>
 
@@ -95,6 +92,7 @@
 
 							<anypoint.platform.client_id>${ap.client_id}</anypoint.platform.client_id>
 							<anypoint.platform.client_secret>${ap.client_secret}</anypoint.platform.client_secret>
+
 							<log.s3.frequency>${log.s3.frequency}</log.s3.frequency>				
 							<log.s3.aws.region>${log.s3.aws.region}</log.s3.aws.region>
 							<log.s3.bucket>${log.s3.bucket}</log.s3.bucket>						
@@ -103,7 +101,7 @@
 							<log.s3.aws.accessKey>${log.s3.aws.accessKey}</log.s3.aws.accessKey>		
 							<log.s3.aws.secureKey>${log.s3.aws.secureKey}</log.s3.aws.secureKey>
 							<deployment.name>${deployment.name}</deployment.name>
-							
+	
 							<!-- concrete Mule apps can provide their own props which will be merged with the props given here -->
 						</properties>
 						<secureProperties>
@@ -177,6 +175,12 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-apikit-module</artifactId>
+			<version>${api.kit.version}</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
 			<groupId>com.mulesoft.munit</groupId>
 			<artifactId>munit-runner</artifactId>
 			<version>${munit.version}</version>
@@ -211,11 +215,40 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-apikit-module</artifactId>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-sftp-connector</artifactId>
 			<version>1.6.1</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.connectors</groupId>
+			<artifactId>mule-amazon-dynamodb-connector</artifactId>
+			<version>1.5.0</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.modules</groupId>
+			<artifactId>mule-cryptography-module</artifactId>
+			<version>1.3.14</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-objectstore-connector</artifactId>
+			<version>1.2.1</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-vm-connector</artifactId>
+			<version>2.0.0</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-validation-module</artifactId>
+			<version>2.0.2</version>
+    </dependency>
 		<dependency>
 			<groupId>16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6</groupId>
 			<artifactId>digigold-order-papi</artifactId>

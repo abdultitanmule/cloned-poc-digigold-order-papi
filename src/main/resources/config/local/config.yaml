@@ -1,13 +1,4 @@
 ###############################
-#  Application Properties     #
-###############################
-https:
-  port: "8081"
-  version: "v1"
-  path: "/api/${https.version}/*"
-  host: "0.0.0.0"
-
-###############################
 #  INBOUND                    #
 ###############################
 api:
@@ -17,10 +8,11 @@ api:
 ###############################
 #  OUTBOUND                   #
 ###############################
+
+
 #SAMPLE EXTERNAL SYSTEM
 dynamoOrderSapi:
   host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basepath: "/api/v1/"
   endpoint: "transactions"
-    

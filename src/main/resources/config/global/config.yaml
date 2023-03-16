@@ -21,6 +21,19 @@ json.logger.application:
 
 log:
   category: "com.titan.mulesoft"
+
+default:
+  reportName: "Oracle Report"
+  reportSequenceNumber: "0"
+  
+until:
+  retries: "2"
+  millisBetweenRetries: "5000"
+  
+#Scheduler Configs
+scheduler:
+  oracleReportGeneration: "0 0 5 ? * *"
+  timeZone: "Asia/Kolkata"
   
   
 api:
@@ -29,10 +42,6 @@ api:
 papi:
   connectionIdleTimeOut: "30000"
   responseTimeOut: "50000"
-
-until:
-  retries: "0"
-  millisBetweenRetries: "5000"
   
 createTransactions:
   successMessage: "Transaction posted successfully"

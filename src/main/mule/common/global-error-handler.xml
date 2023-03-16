@@ -7,8 +7,7 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
-	<import doc:name="Import" doc:id="b7b96327-6c71-4089-bcc8-3c816ddf5209" file="error-common.xml" />
-	<import doc:name="Import" doc:id="c7c77754-9728-4641-b2a4-ba550691996f" file="logging-common.xml" />
+	
  	
 	<!-- TODO Define project specific global error handlers
 	
@@ -18,6 +17,64 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 	
 	import doc:name="Import" doc:id="64e8336e-4459-4891-8414-e880ddcd591e" file="error-common.xml"
 	-->
+
+	
+	<error-handler name="global-error-handler" doc:id="cc5d0eee-6cc3-48a0-8131-93141149d4f7" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="31fc67d5-bc07-4080-ae1c-69285f1b5bec" type="ANY">
+			<flow-ref doc:name="call to common-error-response-flow" doc:id="f316acce-bb7a-4bfe-a1ed-ae4add2c7df6" name="common-error-response-flow"/>
+			<ee:transform doc:name="set email params" doc:id="80360232-713e-4c63-bec4-0b562c8fb605" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="errorDescription" ><![CDATA[%dw 2.0
+output application/java
+---
+error.description]]></ee:set-variable>
+					<ee:set-variable variableName="emailSubject" ><![CDATA[%dw 2.0
+output text/plain
+---
+p('email.oracleErrorSubject')]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="call to notification service" doc:id="ae390404-22bb-4c2f-8864-712d47c08785" name="call-notification-service"/>
+		</on-error-continue>
+	</error-handler>
+	<error-handler doc:id="88c0d363-d0e2-4a13-a08d-4aa6b14cd1a5" name="sapi-request-error-handler">
+	<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="90d0bcb0-df99-4f94-8631-973c6b6f6870" type="ANY" when="#[(['TOO_MANY_REQUESTS','SERVICE_UNAVAILABLE','TIMEOUT','CONNECTIVITY'] contains error.errorType.identifier)]">
+			<set-variable value="#[false]" doc:name="Set Successful" doc:id="ea1150f3-c964-4a7d-a63f-ae5735eb86fa" variableName="successful" />
+					</on-error-propagate>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e2e19e75-6e5c-4042-bac6-6974917d8525" type="ANY">
+			<set-variable value="#[false]" doc:name="Set successful " doc:id="dad58432-51fd-4da4-b783-36f2943b70b1" variableName="successful"/>
+			<ee:transform doc:name="Set Error Payload" doc:id="8d4d963f-6c62-4eb0-8463-aa52a10eca34" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"transactionId": correlationId,
+	"errorCode": vars.errorCode default error.errorType.identifier,
+	"errorMessage": vars.errorMessage default error.description,
+	"errorDescription": error.errorDescription default error.detailedDescription,
+	"timestamp" : now()
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<json-logger:logger doc:name="Log Error Payload" doc:id="417cca79-798d-4682-a633-228b1d451f41" config-ref="JSON_Logger_Config" message='#[error.errorType.namespace ++ "ERROR"]' tracePoint="EXCEPTION" priority="DEBUG" category="${log.category}">
+				<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+{
+	eventContext: {
+	businessID: vars.businessID,
+	muleCorrelationId: vars.muleCorrelationId
+},
+  payload: JSONLoggerModule::stringifyNonJSON(payload)
+}]]]></json-logger:content>
+			</json-logger:logger>
+			</on-error-continue>
+					</error-handler>
+					
+					<error-handler name="error-handler-migration" doc:id="d5941d27-b0b3-47c8-92e1-d3b2fe62c554" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2ded639e-05d1-4e06-8a53-c343f8b075c1" type="ANY">
+			<json-logger:logger doc:name="ON Log" doc:id="c1468898-8fe6-4df2-8037-6e53f31b515d" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" category="${log.category}" priority="ERROR">
 	<sub-flow name="common-set-error-details" doc:id="e9eb6947-fc1a-47dc-9eeb-02b8e434ee4f" >
 		<set-variable value="#[false]" doc:name="Set Successful" doc:id="0e50279f-189e-472f-8e66-574e22b838b0" variableName="successful" />
 		<ee:transform doc:name="Prepare Error Message" doc:id="f8292c02-6ae1-40a9-abf4-76978c12bc4a">
@@ -56,6 +113,7 @@ output application/json
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ae15ef15-67b1-4e91-9f33-beeed78d35a0" type="ANY" >
 			<flow-ref doc:name="common-set-error-details" doc:id="e122b791-23f5-4964-aac2-2405f1140561" name="common-set-error-details" />
 			<json-logger:logger doc:name="ERROR Sterling OMS API Request" doc:id="a0c9f0b7-b3f3-419a-833f-506c7e859095" config-ref="JSON_Logger_Config" message="ERROR Sterling OMS API Request" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}" >
+
 				<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
 {
 	eventContext: {
@@ -70,6 +128,6 @@ output application/json
 }]]]></json-logger:content>
 			</json-logger:logger>
 		</on-error-continue>
-	</error-handler>	
+	</error-handler>
 	
 </mule>
