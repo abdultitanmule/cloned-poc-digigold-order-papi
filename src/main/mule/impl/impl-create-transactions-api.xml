@@ -17,7 +17,7 @@ fun formatDateTime(localTime: DateTime) = localTime as String {format: "yyyy-MM-
 output application/json
 ---
 
-{
+({
 "TRANSACTION_ID": payload.TransactionId,
 "DGORDER_ID": payload.DgorderId,
 "MEMBER_ID":  payload.MemberId,
@@ -42,7 +42,7 @@ output application/json
 "ADDITIONAL_FIELD4":"",
 "ADDITIONAL_FIELD5":"",
 "ADDITIONAL_FIELD6":""
-}
+})filterObject ((value, key, index) -> value != null)
 
 
 ]]></ee:set-payload>
