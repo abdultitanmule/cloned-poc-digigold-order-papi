@@ -38,7 +38,7 @@ fun formatDateTime(localTime: DateTime) = localTime as String {format: "yyyy-MM-
 output application/json
 ---
 
-if ((attributes.statusCode == 200) or (payload.errorCode contains 'SAPI') or (payload.errorCode contains 'PAPI'))
+if ((attributes.statusCode == 200) or (payload.errorCode contains 'SAPI'))
 
 if (!(payload.errorCode?))
 payload - "items" ++
