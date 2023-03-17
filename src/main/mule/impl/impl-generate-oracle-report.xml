@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
 	<flow name="impl-generate-oracle-report" doc:id="3359e058-6b64-4ad2-a9ad-e919a5e7e90e" >
-		<json-logger:logger doc:name="Flow Log" doc:id="8d827cfa-0523-43ad-b983-9f74c63b13f4" config-ref="JSON_Logger_Config" tracePoint="FLOW" category="${log.category}" message="oracle report generation started"/>
+		<json-logger:logger doc:name="Flow Log" doc:id="8d827cfa-0523-43ad-b983-9f74c63b13f4" config-ref="JSON_Logger_Config" tracePoint="FLOW" category="${log.category}" message="oracle report generation started" priority="DEBUG"/>
 		<flow-ref doc:name="call to order-dynamo-sapi" doc:id="cd63f9ab-3f4e-4315-aea4-5a4441cac590" name="call-to-order-dynamo-sapi" target="dynamoResponse"/>
 		<validation:is-null doc:name="Is null" doc:id="e23d42cf-6095-401a-a0de-370c54207a0e" value="#[vars.successful]" message="Failure encountered in digigold-dynamo-sapi"/>
 		<ee:transform doc:name="Consolidate mule message" doc:id="77a2876e-27ab-4be0-83ed-5cd48134a9a1" >
@@ -116,7 +116,7 @@ payload.variables.startDate as LocalDateTime {format: "M/d/yyyy H:m:s"} as Strin
 						</os:store>
 					</when>
 					<otherwise >
-						<json-logger:logger doc:name="End Logger " doc:id="84b3717b-a467-4618-9d1f-77b89430577d" config-ref="JSON_Logger_Config" message="End Logger - No Records Found for reporting" tracePoint="END" category="${log.category}"/>
+						<json-logger:logger doc:name="End Logger " doc:id="84b3717b-a467-4618-9d1f-77b89430577d" config-ref="JSON_Logger_Config" message="End Logger - No Records Found for reporting" tracePoint="END" category="${log.category}" priority="DEBUG"/>
 						<ee:transform doc:name="Set notification params" doc:id="9e15bc54-44e5-48d2-b8cf-ad8ce100d28e">
 							<ee:message />
 							<ee:variables>

@@ -83,7 +83,12 @@ output application/json
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="call to impl-generate-oracle-report" doc:id="657a0273-e945-40f5-92e2-ccdd432acf7f" name="impl-generate-oracle-report"/>
-		<json-logger:logger doc:name="end log" doc:id="320ca9be-2df2-4319-865b-8c05012d9b9d" config-ref="JSON_Logger_Config" message="end log - generate oracle report" category="${log.category}"/>
+		<json-logger:logger doc:name="end log" doc:id="320ca9be-2df2-4319-865b-8c05012d9b9d" config-ref="JSON_Logger_Config" message="end log - generate oracle report" category="${log.category}">
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+   // payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+		</json-logger:logger>
     </flow>
 	<flow name="digigold-order-daily-oracle-report-generation" doc:id="ba577b05-b621-4a76-824d-a6f264fb9964" >
 		<scheduler doc:name="Scheduler" doc:id="36145a30-6fe7-4b75-a291-35296901e394" >
@@ -144,12 +149,22 @@ import * from dw::core::Dates
     <flow name="get:\transactions:digigold-order-papi-config">
 		<json-logger:logger doc:name="START of fetch transactions flow" doc:id="6aca92d5-8a03-4519-9f70-213423aee697" config-ref="JSON_Logger_Config" message="START of fetch transactions flow" category="${log.category}" />
 		<flow-ref doc:name="impl-fetch-transactions-flow" doc:id="e65c27fe-657a-4c46-a832-b3f3e35d002b" name="impl-fetch-transactions-flow"/>
-		<json-logger:logger doc:name="END of fetch transactions flow" doc:id="e07cdaa3-9021-4c89-bc19-3629160579aa" config-ref="JSON_Logger_Config" message="END of fetch transactions flow" category="${log.category}" tracePoint="END"/>
+		<json-logger:logger doc:name="END of fetch transactions flow" doc:id="e07cdaa3-9021-4c89-bc19-3629160579aa" config-ref="JSON_Logger_Config" message="END of fetch transactions flow" category="${log.category}" tracePoint="END">
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+   // payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+		</json-logger:logger>
     </flow>
     <flow name="post:\transactions:application\json:digigold-order-papi-config">
 		<json-logger:logger doc:name="START of create transactions flow" doc:id="c2f399b7-6393-4eab-9f46-b62ed5818b01" config-ref="JSON_Logger_Config" message="START of create transactions flow" category="${log.category}"/>
 		<flow-ref doc:name="impl-create-transactions-flow" doc:id="d7ab65c2-38f1-49e0-a68c-483ad8e2a509" name="impl-create-transactions-flow"/>
-		<json-logger:logger doc:name="END of create transactions flow" doc:id="d3ffdb01-f771-429d-92bd-f2ed1e96d4e6" config-ref="JSON_Logger_Config" message="END of create transactions flow" tracePoint="END" category="${log.category}" />
+		<json-logger:logger doc:name="END of create transactions flow" doc:id="d3ffdb01-f771-429d-92bd-f2ed1e96d4e6" config-ref="JSON_Logger_Config" message="END of create transactions flow" tracePoint="END" category="${log.category}" >
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+   // payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+		</json-logger:logger>
     </flow>
 
 </mule>

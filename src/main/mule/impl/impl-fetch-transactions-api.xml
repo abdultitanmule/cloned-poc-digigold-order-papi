@@ -27,7 +27,7 @@ output application/java
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="dynamo-order-sapi-request" doc:id="3a1763f0-a69c-47ec-9533-da028f86f307" name="dynamo-order-sapi-request"/>
-		<json-logger:logger doc:name="BEFORE response mapping for fetch transaction" doc:id="08994cac-0b43-4ebe-9f8a-95cf5f7c17e4" config-ref="JSON_Logger_Config" message="BEFORE response mapping for fetch transaction" tracePoint="BEFORE_TRANSFORM" category="${log.category}" />
+		<json-logger:logger doc:name="BEFORE response mapping for fetch transaction" doc:id="08994cac-0b43-4ebe-9f8a-95cf5f7c17e4" config-ref="JSON_Logger_Config" message="BEFORE response mapping for fetch transaction" tracePoint="BEFORE_TRANSFORM" category="${log.category}" priority="DEBUG"/>
 		<ee:transform doc:name="setResponse" doc:id="402beb92-bc93-4045-a807-6cd64c8cb51d" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -38,7 +38,7 @@ fun formatDateTime(localTime: DateTime) = localTime as String {format: "yyyy-MM-
 output application/json
 ---
 
-if (attributes.statusCode == 200)
+if ((attributes.statusCode == 200) or (payload.errorCode contains 'SAPI') or (payload.errorCode contains 'PAPI'))
 
 if (!(payload.errorCode?))
 payload - "items" ++
@@ -81,6 +81,6 @@ else
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<json-logger:logger doc:name="AFTER response mapping for fetch transaction" doc:id="e0b8eb8f-941a-45bc-8cf1-30b8c5c77bcf" config-ref="JSON_Logger_Config" message="AFTER response mapping for fetch transaction" tracePoint="AFTER_TRANSFORM" category="${log.category}" />
+		<json-logger:logger doc:name="AFTER response mapping for fetch transaction" doc:id="e0b8eb8f-941a-45bc-8cf1-30b8c5c77bcf" config-ref="JSON_Logger_Config" message="AFTER response mapping for fetch transaction" tracePoint="AFTER_TRANSFORM" category="${log.category}" priority="DEBUG"/>
 	</flow>
 </mule>

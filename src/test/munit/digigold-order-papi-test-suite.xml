@@ -45,6 +45,17 @@
 					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/sftp-sapi-success-response.json")]' />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock create directory" doc:id="de0612fe-b10e-4cdc-9212-5b89bc86770e" processor="sftp:create-directory" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Create directory for Report Generation" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock call to notification-sapi" doc:id="14f1a651-aae7-48b9-a33f-a78d0164786b" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Trigger notification SAPI" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="notificationSAPIRequestConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
 			<munit:set-event doc:name="Set Event" doc:id="d38ad594-7285-4285-906e-0fc0b05c9182" >
@@ -220,8 +231,8 @@
 		<munit:validation >
 			<munit-tools:verify-call doc:name="Verify call to on error continue Scenario" doc:id="476d9e64-45d3-42e7-bfab-42e9278a1928" processor="ee:transform" times="1">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Set notification params" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="cd9f99b6-861e-4629-af3d-f0fcc65e3402" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="set email params" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="80360232-713e-4c63-bec4-0b562c8fb605" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 			<munit-tools:verify-call doc:name="Verify call to error-handler" doc:id="da277f34-4934-4073-90b2-8b71276c972e" processor="set-variable" atLeast="1">
@@ -266,8 +277,8 @@
 		<munit:validation >
 			<munit-tools:verify-call doc:name="Verify call to on error continue Scenario" doc:id="a09f4fca-d65b-498b-9991-597605c123bd" processor="ee:transform" times="1">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Set notification params" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="cd9f99b6-861e-4629-af3d-f0fcc65e3402" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="set email params" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="80360232-713e-4c63-bec4-0b562c8fb605" attributeName="doc:id" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 			<munit-tools:verify-call doc:name="Verify call to error-handler" doc:id="c7c974f7-4f0f-421a-bb30-ceec8f594b57" processor="ee:transform" atLeast="1">
