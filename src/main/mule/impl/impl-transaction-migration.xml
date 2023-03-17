@@ -96,8 +96,8 @@ payload map ((row) -> {
 	muleCorrelationId: vars.muleCorrelationId,
 	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
 	
-},
-  payload: JSONLoggerModule::stringifyNonJSON(payload)
+}
+  //payload: JSONLoggerModule::stringifyNonJSON(payload)
   //Optional - DO NOT LOG whole payload as it will be huge. Log it only when necessary;
   //No sensitive information should be logged in plain text
 }]]]></json-logger:content>

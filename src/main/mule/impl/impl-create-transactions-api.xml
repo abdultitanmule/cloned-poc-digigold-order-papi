@@ -6,7 +6,7 @@
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
 	<flow name="impl-create-transactions-flow" doc:id="e79040b3-5cd4-4304-bf1c-7c6ed57d7582" >
-		<json-logger:logger doc:name="BEFORE payload mapping for create transaction" doc:id="02aaef50-eac8-4817-b38d-0ed3a02c8847" config-ref="JSON_Logger_Config" message="BEFORE payload mapping for create transaction" tracePoint="BEFORE_TRANSFORM" category="${log.category}"/>
+		<json-logger:logger doc:name="BEFORE payload mapping for create transaction" doc:id="02aaef50-eac8-4817-b38d-0ed3a02c8847" config-ref="JSON_Logger_Config" message="BEFORE payload mapping for create transaction" tracePoint="BEFORE_TRANSFORM" category="${log.category}" priority="DEBUG"/>
 		<ee:transform doc:name="setPayload" doc:id="664c428c-6c3c-42ae-a238-0f3db60db682" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -59,7 +59,7 @@ output application/java
 				<ee:set-variable resource="dwl/createTransactionHeaders.dwl" variableName="sapiHeaders" />
 			</ee:variables>
 		</ee:transform>
-		<json-logger:logger doc:name="AFTER payload mapping for create transaction" doc:id="d620b29f-7070-4654-bf28-bed7d5736869" config-ref="JSON_Logger_Config" message="AFTER payload mapping for create transaction" tracePoint="AFTER_TRANSFORM" category="${log.category}" />
+		<json-logger:logger doc:name="AFTER payload mapping for create transaction" doc:id="d620b29f-7070-4654-bf28-bed7d5736869" config-ref="JSON_Logger_Config" message="AFTER payload mapping for create transaction" tracePoint="AFTER_TRANSFORM" category="${log.category}" priority="DEBUG"/>
 		<flow-ref doc:name="dynamo-order-sapi-request" doc:id="b727921f-6339-4274-8923-2cb25a4573a5" name="dynamo-order-sapi-request"/>
 		<ee:transform doc:name="setResponse" doc:id="3b163f63-0aad-4c27-8841-17e6666c9279" >
 			<ee:message >
@@ -71,7 +71,7 @@ fun formatDateTime(localTime: DateTime) = localTime as String {format: "yyyy-MM-
 output application/json
 ---
 
-if ((attributes.statusCode == 200))
+if ((attributes.statusCode == 200) or (payload.errorCode contains 'SAPI') or (payload.errorCode contains 'PAPI'))
 
 payload
 
