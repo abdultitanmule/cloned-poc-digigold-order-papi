@@ -28,12 +28,22 @@ payload.variables.startDate
 output application/java
 ---
 payload.variables.endDate]]></ee:set-variable>
+				<ee:set-variable variableName="reportTypeForDynamoSAPI" ><![CDATA[%dw 2.0
+import p from Mule
+output application/java
+---
+if(payload.reportType != p('reports.transactionConsolidatedReport.reportType'))
+	 payload.reportType
+else
+	p('reports.transactionReport.reportType')]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="b9b43a4c-cda3-481c-a27c-e545b4dca1bb" millisBetweenRetries="${until.millisBetweenRetries}">
+		<try doc:name="Try" doc:id="c17d0f4c-b1fa-4c63-a1a5-528ec688ec2e" >
+			<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="b9b43a4c-cda3-481c-a27c-e545b4dca1bb" millisBetweenRetries="${until.millisBetweenRetries}">
 			<try doc:name="Try" doc:id="9ed22f50-1074-4d7d-861c-bd745894d425">
 			<http:request method="#[vars.transactionsMethod]" doc:name="Request to dynamo-sapi" doc:id="77deb441-fa7c-4863-9952-3fd038ab97f1" sendCorrelationId="ALWAYS" config-ref="dynamoSAPIRequestConfig" path="#[vars.transactionsPath]">
-			<http:headers><![CDATA[#[output application/java
+			<http:body ><![CDATA[#[{}]]]></http:body>
+						<http:headers><![CDATA[#[output application/java
 ---
 {
 	("KeyLastUpdatedInMillis": payload.lastEvaluatedKey.LASTUPDATED_INMILLIS.n) if (payload.lastEvaluatedKey?),
@@ -42,7 +52,7 @@ payload.variables.endDate]]></ee:set-variable>
 	"X-Correlation-Id" : correlationId,
 	"x-source-channel" : p('dynamo-sapi.sourceChannel'),
 	"client_id" : p('secure::digigold-order-papi.clientId'),
-	"ReportType" : p('default.reportName'),
+	"ReportType" : vars.reportTypeForDynamoSAPI,
 	"StartDate" : vars.startDate,
 	"EndDate" : vars.endDate
 	
@@ -53,6 +63,7 @@ payload.variables.endDate]]></ee:set-variable>
 		<error-handler ref="sapi-request-error-handler" />
 		</try>
 		</until-successful>
+		</try>
 		<json-logger:logger doc:name="AFTER REQUEST dynamo-sapi" doc:id="6112bf72-5824-403b-b16c-c651023efe81" config-ref="JSON_Logger_Config" message="AFTER REQUEST to dynamo-sapi" tracePoint="AFTER_REQUEST" priority="DEBUG" category="${log.category}"/>
 	</sub-flow>
 </mule>

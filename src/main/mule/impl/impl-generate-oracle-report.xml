@@ -35,7 +35,7 @@ output application/json
 		<vm:listener doc:name="Listener" doc:id="e904f7d4-f6bb-4d71-83e1-a903760e7355" queueName="oracleExtractQueue" config-ref="transactions_vm_Config"/>
 		<os:retrieve doc:name="Fetch Report File Name" doc:id="7ded5c1b-d570-4bda-8a37-c72761889a7e" key="oracleReportName" objectStore="reportNameObjectStore" target="oracleReportName">
 			<os:default-value><![CDATA[#[{
-	reportSequenceNumber: Mule::p('default.reportSequenceNumber'),
+	reportSequenceNumber: Mule::p('reports.oracleReport.reportSequenceNumber'),
 	date: now() as Date
 }]]]></os:default-value>
 		</os:retrieve>

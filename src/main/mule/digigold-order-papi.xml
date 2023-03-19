@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
-	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
-http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
      <flow name="digigold-order-papi-main">
         <http:listener config-ref="apiHttpListenerConfig" path="${https.path}">
 
@@ -90,43 +91,36 @@ output application/json
 }]]]></json-logger:content>
 		</json-logger:logger>
     </flow>
-	<flow name="digigold-order-daily-oracle-report-generation" doc:id="ba577b05-b621-4a76-824d-a6f264fb9964" >
-		<scheduler doc:name="Scheduler" doc:id="36145a30-6fe7-4b75-a291-35296901e394" >
-			<scheduling-strategy >
-				<cron expression="${scheduler.oracleReportGeneration}" timeZone="${scheduler.timeZone}"/>
-			</scheduling-strategy>
-		</scheduler>
-		<ee:transform doc:name="Set start and end date" doc:id="fe32a1f0-d7bb-424b-842b-53b7d1ac46a9" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-
-import * from dw::core::Dates
----
+	<flow name="get:\transactions:digigold-order-papi-config">
+		<json-logger:logger doc:name="START of fetch transactions flow" doc:id="6aca92d5-8a03-4519-9f70-213423aee697" config-ref="JSON_Logger_Config" message="START of fetch transactions flow" category="${log.category}" />
+		<flow-ref doc:name="impl-fetch-transactions-flow" doc:id="e65c27fe-657a-4c46-a832-b3f3e35d002b" name="impl-fetch-transactions-flow"/>
+		<json-logger:logger doc:name="END of fetch transactions flow" doc:id="e07cdaa3-9021-4c89-bc19-3629160579aa" config-ref="JSON_Logger_Config" message="END of fetch transactions flow" category="${log.category}" tracePoint="END">
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
-  variables:{
-	"startDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 23:59:0"}
-	}
-}
-
-
-
-]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<flow-ref doc:name="call to impl-generate-oracle-report" doc:id="93368b82-3091-40a7-b199-6e2b1a71dc9e" name="impl-generate-oracle-report"/>
-	</flow>
-	<flow name="digigold-order-transaction-migration" doc:id="3ad5e209-012f-41bf-8def-3f0557e8e937" initialState="stopped">
-		<sftp:listener doc:name="On New or Updated File" doc:id="9c0db443-175c-4bd9-85ef-5934f8791161" config-ref="SFTP_Config" autoDelete="true" moveToDirectory="${titan.sftp.archivedir.txnMigration}" overwrite="true" directory="${titan.sftp.workingdir.txnMigration}">
-			<scheduling-strategy >
-				<fixed-frequency frequency="${titan.sftp.pollingfrequency}" timeUnit="MINUTES"/>
+   // payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+		</json-logger:logger>
+    </flow>
+	<flow name="post:\transactions:application\json:digigold-order-papi-config">
+		<json-logger:logger doc:name="START of create transactions flow" doc:id="c2f399b7-6393-4eab-9f46-b62ed5818b01" config-ref="JSON_Logger_Config" message="START of create transactions flow" category="${log.category}"/>
+		<flow-ref doc:name="impl-create-transactions-flow" doc:id="d7ab65c2-38f1-49e0-a68c-483ad8e2a509" name="impl-create-transactions-flow"/>
+		<json-logger:logger doc:name="END of create transactions flow" doc:id="d3ffdb01-f771-429d-92bd-f2ed1e96d4e6" config-ref="JSON_Logger_Config" message="END of create transactions flow" tracePoint="END" category="${log.category}" >
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+   // payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+		</json-logger:logger>
+    </flow>
+	<flow name="digigold-order-transaction-migration" doc:id="3ad5e209-012f-41bf-8def-3f0557e8e937">
+		<sftp:listener doc:name="On New or Updated File" doc:id="9c0db443-175c-4bd9-85ef-5934f8791161" config-ref="SFTP_Config" autoDelete="true" moveToDirectory="${titan.sftp.txnMigration.archiveDir}" overwrite="true" directory="${titan.sftp.txnMigration.workingDir}">
+			<scheduling-strategy>
+				<cron expression="${scheduler.transactionMigrationSchedule}" timeZone="${scheduler.timeZone}"/>
 			</scheduling-strategy>
-			<sftp:matcher filenamePattern="${titan.sftp.filenamepattern}" directories="EXCLUDE"/>
+			<sftp:matcher filenamePattern="${titan.sftp.csvfilenamepattern}" directories="EXCLUDE" />
 		</sftp:listener>
-		<set-variable value='#["Starting Digigold Migration Process. Start Timestamp is: " ++ now()]' doc:name="logMessage" doc:id="88dd11e7-4a51-4a88-a53a-13b51f6960a3" variableName="logMessage"/>
-		<json-logger:logger doc:name="START Log" doc:id="9d0a9dc0-096f-43b1-9086-26be7d0ad2c2" config-ref="JSON_Logger_Config" message="Log Message" category="${log.category}" >
-			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+		<set-variable value='#["Starting Digigold Migration Process. Start Timestamp is: " ++ now()]' doc:name="logMessage" doc:id="88dd11e7-4a51-4a88-a53a-13b51f6960a3" variableName="logMessage" />
+		<json-logger:logger doc:name="START Log" doc:id="9d0a9dc0-096f-43b1-9086-26be7d0ad2c2" config-ref="JSON_Logger_Config" message="Log Message" category="${log.category}">
+			<json-logger:content><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
 {
 	eventContext: {
 	businessID: "${global.properties.businessId}",
@@ -142,29 +136,159 @@ import * from dw::core::Dates
   //No sensitive information should be logged in plain text
 }]]]></json-logger:content>
 		</json-logger:logger>
-		<flow-ref doc:name="batch-process-insert-dynamodb" doc:id="7f79b139-96ab-4f4a-947f-4dc55cb533e1" name="batch-process-insert-dynamodb"/>
+		<flow-ref doc:name="batch-process-insert-dynamodb" doc:id="7f79b139-96ab-4f4a-947f-4dc55cb533e1" name="batch-process-insert-dynamodb" />
 		<error-handler ref="error-handler-migration" />
 	</flow>
+	<flow name="digigold-order-daily-oracle-report-generation" doc:id="ba577b05-b621-4a76-824d-a6f264fb9964">
+		<scheduler doc:name="Scheduler" doc:id="36145a30-6fe7-4b75-a291-35296901e394">
+			<scheduling-strategy>
+				<cron expression="${scheduler.oracleReportGeneration}" timeZone="${scheduler.timeZone}" />
+			</scheduling-strategy>
+		</scheduler>
+		<ee:transform doc:name="Set start , end date and reportType" doc:id="fe32a1f0-d7bb-424b-842b-53b7d1ac46a9">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+import p from Mule
 
-    <flow name="get:\transactions:digigold-order-papi-config">
-		<json-logger:logger doc:name="START of fetch transactions flow" doc:id="6aca92d5-8a03-4519-9f70-213423aee697" config-ref="JSON_Logger_Config" message="START of fetch transactions flow" category="${log.category}" />
-		<flow-ref doc:name="impl-fetch-transactions-flow" doc:id="e65c27fe-657a-4c46-a832-b3f3e35d002b" name="impl-fetch-transactions-flow"/>
-		<json-logger:logger doc:name="END of fetch transactions flow" doc:id="e07cdaa3-9021-4c89-bc19-3629160579aa" config-ref="JSON_Logger_Config" message="END of fetch transactions flow" category="${log.category}" tracePoint="END">
-			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+import * from dw::core::Dates
+---
 {
-   // payload: JSONLoggerModule::stringifyNonJSON(payload) 
-}]]]></json-logger:content>
-		</json-logger:logger>
-    </flow>
-    <flow name="post:\transactions:application\json:digigold-order-papi-config">
-		<json-logger:logger doc:name="START of create transactions flow" doc:id="c2f399b7-6393-4eab-9f46-b62ed5818b01" config-ref="JSON_Logger_Config" message="START of create transactions flow" category="${log.category}"/>
-		<flow-ref doc:name="impl-create-transactions-flow" doc:id="d7ab65c2-38f1-49e0-a68c-483ad8e2a509" name="impl-create-transactions-flow"/>
-		<json-logger:logger doc:name="END of create transactions flow" doc:id="d3ffdb01-f771-429d-92bd-f2ed1e96d4e6" config-ref="JSON_Logger_Config" message="END of create transactions flow" tracePoint="END" category="${log.category}" >
-			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+  variables:{
+	"startDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 0:0:0"},
+	"endDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 23:59:0"}
+	},
+  reportType: p('reports.oracleReport.reportType')
+}
+
+
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="call to impl-generate-oracle-report" doc:id="93368b82-3091-40a7-b199-6e2b1a71dc9e" name="impl-generate-oracle-report" />
+	</flow>
+	<flow name="digigold-order-daily-droporder-report-generation" doc:id="50127e70-92a4-4fc2-a3ad-4e3767d3201f">
+		<scheduler doc:name="DropOrderScheduler" doc:id="b13ff88c-8594-4ee2-a195-0c732573038d" >
+			<scheduling-strategy >
+				<cron expression="${scheduler.dropOrderReportGeneration}" timeZone="${scheduler.timeZone}" />
+			</scheduling-strategy>
+		</scheduler>
+		<os:retrieve doc:name="dropOrderReportlastEvaluatedKey" doc:id="4ee7342c-55b8-4908-972d-2a9c9c10d57a" key="dropOrderReportlastEvaluatedKey" target="dropOrderReportlastEvaluatedKey" >
+			<os:default-value ><![CDATA[#["Undefined"]]]></os:default-value>
+		</os:retrieve>
+		<ee:transform doc:name="Pass drop Order Report Data" doc:id="d1a41c60-0a33-437c-bcd3-9465be28de85" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::core::Dates
+import p from Mule
+output application/json
+var currentDay = today()
+fun nullCheck(data) = if(data != null and data != "") true else false
+---
 {
-   // payload: JSONLoggerModule::stringifyNonJSON(payload) 
-}]]]></json-logger:content>
-		</json-logger:logger>
-    </flow>
+	"reportType":p('reports.dropOrderReport.reportType'),
+  	"variables":
+	 {
+		"startDate": if (nullCheck(p('reports.dropOrderReport.StartDate'))) p('reports.dropOrderReport.StartDate') else (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
+		"endDate": if (nullCheck(p('reports.dropOrderReport.EndDate'))) p('reports.dropOrderReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+	 },
+//	"ReportGeneratedDate": currentDay,
+	"dynamodbFetchCount": 0,
+	"batchCount": 1,
+	"count": 0,
+	("lastEvaluatedKey": vars.dropOrderReportlastEvaluatedKey) if(vars.dropOrderReportlastEvaluatedKey != "Undefined")
+
+}	
+	]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="impl-generate-reports" doc:id="a2cce765-441f-4453-bf08-c33b8c8df177" name="impl-generate-reports" />
+	</flow>
+	<flow name="digigold-order-daily-transaction-report-generation" doc:id="24913856-977d-4638-8af8-59f0aaba55c0">
+		<scheduler doc:name="TransactionReportScheduler" doc:id="2fbe7215-b3fd-4ff6-bcc2-767b88a05743" >
+			<scheduling-strategy >
+				<cron expression="${scheduler.transactionReportGeneration}" timeZone="${scheduler.timeZone}" />
+			</scheduling-strategy>
+		</scheduler>
+		<os:retrieve doc:name="transactionReportlastEvaluatedKey" doc:id="3bffb7f1-90ef-486e-bf3e-0c044f26c6b1" key="transactionReportlastEvaluatedKey" target="transactionReportlastEvaluatedKey">
+			<os:default-value ><![CDATA[#["Undefined"]]]></os:default-value>
+		</os:retrieve>
+		<ee:transform doc:name="Pass Transaction report Data" doc:id="16d48fb1-96d0-49db-b595-3f9a17fe6b89" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::core::Dates
+import p from Mule
+output application/json
+var currentDay = today()
+fun nullCheck(data) = if(data != null and data != "") true else false
+---
+{
+	"reportType":p('reports.transactionReport.reportType'),
+//	"reportName":p('reports.transactionReport.reportName'),
+	"variables":
+	{
+	"startDate": if (nullCheck(p('reports.transactionReport.StartDate'))) p('reports.transactionReport.StartDate') else (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
+	"endDate": if (nullCheck(p('reports.transactionReport.EndDate'))) p('reports.transactionReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+	},
+//	"ReportGeneratedDate": currentDay,
+	"dynamodbFetchCount": 0,
+	"batchCount": 1,
+	"count": 0,
+	("lastEvaluatedKey": vars.transactionReportlastEvaluatedKey) if(vars.transactionReportlastEvaluatedKey != "Undefined")
+}
+
+	
+	//"StartDate": (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
+	//"EndDate": (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 11:59:59"},
+
+	
+	
+	//currently the below logic works only when sending payload as empty json. Need to figure this out. 
+	//("KeyLastUpdatedInMillis": payload.lastEvaluatedKey.LASTUPDATED_INMILLIS.n) if(payload.lastEvaluatedKey?),
+	//("KeyTransactionId": payload.lastEvaluatedKey.TRANSACTION_ID.n) if(payload.lastEvaluatedKey?)
+	//("KeyLastUpdatedInMillis": payload.lastEvaluatedKey.LASTUPDATED_INMILLIS.n) if(payload.lastEvaluatedKey != null),
+	//("KeyTransactionId": payload.lastEvaluatedKey.TRANSACTION_ID.n) if(payload.lastEvaluatedKey != null)
+	//"KeyLastUpdatedInMillis": "1672402860000",
+	//"KeyTransactionId": "175676235"
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="impl-generate-reports" doc:id="bb206e3b-7480-4908-8b39-61854e2bf457" name="impl-generate-reports" />
+	</flow>
+	<flow name="digigold-order-fortnightly-transaction-consolidated-report-generation" doc:id="23fda268-7e03-4bff-ad8a-a5fd9f069adc">
+		<scheduler doc:name="TransactionConsolidatedReportScheduler" doc:id="20fc7d22-3722-4ca0-bdad-28c25fc84a69" >
+			<scheduling-strategy >
+				<cron expression="${scheduler.transactionConsolidatedReportGeneration}" timeZone="${scheduler.timeZone}" />
+			</scheduling-strategy>
+		</scheduler>
+		<os:retrieve doc:name="transactionConsolidatedReportlastEvaluatedKey" doc:id="5fc67db8-f4ed-4d31-9821-e899a9a14983" key="transactionConsolidatedReportlastEvaluatedKey" target="transactionConsolidatedReportlastEvaluatedKey">
+			<os:default-value ><![CDATA[#["Undefined"]]]></os:default-value>
+		</os:retrieve>
+		<ee:transform doc:name="Pass transaction consolidated report data" doc:id="4978b704-b9dc-442b-8f2f-0d7525352012" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::core::Dates
+import p from Mule
+output application/json
+var currentDay = today()
+fun nullCheck(data) = if(data != null and data != "") true else false
+---
+{
+	"reportType":p('reports.transactionConsolidatedReport.reportType'),
+	"variables":
+	{
+	"startDate": if (nullCheck(p('reports.transactionConsolidatedReport.StartDate'))) p('reports.transactionConsolidatedReport.StartDate') else (currentDay as Date - |P5Y|) as String {format: "M/d/yyyy 0:0:0"},
+	"endDate": if (nullCheck(p('reports.transactionConsolidatedReport.EndDate'))) p('reports.transactionConsolidatedReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+	},
+	"dynamodbFetchCount": 0,
+	"batchCount": 1,
+	"count": 0,
+	("lastEvaluatedKey": vars.transactionConsolidatedReportlastEvaluatedKey) if(vars.transactionConsolidatedReportlastEvaluatedKey != "Undefined")
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="impl-generate-reports" doc:id="a25abaaf-89f1-4d8f-b440-792da3f36c90" name="impl-generate-reports" />
+	</flow>
 
 </mule>

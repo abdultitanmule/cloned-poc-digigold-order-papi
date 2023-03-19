@@ -21,21 +21,44 @@ json.logger.application:
 
 log:
   category: "com.titan.mulesoft"
-
-default:
-  reportName: "Oracle Report"
-  reportSequenceNumber: "0"
   
-until:
-  retries: "2"
-  millisBetweenRetries: "5000"
+reports:
+  oracleReport:
+    reportType: "Oracle Report"
+    reportSequenceNumber: "0"  
+  transactionReport:
+    reportType: "Transaction Report" 
+#    StartDate: "12/31/2022 0:0:0"
+#    EndDate: "01/01/1980 23:59:59"
+  transactionConsolidatedReport:
+    reportType: "Transaction Consolidated Report" 
+    StartDate: "01/01/1980 0:0:0"
+#    EndDate: "01/01/1980 23:59:59"
+  dropOrderReport:
+    reportType: "DropOrder Report" 
+#    StartDate: "12/31/2022 0:0:0"
+#    EndDate: "01/01/1980 23:59:59"
+    batchCount: "3000"
   
 #Scheduler Configs
 scheduler:
   oracleReportGeneration: "0 0 5 ? * *"
+  transactionReportGeneration: "0 0 3 ? * *"
+  dropOrderReportGeneration: "0 0 4 ? * *"
+  transactionConsolidatedReportGeneration: "0 0 1 1/1 * ? *"
   timeZone: "Asia/Kolkata"
-  
-  
+  transactionMigrationSchedule: "0 0 6 ? * *"
+   
+
+# Testing changes below - Scheduler Configs
+#scheduler:
+#  oracleReportGeneration: "0 0 5 ? * *"
+#  transactionReportGeneration:   "15" # in minutes
+#  dropOrderReportGeneration: "0 0 4 ? * *"  
+#  transactionConsolidatedReportGeneration:  "0 0 4 ? * *" 
+#  timeZone: "Asia/Kolkata"
+#  transactionMigrationSchedule: "0 0 6 ? * *" 
+   
 api:
   resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.5:raml:zip:digigold-order-papi.raml"
  
