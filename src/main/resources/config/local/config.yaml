@@ -40,7 +40,7 @@ titan:
 
 sftp-sapi:
   connectionTimeout: "60000"
-  responseTimeout: "30000"
+  responseTimeout: "60000"
   sourceChannel: "digigoldOrderPAPI"
   host: "sftp-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"

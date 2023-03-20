@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:sfcc-order-sapi="http://www.mulesoft.org/schema/mule/sfcc-order-sapi"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sfcc-order-sapi http://www.mulesoft.org/schema/mule/sfcc-order-sapi/current/mule-sfcc-order-sapi.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+	<sub-flow name="call-to-sfcc-order-sapi" doc:id="34d12712-7a39-44b6-b8e2-4673f8ddcecc" >
+		<json-logger:logger doc:name="Before HTTP Request to System API" doc:id="cf1f9258-aaa2-4b25-8fe7-866118896c88" config-ref="JSON_Logger_Config" message="Before HTTP Request to System API" tracePoint="BEFORE_REQUEST" priority="DEBUG" category="${log.category}" correlationId="#[vars.correlationId]" >
+			<json-logger:content ><![CDATA[#[%dw 2.0
+import modules::JSONLoggerModule
+output application/json skipNullOn = "everywhere"
+---
+{
+	eventContext: {
+		businessId: '${global.properties.businessId}',
+		source: vars.sourceChannel,
+		inboundUri: vars.inboundUri,
+		method: vars.httpMethod
+	},
+	eventInfo: {
+		//payload: JSONLoggerModule::stringifyAny(payload)
+	}
+}]]]></json-logger:content>
+		</json-logger:logger>
+		<try doc:name="Try" doc:id="b93602b3-c68b-4c76-b369-9361cf97aced" >
+			<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="6f4ca82f-3ce7-4937-bb22-55cc2c593eed" millisBetweenRetries="${until.millisBetweenRetries}">
+				<try doc:name="Try" doc:id="59b9119e-0c34-4c98-9860-b60164fb415e">
+					<http:request method="#[vars.notificationMethod]" doc:name="SFCC Order SAPI Customer Search API Call" doc:id="ae89266d-34b9-4f7a-a69d-2b1f54dd7b6a" config-ref="sfccOrderSapiRequestConfiguration" path="#[vars.customerSearchPath]" correlationId="#[uuid()]" sendCorrelationId="ALWAYS">
+			<http:body><![CDATA[#[vars.customerSearchRequest]]]></http:body>
+			<http:headers><![CDATA[#[import p from Mule
+output application/java
+---
+{
+	"client_secret" : p('secure::sfcc-order-sapi.client_secret'),
+	"X-Correlation-Id" : correlationId,
+	"x-source-channel" : p('sfcc-order-sapi.sourceChannel'),
+	"client_id" : p('secure::sfcc-order-sapi.client_id')
+}]]]></http:headers>
+		</http:request>
+				<error-handler ref="sapi-request-error-handler">
+				</error-handler>
+				</try>
+			</until-successful>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2a7eb623-def3-4b0a-b86f-e5ef973c4a7d" >
+					<json-logger:logger doc:name="Error while connecting to SFCC Order System API" doc:id="6d8b4a47-e532-497f-b7db-7758e53081ca" config-ref="JSON_Logger_Config" message="#[vars.jsonErrorMessage]" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}" correlationId="#[vars.correlationId]" >
+						<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+{
+	eventContext: {
+	businessID: "${global.properties.businessId}",
+	sourceChannel: vars.sourceChannel,
+	inboundURI: vars.inboundUri,
+	method: vars.httpMethod
+},
+  payload: JSONLoggerModule::stringifyNonJSON(payload),
+  (errorStatusCode: vars.httpStatus) if(vars.httpStatus?),
+  errorDetails: JSONLoggerModule::stringifyNonJSON(vars.errorDetails)
+}]]]></json-logger:content>
+					</json-logger:logger>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<json-logger:logger doc:name="After HTTP Request to System API" doc:id="9be8b2e6-1796-48a8-a891-3feafa04b4a6" config-ref="JSON_Logger_Config" message="After HTTP Request to System API" tracePoint="AFTER_REQUEST" priority="DEBUG" category="${log.category}" correlationId="#[vars.correlationId]" >
+			<json-logger:content ><![CDATA[#[%dw 2.0
+import modules::JSONLoggerModule
+output application/json skipNullOn = "everywhere"
+---
+{
+	eventContext: {
+		businessId: '${global.properties.businessId}',
+		source: vars.sourceChannel,
+		inboundUri: vars.inboundUri,
+		method: vars.httpMethod,
+		logMessage: {
+			payload: JSONLoggerModule::stringifyAny(payload)
+		}
+	}
+}]]]></json-logger:content>
+		</json-logger:logger>
+	</sub-flow>
+</mule>

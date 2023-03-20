@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:compression="http://www.mulesoft.org/schema/mule/compression" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/compression http://www.mulesoft.org/schema/mule/compression/current/mule-compression.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<flow name="convert-csv-to-xml-send-attachments" doc:id="d38dacef-350c-4d41-bd91-9316d1d2f0b5" >
+		<vm:listener queueName="xlsReportsGenerationQueue" doc:name="xlsReportsGenerationQueue" doc:id="2d79f460-4398-4d3a-b64b-d4deedf8cba7" config-ref="transactions_vm_Config" />
+		<json-logger:logger doc:name="Logger" doc:id="87160c8e-ebb6-4a29-b9e6-8a1ed7ac9cb6" config-ref="JSON_Logger_Config" message='#["Starting Conversion of csv to xls process for report: " ++ payload.reportType]' category="${log.category}">
+		</json-logger:logger>
+		<set-variable value="#[payload.reportType]" doc:name="reportType" doc:id="2c73ab30-74bb-4ac4-9d67-667c217a688f" variableName="reportType" />
+		<set-variable value="#[%dw 2.0&#10;output application/java&#10;---&#10;	if(payload.reportType == p('reports.dropOrderReport.reportType')) &#10;		p('titan.sftp.dropOrderReport') &#10;	else &#10;	if (payload.reportType == p('reports.transactionReport.reportType')) &#10;		p('titan.sftp.transactionReport') &#10;	else&#10;	if (payload.reportType == p('reports.transactionConsolidatedReport.reportType')) &#10;		p('titan.sftp.transactionConsolidatedReport') &#10;	else&#10;	 	&quot; &quot;]" doc:name="folderPath" doc:id="6c85089f-d29f-40a7-b7d6-cfac7df1d62f" variableName="folderPath" />
+		<set-variable value='#[payload.reportType replace " " with ""]' doc:name="reportName" doc:id="5d8e4bb2-4c1d-4409-b540-e3b717df2806" variableName="reportName" />
+		<sftp:list doc:name="Read All CSV Report Files" doc:id="66fab87b-b986-484a-ae62-1237ba5a3759" config-ref="SFTP_Config" directoryPath="#[vars.folderPath]" >
+			<sftp:matcher directories="EXCLUDE" filenamePattern="${titan.sftp.csvfilenamepattern}"/>
+		</sftp:list>
+		<ee:transform doc:name="Transform Message" doc:id="640212fd-65b0-45ff-9d52-7e25a3af80f3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map {
+    "data": $.payload
+} ]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="243d5343-79fa-486b-ba08-2c55b2bca42e">
+			<when expression="#[sizeOf(payload) &gt; 0]" >
+				<ee:transform doc:name="Create XLSX Report" doc:id="15664cc9-c030-4dc9-a0fa-14a46141d545">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="xlsxFilePayload"><![CDATA[%dw 2.0
+output application/xlsx header=true
+---
+{
+  Sheet1: flatten(payload.data)
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+				<sftp:write doc:name="Write XLSX Report" doc:id="0f1edd1b-1027-4019-8787-672f00462221" config-ref="SFTP_Config" path='#[vars.folderPath ++ vars.reportName ++ ".xlsx"]'>
+			<sftp:content><![CDATA[#[vars.xlsxFilePayload]]]></sftp:content>
+		</sftp:write>
+				<sftp:list doc:name="List XLSX Reports" doc:id="eaea6936-b121-4de7-b848-fd7132badc57" config-ref="SFTP_Config" directoryPath="#[vars.folderPath]">
+			<sftp:matcher filenamePattern="${titan.sftp.xlsxfilenamepattern}" />
+		</sftp:list>
+				<ee:transform doc:name="Setting All xlsx's Payload" doc:id="9767fa17-a2d3-4308-9ed5-2fc1f97eefe8">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+	(payload map {
+		($.attributes.name) : $.payload
+	})
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<json-logger:logger doc:name="Logger" doc:id="8d022c94-afc7-424f-9401-4a03d5188e64" config-ref="JSON_Logger_Config" message='#[vars.reportType ++ " xls successfully generated"]' tracePoint="END" category="${log.category}" >
+					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+    //payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+				</json-logger:logger>
+				<compression:archive doc:name="Archive for attaching as zip file" doc:id="ae5650f2-3b91-40a6-9a69-b0024c932fa8">
+			<compression:archiver>
+				<compression:zip-archiver />
+			</compression:archiver>
+		</compression:archive>
+				<parse-template doc:name="Parse Template - HTML EMAIL" doc:id="0eaf3f9c-3566-4138-9c47-dc74d55fe046" location="templates/report-generation-notification-template.html" target="emailTemplate" targetValue="#[payload]" />
+				<ee:transform doc:name="setRequestHeaders" doc:id="cf771818-118e-477a-8a19-e0e33e52d464">
+			<ee:message />
+			<ee:variables>
+				<ee:set-variable variableName="queryParams"><![CDATA[%dw 2.0
+import p from Mule
+output application/java
+---
+{
+	"type" : p('notification-sapi.queryParams.type')
+}]]></ee:set-variable>
+				<ee:set-variable variableName="sapiRequestHeaders"><![CDATA[%dw 2.0
+import p from Mule
+output application/java
+---
+{
+	"X-Correlation-Id" : correlationId,
+	"x-source-channel"  :  p('notification-sapi.sourceChannel'),
+	"client_id"  : p('secure::notification-sapi.client_id'),
+	"client_secret" : p('secure::notification-sapi.client_secret'),
+//	"x-target-channel"  :  p('notification-sapi.headers.x-target-channel')
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+				<ee:transform doc:name="set Email  params" doc:id="4ceb5ffd-9f6e-43ae-aebf-84a95b911eb9">
+			<ee:message />
+			<ee:variables>
+						<ee:set-variable resource="dwl/send-email-notification-body.dwl" variableName="body" />
+						<ee:set-variable variableName="notificationPath" ><![CDATA[%dw 2.0
+output application/java
+---
+p('notification-sapi.endpoints.post.notificationPath')]]></ee:set-variable>
+						<ee:set-variable variableName="notificationMethod" ><![CDATA[%dw 2.0
+output application/java
+---
+p('notification-sapi.endpoints.post.notificationMethod')]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+				<http:request method="#[vars.notificationMethod]" doc:name="send email notification Request" doc:id="7aa680de-a816-4bff-bcd9-025884aa1f2f" config-ref="notificationSAPIRequestConfig" path="#[vars.notificationPath]">
+			<http:body><![CDATA[#[vars.body]]]></http:body>
+			<http:headers><![CDATA[#[vars.sapiRequestHeaders]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"type" : "Email"
+}]]]></http:query-params>
+		</http:request>
+				<json-logger:logger doc:name="Logger" doc:id="a6ad6947-9ac6-48be-a160-c4f817ce2f7b" config-ref="JSON_Logger_Config" message='#["Email for " ++ vars.reportType ++ " successfully sent"]' tracePoint="END" category="${log.category}" />
+			</when>
+			<otherwise >
+				<json-logger:logger doc:name="Logger" doc:id="89beab36-b085-428a-8e53-f0072db55d32" config-ref="JSON_Logger_Config" message="No Data to be generated" tracePoint="END" category="${log.category}"/>
+			</otherwise>
+		</choice>
+		<error-handler ref="sapi-request-error-handler" />
+	</flow>
+</mule>

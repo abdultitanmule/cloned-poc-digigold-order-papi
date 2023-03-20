@@ -28,7 +28,7 @@ reports:
     reportSequenceNumber: "0"  
   transactionReport:
     reportType: "Transaction Report" 
-#    StartDate: "12/31/2022 0:0:0"
+    StartDate: "12/31/2022 0:0:0"
 #    EndDate: "01/01/1980 23:59:59"
   transactionConsolidatedReport:
     reportType: "Transaction Consolidated Report" 
@@ -38,17 +38,30 @@ reports:
     reportType: "DropOrder Report" 
 #    StartDate: "12/31/2022 0:0:0"
 #    EndDate: "01/01/1980 23:59:59"
-    batchCount: "5000"
+  batchCount: "5000"
   
 #Scheduler Configs
+#scheduler:
+#  oracleReportGeneration: "0 0 5 ? * *"
+#  transactionReportGeneration: "0 0 3 ? * *"
+#  dropOrderReportGeneration: "0 0 4 ? * *"
+#  transactionConsolidatedReportGeneration: "0 0 1 1/1 * ? *"
+#  transactionMigrationSchedule: "0 30 0 15 3 ? *"
+#  timeZone: "Asia/Kolkata"
+
 scheduler:
   oracleReportGeneration: "0 0 5 ? * *"
   transactionReportGeneration: "0 0 3 ? * *"
   dropOrderReportGeneration: "0 0 4 ? * *"
   transactionConsolidatedReportGeneration: "0 0 1 1/1 * ? *"
-  timeZone: "Asia/Kolkata"
-#  transactionMigrationSchedule: "0 0 4 ? * *"
   transactionMigrationSchedule: "0 30 0 15 3 ? *"
+  timeZone: "Asia/Kolkata"
+
+
+#Below is the cron expression to execute every 10 minutes
+#0 0/10 * 1/1 * ? *
+
+
 
 # Testing changes below - Scheduler Configs
 #scheduler:
