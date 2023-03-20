@@ -23,8 +23,8 @@ dynamoOrderSapi:
 
 # SFCC Order SAPI Client credentials
 sfcc-order-sapi:
-    client_id: "![sNPwAXvDWT4TYg44yHMe8BO6XTqFm/+tf7EoBSpF0Io=]"
-    client_secret: "![BEOlR94fFp8C+oozNaYCcpyw+mj/0plz3NLAn5fdKZM=]"
+    client_id: "![yqWRXvZYdUl9UHzHLAONJg9srs924+Ojx+RH36HVO8fRM40Igh3ioevpK2NS/ITy]"
+    client_secret: "![atIrRq6uhAifUAxaZ5WIt12bjslesUpbYmCBYvZRWOfaY23JJSWITsJ2/O/QS9iP]"
     
 notification-sapi:
     client_id: "![01hsmoN1YKR5/mUzXYGHRAw1c3pNsBqeyiZVoTndrwACh62299nmOA+ZD8u8r0bN]"
