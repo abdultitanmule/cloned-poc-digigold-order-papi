@@ -21,3 +21,11 @@ dynamoOrderSapi:
   client_id: "![7HjVNfsJ/k9rhVrnlzozzTBV6+HDe11gS50B5lgxLGc8Y7rP4906NGxb20DzeW6l]"
   client_secret: "![oMTPhZ3m5V5dDGYYNiIfRCLP2BpkhhQF7v1J9CGirm9chL2DZpElhJ1t6N5KO/yG]"
 
+# SFCC Order SAPI Client credentials
+sfcc-order-sapi:
+    client_id: "![sNPwAXvDWT4TYg44yHMe8BO6XTqFm/+tf7EoBSpF0Io=]"
+    client_secret: "![BEOlR94fFp8C+oozNaYCcpyw+mj/0plz3NLAn5fdKZM=]"
+    
+notification-sapi:
+    client_id: "![01hsmoN1YKR5/mUzXYGHRAw1c3pNsBqeyiZVoTndrwACh62299nmOA+ZD8u8r0bN]"
+    client_secret: "![MnSbXTw6LlVSgm/J+uTMZdh+crvuF5y1qKPYl38d1kGglGFKp+JBAWlHFHSRnX7k]"

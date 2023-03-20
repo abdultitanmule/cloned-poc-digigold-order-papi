@@ -12,33 +12,36 @@ api:
   autodiscovery:
     id: "18556760"
 
+
 ###############################
 #  OUTBOUND                   #
 ###############################
 
 dynamodb:
   regionendpoint: "ap-south-1"
+  tableName: "DEV_XDG_TRANSACTION"
 
 #Titan SFTP Server 
 titan:
  sftp:
   host: "172.30.5.115"
   port: "22"
-  workingdir: 
-    txnMigration: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/input"
-    oracleReport: "home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/oraclefeed"
-    transactionReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transaction"
-    dropOrderReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/droporder"
-  filenamepattern: "*.csv"
-  archivedir:
-    txnMigration: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/archive"
-  pollingfrequency: "10" # in Minutes
+  csvfilenamepattern: "*.csv"
+  xlsxfilenamepattern: "*.xlsx"
+  oracleReport: "home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/oraclefeed"
+  transactionReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transaction/"
+  transactionConsolidatedReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transactionConsolidated/"
+  dropOrderReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/droporder/"
+  txnMigration:
+    workingDir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/input"
+    archiveDir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/archive"
+
   
 #COMMON SFTP SAPI
 
 sftp-sapi:
   connectionTimeout: "60000"
-  responseTimeout: "30000"
+  responseTimeout: "60000"
   sourceChannel: "digigoldOrderPAPI"
   host: "sftp-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
@@ -60,11 +63,12 @@ dynamo-sapi:
     get:
       transactionsPath: "/transactions"
       transactionsMethod: "GET"
+  batchCount: "5000"
     
 #COMMON Notification SAPI
 notification-sapi:
   connectionTimeout: "60000"
-  responseTimeout: "30000"
+  responseTimeout: "60000"
   sourceChannel: "digigoldOrderPAPI"
   host: "notification-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
@@ -75,14 +79,31 @@ notification-sapi:
       notificationMethod: "POST"
       queryParameter: "Email"
       
-#Notification Email IDs
-email:
-  to: "amanney@salesforce.com"
+# SFCC Order SAPI
+sfcc-order-sapi:
+  connectionTimeout: "60000"
+  responseTimeout: "30000"
+  sourceChannel: "digigoldOrderPAPI"
+  host: "sfcc-order-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basePath: "/api/v1"
+  endpoints:
+    post:
+      customerSearchPath: "/customer/search"
+      notificationMethod: "POST"
+  batchSize: "25"
+
+#Notification Email for Reports
+reportsEmail:
+  to: "gradhakrishna@salesforce.com,amanney@salesforce.com"
   from: "ecomas@titan.co.in"
   cc: ""
-  oracleErrorSubject: "Oracle Report Generation Failure Notification - "
+  ErrorSubject: "Generation Failure Notification - "
+  Subject: "Report Generation Notification - Date: "
   contentType: "text/html"
-
+  body: "Please find the attachment of the report generated "
+  
+  
 order-papi:
   buyConfirmed:
     debit: "245154"
@@ -90,12 +111,15 @@ order-papi:
   redemption:
     debit: "245170"
     credit: "151633"
-  
+ 
+    
 #SAMPLE EXTERNAL SYSTEM
 dynamoOrderSapi:
   host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basepath: "/api/v1/"
   endpoint: "transactions"
-    
 
+until:
+  retries: "2"
+  millisBetweenRetries: "3000"

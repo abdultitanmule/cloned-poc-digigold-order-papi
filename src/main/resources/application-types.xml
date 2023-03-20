@@ -2,5 +2,6 @@
 <types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
   <types:catalog/>
   <types:enrichment select="#58960ffa-0250-438a-98b7-4ce9ed6fd8e5"/>
-
+  <types:enrichment select="#0ced4100-d20e-4854-80ab-47b9af2d13e6"/>
+  <types:enrichment select="#0d19b883-0233-4bec-a0bb-418e8813e4eb"/>
 </types:mule>
