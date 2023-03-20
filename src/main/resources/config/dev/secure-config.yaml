@@ -8,7 +8,7 @@ titan:
   username: "![ZibIQHduKBhWhwM1G4K8VA==]" 
   password: "![EO09WjxFFEVguFoFeXdW3A==]"
 
-# ClientId and ClientSecret of digigoldOrderPAPI ## Final Client APP for digigold-order-papi. ## do not duplicate
+# ClientId and ClientSecret of digigoldOrderPAPI ## Final Client APP for digigold-order-sapi. ## do not duplicate
 digigold-order-papi: 
   clientId: "![WBrD6JW/RmSIv6EAk1Pl/p56Vi0kDFTVO5/sJrlP2g6pq2aTVX8MMLiy4Y69SA+z]"
   clientSecret: "![VMKloGwils2yctHfN8Fb27obH/xSBkFNAScdwbjME3oNvJQSRY1ttO0QLojXZ3WQ]"
@@ -23,8 +23,8 @@ dynamoOrderSapi:
 
 # SFCC Order SAPI Client credentials
 sfcc-order-sapi:
-    client_id: "![VEv11Cx7VW9HcQH0svZcCW617c3lQ3ThdqZ/qqt6DB2/j0gkl9VBJ8Cw1G3wVo8i]"
-    client_secret: "![NZkVQhtU0taX/1+LEDMxfEUgnct99QtEsvRJEH5l89Ws51XHoPgyPobJlXQchF48]"
+    client_id: "![sNPwAXvDWT4TYg44yHMe8BO6XTqFm/+tf7EoBSpF0Io=]"
+    client_secret: "![BEOlR94fFp8C+oozNaYCcpyw+mj/0plz3NLAn5fdKZM=]"
     
 notification-sapi:
     client_id: "![01hsmoN1YKR5/mUzXYGHRAw1c3pNsBqeyiZVoTndrwACh62299nmOA+ZD8u8r0bN]"

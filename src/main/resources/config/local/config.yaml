@@ -18,6 +18,7 @@ api:
 
 dynamodb:
   regionendpoint: "ap-south-1"
+  tableName: "DEV_XDG_TRANSACTION"
 
 #Titan SFTP Server 
 titan:
@@ -66,7 +67,7 @@ dynamo-sapi:
 #COMMON Notification SAPI
 notification-sapi:
   connectionTimeout: "60000"
-  responseTimeout: "30000"
+  responseTimeout: "60000"
   sourceChannel: "digigoldOrderPAPI"
   host: "notification-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
@@ -91,18 +92,10 @@ sfcc-order-sapi:
       notificationMethod: "POST"
   batchSize: "25"
       
-#Notification Email IDs
-email:
-  to: "gradhakrishna@salesforce.com"
-  from: "ecomas@titan.co.in"
-  cc: ""
-  oracleErrorSubject: "Oracle Report Generation Failure Notification - "
-  contentType: "text/html"
-
 
 #Notification Email for Reports
 reportsEmail:
-  to: "gradhakrishna@salesforce.com"
+  to: "gradhakrishna@salesforce.com,amanney@salesforce.com"
   from: "ecomas@titan.co.in"
   cc: ""
   ErrorSubject: "Report Generation Failure Notification - "

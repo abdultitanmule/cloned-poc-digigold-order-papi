@@ -12,8 +12,8 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
 	<flow name="impl-generate-oracle-report" doc:id="3359e058-6b64-4ad2-a9ad-e919a5e7e90e" >
 		<json-logger:logger doc:name="Flow Log" doc:id="8d827cfa-0523-43ad-b983-9f74c63b13f4" config-ref="JSON_Logger_Config" tracePoint="FLOW" category="${log.category}" message="oracle report generation started" priority="DEBUG"/>
-		<flow-ref doc:name="call to order-dynamo-sapi" doc:id="cd63f9ab-3f4e-4315-aea4-5a4441cac590" name="call-to-order-dynamo-sapi" target="dynamoResponse"/>
-		<validation:is-null doc:name="Is null" doc:id="e23d42cf-6095-401a-a0de-370c54207a0e" value="#[vars.successful]" message="Failure encountered in digigold-dynamo-sapi"/>
+		<set-variable value="#[payload.reportType]" doc:name="reportType" doc:id="65a8c11e-2b56-4f88-8188-5246da41cd77" variableName="reportType" />
+		<flow-ref doc:name="process-dynamo-order-sapi-transactions" doc:id="cd63f9ab-3f4e-4315-aea4-5a4441cac590" name="process-dynamo-order-sapi-transactions" target="dynamoResponse"/>
 		<ee:transform doc:name="Consolidate mule message" doc:id="77a2876e-27ab-4be0-83ed-5cd48134a9a1" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -28,11 +28,13 @@ output application/json
 			</ee:message>
 		</ee:transform>
 		<vm:publish doc:name="Publish Dynamo  Response" doc:id="b6ea8dc6-f292-40dd-bb77-b444a9f918a3" sendCorrelationId="ALWAYS" queueName="oracleExtractQueue" config-ref="transactions_vm_Config"/>
-		<error-handler ref="global-error-handler" />
+				<error-handler ref="reports-global-error-handler" />
 
 	</flow>
 	<flow name="listen-dynamo-response" doc:id="6d158d7e-55b8-4719-abbc-6e79a0e576ef" >
 		<vm:listener doc:name="Listener" doc:id="e904f7d4-f6bb-4d71-83e1-a903760e7355" queueName="oracleExtractQueue" config-ref="transactions_vm_Config"/>
+		<set-variable value="#[payload.reportType]" doc:name="reportType" doc:id="cfb45f60-ffaf-496e-8e3b-e3bd07e5f390" variableName="reportType" />
+		
 		<os:retrieve doc:name="Fetch Report File Name" doc:id="7ded5c1b-d570-4bda-8a37-c72761889a7e" key="oracleReportName" objectStore="reportNameObjectStore" target="oracleReportName">
 			<os:default-value><![CDATA[#[{
 	reportSequenceNumber: Mule::p('reports.oracleReport.reportSequenceNumber'),
@@ -51,8 +53,7 @@ payload default {}]]></ee:set-variable>
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="07560036-3979-4637-aa68-5c123a84dd1a" >
 			<when expression="#[payload.lastEvaluatedKey != null and vars.successful == null]">
-				<flow-ref doc:name="recall to dynamo-sapi" doc:id="93fff44d-c216-43e1-8781-1ef0b97dd7eb" name="call-to-order-dynamo-sapi"/>
-				<validation:is-null doc:name="Is null" doc:id="a54b84a6-53ac-44c8-959e-905626b9720a" value="#[vars.successful]" message="Failure encountered in digigold-dynamo-sapi"/>
+				<flow-ref doc:name="recall to process-dynamo-order-sapi-transactions" doc:id="93fff44d-c216-43e1-8781-1ef0b97dd7eb" name="process-dynamo-order-sapi-transactions"/>
 				<ee:transform doc:name="AggregatedPayload" doc:id="92369cf0-1f18-4c6d-b510-4817a1991259">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
@@ -106,7 +107,7 @@ payload.variables.startDate as LocalDateTime {format: "M/d/yyyy H:m:s"} as Strin
 								<ee:set-payload resource="dwl/reporting.dwl" />
 					</ee:message>
 				</ee:transform>
-						<sftp:create-directory doc:name="Create directory for Report Generation" doc:id="03676976-3dcb-422a-9d52-cdc3ae1a481e" config-ref="SFTP_Config" directoryPath="#[p('titan.sftp.workingdir.oracleReport') ++ &quot;/&quot; ++ vars.folderName]" />
+						<sftp:create-directory doc:name="Create directory for Report Generation" doc:id="03676976-3dcb-422a-9d52-cdc3ae1a481e" config-ref="SFTP_Config" directoryPath="#[p('titan.sftp.oracleReport') ++ &quot;/&quot; ++ vars.folderName]" />
 						<flow-ref doc:name="call to sftp-sapi" doc:id="051371c4-54b7-4edd-8e64-d8a1e5194d06" name="call-to-sftp-sapi" />
 						<os:store doc:name="Store outputReportSequence" doc:id="f5297d5e-d645-4a18-bdba-92c82a8438b2" key="oracleReportName" objectStore="reportNameObjectStore">
 							<os:value ><![CDATA[#[{
@@ -123,7 +124,7 @@ payload.variables.startDate as LocalDateTime {format: "M/d/yyyy H:m:s"} as Strin
 								<ee:set-variable variableName="emailSubject"><![CDATA[%dw 2.0
 output text/plain
 ---
-p('email.errorSubject')]]></ee:set-variable>
+p('reportsEmail.errorSubject')]]></ee:set-variable>
 								<ee:set-variable variableName="errorDescription"><![CDATA[%dw 2.0
 output text/plain
 ---
@@ -152,6 +153,6 @@ error.description default "Encountered Invalid Case"]]></ee:set-variable>
 				<flow-ref doc:name="call to notification-sapi" doc:id="a35368f4-8cc4-4192-9090-b55d5d749185" name="call-notification-service" />
 			</otherwise>
 		</choice>
-		<error-handler ref="global-error-handler" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 </mule>

@@ -11,7 +11,9 @@ http://www.mulesoft.org/schema/mule/dynamodb http://www.mulesoft.org/schema/mule
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
 http://www.mulesoft.org/schema/mule/sftp-sapi http://www.mulesoft.org/schema/mule/sftp-sapi/current/mule-sftp-sapi.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-	<flow name="batch-process-insert-dynamodb" doc:id="ac59a2a4-31fc-4975-a590-5ccb84f871ec" >
+	<flow name="impl-transaction-migration" doc:id="ac59a2a4-31fc-4975-a590-5ccb84f871ec" >
+		<json-logger:logger doc:name="Logger" doc:id="fba96116-e2fe-436e-b4dc-833ae8e78cf8" config-ref="JSON_Logger_Config" message="Entering the transaction migration process" tracePoint="FLOW" category="${log.category}"/>
+		<sftp:read doc:name="Read" doc:id="276a4aa6-d728-459f-9ef8-cf9d46b9e1b7" config-ref="SFTP_Config" path="${titan.sftp.txnMigration.workingDir}/${titan.sftp.csvfilenamepattern}"/>
 		<batch:job jobName="digigold-order-papi-batch-job" doc:id="8ade2a70-9ade-4799-8703-acd82a1767d3" >
 			<batch:process-records >
 				<batch:step name="Batch_Step" doc:id="a00a5ad9-6028-4cb5-8345-8f1b2865b542" >
@@ -67,9 +69,12 @@ payload map ((row) -> {
 						<ee:transform doc:name="Transform MessageForBulkPut" doc:id="047bfdf4-6fe3-462b-9ce2-269de1def2b3" >
 							<ee:message >
 								<ee:set-payload ><![CDATA[%dw 2.0
+import p from Mule
 output application/java
+var tableName=p('dynamodb.tableName')
 ---
-"DEV_XDG_TRANSACTION": 
+//"DEV_XDG_TRANSACTION": 
+"$(tableName)":
 payload map ((row) -> {
  "PutRequest":
  	{
@@ -81,6 +86,23 @@ payload map ((row) -> {
 							</ee:message>
 						</ee:transform>
 						<dynamodb:batch-put-item doc:name="Batch put item" doc:id="eed1a485-1991-4d79-8233-7d6d6e4fba44" requestPutItems="#[payload]" config-ref="Amazon_DynamoDB_Configuration"/>
+						<json-logger:logger doc:name="ON Log" doc:id="a3a1c39a-9b22-474e-9cde-6cc18e6ac92c" config-ref="JSON_Logger_Config" message="Batch complete" tracePoint="AFTER_REQUEST" category="${log.category}" >
+							<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+{
+	eventContext: {
+	businessID: "${global.properties.businessId}",
+	clientId: attributes.headers.'x-source-channel', // Change accordingly
+	inboundURI: attributes.requestUri,
+	method: attributes.method,
+	muleCorrelationId: vars.muleCorrelationId,
+	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
+	
+}
+  //payload: JSONLoggerModule::stringifyNonJSON(payload)
+  //Optional - DO NOT LOG whole payload as it will be huge. Log it only when necessary;
+  //No sensitive information should be logged in plain text
+}]]]></json-logger:content>
+						</json-logger:logger>
 					</batch:aggregator>
 				</batch:step>
 			</batch:process-records>
@@ -104,8 +126,7 @@ payload map ((row) -> {
 				</json-logger:logger>
 			</batch:on-complete>
 		</batch:job>
-		<set-variable value='#["Completing Digigold Migration Process. End Timestamp is: " ++ now()]' doc:name="logMessage" doc:id="1bccae3e-f872-4337-bf41-9de6fbe7cdec" variableName="logMessage" />
-		<json-logger:logger doc:name="END Log" doc:id="8e07c287-7d9a-4d9d-a630-6ab2f897f5a8" config-ref="JSON_Logger_Config" message="Log Message" category="${log.category}" tracePoint="END">
+		<json-logger:logger doc:name="END Log" doc:id="8e07c287-7d9a-4d9d-a630-6ab2f897f5a8" config-ref="JSON_Logger_Config" message='#["Completing Digigold Migration Process. End Timestamp is: " ++ now()]' category="${log.category}" tracePoint="END">
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
 {
 	eventContext: {
@@ -114,7 +135,7 @@ payload map ((row) -> {
 	inboundURI: attributes.requestUri,
 	method: attributes.method,
 	muleCorrelationId: vars.muleCorrelationId,
-	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
+	//logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
 	
 }
   //payload: JSONLoggerModule::stringifyNonJSON(payload)

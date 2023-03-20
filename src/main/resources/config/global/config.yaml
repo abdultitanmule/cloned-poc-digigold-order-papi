@@ -38,7 +38,7 @@ reports:
     reportType: "DropOrder Report" 
 #    StartDate: "12/31/2022 0:0:0"
 #    EndDate: "01/01/1980 23:59:59"
-    batchCount: "3000"
+    batchCount: "5000"
   
 #Scheduler Configs
 scheduler:
@@ -47,8 +47,8 @@ scheduler:
   dropOrderReportGeneration: "0 0 4 ? * *"
   transactionConsolidatedReportGeneration: "0 0 1 1/1 * ? *"
   timeZone: "Asia/Kolkata"
-  transactionMigrationSchedule: "0 0 6 ? * *"
-   
+#  transactionMigrationSchedule: "0 0 4 ? * *"
+  transactionMigrationSchedule: "0 30 0 15 3 ? *"
 
 # Testing changes below - Scheduler Configs
 #scheduler:

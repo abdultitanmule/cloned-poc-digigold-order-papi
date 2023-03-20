@@ -17,12 +17,12 @@ output application/json
 import toBase64 from dw::core::Binaries
 ---
 {
-  from: p('email.from'),
-  (to: (p('email.to') splitBy  "," ) )  if (!isEmpty(p('email.to')) ),  
-  (cc: (p('email.cc') splitBy  "," ) )  if (!isEmpty(p('email.cc')) ),  				
-  subject: vars.emailSubject ++ p('env') ++ " - " ++ (now() as Date),
+  from: p('reportsEmail.from'),
+  (to: (p('reportsEmail.to') splitBy  "," ) )  if (!isEmpty(p('reportsEmail.to')) ),  
+  (cc: (p('reportsEmail.cc') splitBy  "," ) )  if (!isEmpty(p('reportsEmail.cc')) ),  				
+  subject:  vars.emailSubject ++ p('env') ++ " - " ++ (now() as Date),
   body: vars.emailTemplate,
-  bodyType: p('email.contentType')
+  bodyType: p('reportsEmail.contentType')
 }
 ]]></ee:set-payload>
 			</ee:message>

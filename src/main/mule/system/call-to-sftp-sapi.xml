@@ -17,7 +17,7 @@ import toBase64 from dw::core::Binaries
 import substringBefore from dw::core::Strings
 ---
 {
-	"fileName": p('titan.sftp.workingdir.oracleReport') ++ "/" ++ vars.folderName ++ "/" ++ vars.outputReportName ++  ".txt" as String,
+	"fileName": p('titan.sftp.oracleReport') ++ "/" ++ vars.folderName ++ "/" ++ vars.outputReportName ++  ".txt" as String,
 	"fileContent": toBase64(payload.^raw as Binary),
 	"contentType": "application/csv"
 }]]></ee:set-payload>
