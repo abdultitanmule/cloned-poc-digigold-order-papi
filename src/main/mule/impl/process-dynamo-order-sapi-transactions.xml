@@ -64,7 +64,7 @@ payload]]></ee:set-payload>
 output application/json
 ---
 {
-"reportType": vars.reportType
+"reportType": vars.reportType default " "
 }
 ++ payload
 

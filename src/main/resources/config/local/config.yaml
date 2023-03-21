@@ -33,6 +33,7 @@ titan:
   transactionConsolidatedReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transactionConsolidated/"
   dropOrderReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/droporder/"
   txnMigration:
+    migrationfileName: "DigiGoldTransactions.csv"
     workingDir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/input"
     archiveDir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/archive"
 
@@ -56,10 +57,8 @@ dynamo-sapi:
   connectionTimeout: "60000"
   responseTimeout: "30000"
   sourceChannel: "digigoldOrderPAPI"
-#  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
-#  port: "443"
-  host: "localhost"
-  port: "80"
+  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
   basePath: "/api/v1"
   endpoints:
     get:
@@ -104,7 +103,7 @@ reportsEmail:
   from: "ecomas@titan.co.in"
   cc: "gkadam@salesforce.com"
   ErrorSubject: "Generation Failure Notification - "
-  Subject: "Report Generation Notification - : "
+  Subject: "Generation Notification - : "
   contentType: "text/html"
   body: "Please find the attachment of the report generated "
   noDataBody: "There is no data to generate "
