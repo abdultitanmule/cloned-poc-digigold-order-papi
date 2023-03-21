@@ -12,6 +12,7 @@ api:
   autodiscovery:
     id: "18556760"
 
+
 ###############################
 #  OUTBOUND                   #
 ###############################
@@ -50,19 +51,24 @@ sftp-sapi:
       sftpWrite: "/write"
       sftpMethod: "POST"
    
-#Dynamo SAPI
+#Dynamo Order SAPI
 dynamo-sapi:
   connectionTimeout: "60000"
   responseTimeout: "30000"
   sourceChannel: "digigoldOrderPAPI"
-  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
-  port: "443"
+#  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
+#  port: "443"
+  host: "localhost"
+  port: "80"
   basePath: "/api/v1"
   endpoints:
     get:
       transactionsPath: "/transactions"
       transactionsMethod: "GET"
-  batchCount: "5000"
+    post:
+      transactionsPath: "/transactions"
+      transactionsMethod: "POST"
+    batchCount: "5000"
     
 #COMMON Notification SAPI
 notification-sapi:
@@ -91,17 +97,17 @@ sfcc-order-sapi:
       customerSearchPath: "/customer/search"
       notificationMethod: "POST"
   batchSize: "25"
-      
 
 #Notification Email for Reports
 reportsEmail:
   to: "gradhakrishna@salesforce.com,amanney@salesforce.com"
   from: "ecomas@titan.co.in"
-  cc: ""
-  ErrorSubject: "Report Generation Failure Notification - "
-  Subject: "Report Generation Notification "
+  cc: "gkadam@salesforce.com"
+  ErrorSubject: "Generation Failure Notification - "
+  Subject: "Report Generation Notification - : "
   contentType: "text/html"
   body: "Please find the attachment of the report generated "
+  noDataBody: "There is no data to generate "
   
   
 order-papi:
@@ -111,14 +117,7 @@ order-papi:
   redemption:
     debit: "245170"
     credit: "151633"
- 
-    
-#SAMPLE EXTERNAL SYSTEM
-dynamoOrderSapi:
-  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
-  port: "443"
-  basepath: "/api/v1/"
-  endpoint: "transactions"
+
 
 until:
   retries: "2"

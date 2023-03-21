@@ -48,15 +48,9 @@ output application/json
 ]]></ee:set-payload>
 			</ee:message>
 			<ee:variables >
-				<ee:set-variable variableName="dynamoSapiMethodAndPath" ><![CDATA[%dw 2.0
-output application/java
----
-{
-"method": "POST",
-"path": Mule::p('dynamoOrderSapi.endpoint')
-
-}]]></ee:set-variable>
-				<ee:set-variable resource="dwl/createTransactionHeaders.dwl" variableName="sapiHeaders" />
+				<ee:set-variable resource="dwl/createTransactionHeaders.dwl" variableName="dynamoSapiHeaders" />
+				<ee:set-variable variableName="transactionsMethod" ><![CDATA[Mule::p('dynamo-sapi.endpoints.post.transactionsMethod')]]></ee:set-variable>
+				<ee:set-variable variableName="transactionsPath" ><![CDATA[Mule::p('dynamo-sapi.endpoints.post.transactionsPath')]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<json-logger:logger doc:name="AFTER payload mapping for create transaction" doc:id="d620b29f-7070-4654-bf28-bed7d5736869" config-ref="JSON_Logger_Config" message="AFTER payload mapping for create transaction" tracePoint="AFTER_TRANSFORM" category="${log.category}" priority="DEBUG"/>

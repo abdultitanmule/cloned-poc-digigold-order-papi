@@ -24,9 +24,6 @@ http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sft
 	<http:listener-config name="apiHttpListenerConfig">
         <http:listener-connection host="${https.host}" port="${https.port}" />
     </http:listener-config>
-      <http:request-config name="dynamoOrderSapiRequestConfig" doc:name="HTTP Request configuration" doc:id="4897b48b-3503-4b10-a341-96c36c1629bd" basePath="/${dynamoOrderSapi.basepath}" responseTimeout="${papi.responseTimeOut}">
-		<http:request-connection protocol="HTTPS" host="${dynamoOrderSapi.host}" port="${dynamoOrderSapi.port}" connectionIdleTimeout="${papi.connectionIdleTimeOut}"/>
-	</http:request-config>
 	
     <apikit:config name="digigold-order-papi-config" api="${api.resource}" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     

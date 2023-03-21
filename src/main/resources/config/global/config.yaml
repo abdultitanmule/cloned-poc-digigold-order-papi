@@ -6,74 +6,71 @@ global.properties: #TODO FOR DEVELOPER - CHANGE THIS ACCORDING TO THE API INVENT
   name: "Digigold Order Process API"
   businessId: "" # Business Operation ID
 
-
- 
 # JSON Logger Properties (should reflect what's on POM) 
 #TODO FOR DEVELOPER - CHANGE THIS BASED ON THE POM.XML
 json.logger.application:
   name: "digigold-order-papi" #pom > artifactId
-  version: "1.0.0"  #pom > version
+  version: "1.0.11"  #pom > version
 
 ##############################
 #      Global Constants      #
 ##############################
-#global.constants:  #TODO FOR DEVELOPER - ADD IF THERE ARE GLOBAL CONSTANTS TO BE USED
 
 log:
   category: "com.titan.mulesoft"
-  
+ 
+############################  IMPORANT - To Be used in the environments ###############
 reports:
   oracleReport:
     reportType: "Oracle Report"
     reportSequenceNumber: "0"  
   transactionReport:
     reportType: "Transaction Report" 
-    StartDate: "12/31/2022 0:0:0"
-#    EndDate: "01/01/1980 23:59:59"
   transactionConsolidatedReport:
     reportType: "Transaction Consolidated Report" 
     StartDate: "01/01/1980 0:0:0"
-#    EndDate: "01/01/1980 23:59:59"
   dropOrderReport:
     reportType: "DropOrder Report" 
-#    StartDate: "12/31/2022 0:0:0"
-#    EndDate: "01/01/1980 23:59:59"
   batchCount: "5000"
-  
-#Scheduler Configs
-#scheduler:
-#  oracleReportGeneration: "0 0 5 ? * *"
-#  transactionReportGeneration: "0 0 3 ? * *"
-#  dropOrderReportGeneration: "0 0 4 ? * *"
-#  transactionConsolidatedReportGeneration: "0 0 1 1/1 * ? *"
-#  transactionMigrationSchedule: "0 30 0 15 3 ? *"
-#  timeZone: "Asia/Kolkata"
 
 scheduler:
   oracleReportGeneration: "0 0 5 ? * *"
   transactionReportGeneration: "0 0 3 ? * *"
   dropOrderReportGeneration: "0 0 4 ? * *"
-  transactionConsolidatedReportGeneration: "0 0 1 1/1 * ? *"
-  transactionMigrationSchedule: "0 30 0 15 3 ? *"
+  transactionConsolidatedReportGeneration: "0 0 0 1,15 * ? *"
+  transactionMigrationSchedule: "0 30 0 20 3 ? *"
   timeZone: "Asia/Kolkata"
 
+############################ Below is the cron expression to trigger periodically in minutes.###############
+################ To Be used for local testing ###############
 
-#Below is the cron expression to execute every 10 minutes
-#0 0/10 * 1/1 * ? *
-
-
-
-# Testing changes below - Scheduler Configs
+#reports:
+#  oracleReport:
+#    reportType: "Oracle Report"
+#    reportSequenceNumber: "0"  
+#  transactionReport:
+#    reportType: "Transaction Report" 
+#    StartDate: "01/01/1980 0:0:0"
+#  transactionConsolidatedReport:
+#    reportType: "Transaction Consolidated Report" 
+#    StartDate: "01/01/1980 0:0:0"
+#  dropOrderReport:
+#    reportType: "DropOrder Report" 
+#    StartDate: "03/18/2023 0:0:0"
+#    EndDate: "03/19/2023 0:0:0"
+#  batchCount: "5000"
+#
 #scheduler:
-#  oracleReportGeneration: "0 0 5 ? * *"
-#  transactionReportGeneration:   "15" # in minutes
-#  dropOrderReportGeneration: "0 0 4 ? * *"  
-#  transactionConsolidatedReportGeneration:  "0 0 4 ? * *" 
+#  oracleReportGeneration: "0 0/15 * 1/1 * ? *"
+#  transactionReportGeneration: "0 0/15 * 1/1 * ? *"
+#  dropOrderReportGeneration: "0 0/5 * 1/1 * ? *"
+#  transactionConsolidatedReportGeneration: "0 0/12 * 1/1 * ? *"
+#  transactionMigrationSchedule: "0 0/30 * 1/1 * ? *"
 #  timeZone: "Asia/Kolkata"
-#  transactionMigrationSchedule: "0 0 6 ? * *" 
-   
+##########################################################################################
+
 api:
-  resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.5:raml:zip:digigold-order-papi.raml"
+  resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.6:raml:zip:digigold-order-papi.raml"
  
 papi:
   connectionIdleTimeOut: "30000"

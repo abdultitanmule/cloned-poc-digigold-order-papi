@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:os="http://www.mulesoft.org/schema/mule/os"
-	xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
-http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
      <flow name="digigold-order-papi-main">
         <http:listener config-ref="apiHttpListenerConfig" path="${https.path}">
 
@@ -71,7 +72,7 @@ import p from Mule
 output application/json
 ---
 {
-  reportType: p('reports.oracleReport.reportType'),
+  reportType: attributes.headers."report-name",
   variables:{
 	"startDate": payload.date as Date as String {format: "M/d/yyyy 0:0:0"},
 	"endDate": payload.date as Date as String {format: "M/d/yyyy 23:59:0"}
@@ -85,7 +86,42 @@ output application/json
 			<ee:variables>
 			</ee:variables>
 		</ee:transform>
+		<try doc:name="Try" doc:id="7998354a-5051-45d5-a25a-68ebc3aedcb6" >
+			<validation:is-true doc:name="Validate reportType" doc:id="cfdb5fc7-b930-407d-9ed5-d1ae5096954e" expression="#[payload.reportType == p('reports.oracleReport.reportType')]" message="Invalid Report Type" />
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="48a2374e-e81f-4827-9163-94f9157e2943" >
+					<ee:transform doc:name="Set Error Payload" doc:id="2dc5a0e5-3f95-481c-8515-bc97e1f23003" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"transactionId": correlationId,
+	"errorCode": vars.errorCode default error.errorType.identifier,
+	"errorMessage": vars.errorMessage default error.description,
+	"errorDescription": error.errorDescription default error.detailedDescription,
+	"timestamp" : now()
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-propagate>
+			</error-handler>
+		</try>
 		<flow-ref doc:name="call to impl-generate-oracle-report" doc:id="657a0273-e945-40f5-92e2-ccdd432acf7f" name="impl-generate-oracle-report"/>
+		<ee:transform doc:name="set successful response" doc:id="d526ade2-6b9a-4244-9e44-3049355433b1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "status": "SUCCESS",
+  "message": "Oracle report generation process triggered successfully"
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="httpStatus" ><![CDATA[202]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
 		<json-logger:logger doc:name="end log" doc:id="320ca9be-2df2-4319-865b-8c05012d9b9d" config-ref="JSON_Logger_Config" message="end log - generate oracle report" category="${log.category}">
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
@@ -104,7 +140,12 @@ output application/json
 		</json-logger:logger>
     </flow>
 	<flow name="post:\transactions:application\json:digigold-order-papi-config">
-		<json-logger:logger doc:name="START of create transactions flow" doc:id="c2f399b7-6393-4eab-9f46-b62ed5818b01" config-ref="JSON_Logger_Config" message="START of create transactions flow" category="${log.category}"/>
+		<json-logger:logger doc:name="START of create transactions flow" doc:id="c2f399b7-6393-4eab-9f46-b62ed5818b01" config-ref="JSON_Logger_Config" message="START of create transactions flow" category="${log.category}">
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+    //payload: JSONLoggerModule::stringifyNonJSON(payload) 
+}]]]></json-logger:content>
+		</json-logger:logger>
 		<flow-ref doc:name="impl-create-transactions-flow" doc:id="d7ab65c2-38f1-49e0-a68c-483ad8e2a509" name="impl-create-transactions-flow"/>
 		<json-logger:logger doc:name="END of create transactions flow" doc:id="d3ffdb01-f771-429d-92bd-f2ed1e96d4e6" config-ref="JSON_Logger_Config" message="END of create transactions flow" tracePoint="END" category="${log.category}" >
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---

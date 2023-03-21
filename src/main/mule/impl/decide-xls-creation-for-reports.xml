@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="decide-xls-creation-for-reports" doc:id="c385cdf6-3eca-4683-a7b2-06dbe1d04dd1" >
+		<choice doc:name="Choice" doc:id="4780a07a-8a8d-43b5-b68f-970e6c8f6add" >
+			<when expression="#[vars.HeadersAndlastEvaluatedKey.lastEvaluatedKey == null]">
+				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10; "reportType": vars.reportType&#10;}]' doc:name="Set reportType to send to generate xls" doc:id="f1555e88-e7ed-4ec9-95d0-b5ec6a35e090" />
+				<try doc:name="Try" doc:id="b507ae73-a42f-4b6a-8ba6-2f0a30b9b93b" >
+					<os:remove doc:name="vars.setObjectStoreNameForReports" doc:id="1426f2dc-0601-4dcc-a6a8-ef307468faea" key="#[vars.setObjectStoreNameForReports]" />
+					<error-handler >
+						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a0d03489-d2cc-42c0-b19a-3dff938bc39d" type="OS:KEY_NOT_FOUND">
+							<json-logger:logger doc:name="Logger" doc:id="8fa45094-b3dd-4bf0-b47d-89165695a865" config-ref="JSON_Logger_Config" message='#["No Object key found for " ++ vars.setObjectStoreNameForReports ++ " for the " ++ payload.reportType default " "]' tracePoint="END" category="${log.category}" priority="WARN"/>
+						</on-error-continue>
+					</error-handler>
+				</try>
+				<vm:publish doc:name="xlsReportsGenerationQueue" doc:id="bd71cf80-9404-4de8-bf4d-bc77a8f1f0ba" config-ref="transactions_vm_Config" queueName="xlsReportsGenerationQueue" sendCorrelationId="ALWAYS" />
+			</when>
+			<otherwise >
+				<json-logger:logger doc:name="Logger" doc:id="1b3f2a20-5812-4b3e-b6e8-d58050a4ef96" config-ref="JSON_Logger_Config" message='#["Completed the End of the Customer and Transaction merge"]' tracePoint="END" category="${log.category}">
+			<json-logger:content><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+    //payload: JSONLoggerModule::stringifyNonJSON(payload) 
+    payload:  
+    	{
+			reportType: payload.reportType,
+			variables: payload.variables,
+	        dynamodbFetchCount: payload.dynamodbFetchCount,
+			batchCount: payload.batchCount,
+			count: payload.count,
+	        lastEvaluatedKey: payload.lastEvaluatedKey
+	      }
+}]]]></json-logger:content>
+		</json-logger:logger>
+			</otherwise>
+		</choice>
+
+	</flow>
+</mule>

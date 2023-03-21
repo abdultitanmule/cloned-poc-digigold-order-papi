@@ -15,15 +15,9 @@ output application/java
 }]]></ee:set-payload>
 			</ee:message>
 			<ee:variables >
-				<ee:set-variable variableName="dynamoSapiMethodAndPath" ><![CDATA[%dw 2.0
-output application/java
----
-{
-"method": "GET",
-"path": Mule::p('dynamoOrderSapi.endpoint')
-
-}]]></ee:set-variable>
-				<ee:set-variable resource="dwl/fetchTransactionHeaders.dwl" variableName="sapiHeaders" />
+				<ee:set-variable variableName="transactionsMethod" ><![CDATA[Mule::p('dynamo-sapi.endpoints.get.transactionsMethod')]]></ee:set-variable>
+				<ee:set-variable variableName="transactionsPath" ><![CDATA[Mule::p('dynamo-sapi.endpoints.get.transactionsPath')]]></ee:set-variable>
+				<ee:set-variable resource="dwl/fetchTransactionHeaders.dwl" variableName="dynamoSapiHeaders" />
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="dynamo-order-sapi-request" doc:id="3a1763f0-a69c-47ec-9533-da028f86f307" name="dynamo-order-sapi-request"/>

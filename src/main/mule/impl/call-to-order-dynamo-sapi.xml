@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="call-to-order-dynamo-sapi" doc:id="d4590ea1-8552-420f-993a-2fc7fe5df756" >
+		<ee:transform doc:name="Set Dynamo SAPI params for Report Generation" doc:id="38868bc8-97ec-4db6-80fd-0501a5bb4b03">
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="transactionsPath" ><![CDATA[%dw 2.0
+output application/java
+---
+p('dynamo-sapi.endpoints.get.transactionsPath')]]></ee:set-variable>
+				<ee:set-variable variableName="transactionsMethod" ><![CDATA[%dw 2.0
+output application/java
+---
+p('dynamo-sapi.endpoints.get.transactionsMethod')]]></ee:set-variable>
+				<ee:set-variable resource="dwl/setDynamoHeadersForReports.dwl" variableName="dynamoSapiHeaders" />
+			</ee:variables>
+		</ee:transform>
+		<json-logger:logger doc:name="BEFORE REQUEST dynamo-sapi" doc:id="a2f485f5-3b39-4598-b860-2c3f8863e437" config-ref="JSON_Logger_Config" message="BEFORE REQUEST to dynamo-sapi" tracePoint="BEFORE_REQUEST" priority="DEBUG" category="${log.category}" />
+		<flow-ref doc:name="dynamo-order-sapi-request" doc:id="7406748d-2281-4eba-9bf2-0dd48f4d97a0" name="dynamo-order-sapi-request"/>
+		<json-logger:logger doc:name="AFTER REQUEST dynamo-sapi" doc:id="6112bf72-5824-403b-b16c-c651023efe81" config-ref="JSON_Logger_Config" message="AFTER REQUEST to dynamo-sapi" tracePoint="AFTER_REQUEST" priority="DEBUG" category="${log.category}"/>
+	</sub-flow>
+</mule>

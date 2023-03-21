@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Configuration packages="com.titan.logging.log4j2">
+<Configuration>
 
-
-   
+    <!--These are some of the loggers you can enable. 
+        There are several more you can find in the documentation. 
+        Besides this log4j configuration, you can also use Java VM environment variables
+        to enable other logs like network (-Djavax.net.debug=ssl or all) and 
+        Garbage Collector (-XX:+PrintGC). These will be append to the console, so you will 
+        see them in the mule_ee.log file. -->
 
     <Appenders>
         <RollingFile name="file" fileName="${sys:mule.home}${sys:file.separator}logs${sys:file.separator}mulesoft-template-api.log" 
@@ -11,18 +15,6 @@
             <SizeBasedTriggeringPolicy size="10 MB" />
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <Log4j2Appender name="S3Appender">
-			<PatternLayout pattern="%d{HH:mm:ss,SSS} [%t] %-5p %c{36} - %m%n"/>
-			<verbose>false</verbose>
-			<stagingBufferAge>${sys:log.s3.frequency}</stagingBufferAge>
-			<s3Bucket>${sys:log.s3.bucket}</s3Bucket>
-			<s3Path>${sys:deployment.name}</s3Path>	
-			<s3Region>${sys:log.s3.aws.region}</s3Region>
-			<s3Compression>${sys:log.s3.compress}</s3Compression>
-			<s3StorageClass>${sys:log.s3.storageClass}</s3StorageClass>
-			<s3AwsKey>${sys:log.s3.aws.accessKey}</s3AwsKey>
-			<s3AwsSecret>${sys:log.s3.aws.secureKey}</s3AwsSecret>
-		</Log4j2Appender>        
     </Appenders>
     <Loggers>
         
@@ -35,8 +27,7 @@
         <AsyncLogger name="org.mule.runtime.core.internal.processor.LoggerMessageProcessor" level="INFO"/>
  
         <AsyncRoot level="INFO">
-            		<AppenderRef ref="file" />
-            		<AppenderRef ref="S3Appender" />
-        	</AsyncRoot>
+            <AppenderRef ref="file" />
+        </AsyncRoot>
     </Loggers>
 </Configuration>
