@@ -246,7 +246,7 @@
 		<dependency>
 			<groupId>16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6</groupId>
 			<artifactId>digigold-order-papi</artifactId>
-			<version>1.0.5</version>
+			<version>1.0.6</version>
 			<classifier>raml</classifier>
 			<type>zip</type>
 		</dependency>

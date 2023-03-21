@@ -9,11 +9,11 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
 	<sub-flow name="call-notification-service" doc:id="34bda21c-f7f3-441f-9137-713f286e3548" >
-		<parse-template doc:name="Parse Template - HTML EMAIL" doc:id="19d3a496-39de-4d21-825a-473ee10d2643" location="templates/technical-notification-template.html" target="emailTemplate" targetValue="#[payload]" />
 		<ee:transform doc:name="Prepare notification payload" doc:id="19121a79-87c0-4edc-b6a3-a64cf8c68839">
 			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+import p from Mule
 import toBase64 from dw::core::Binaries
 ---
 {
@@ -22,7 +22,12 @@ import toBase64 from dw::core::Binaries
   (cc: (p('reportsEmail.cc') splitBy  "," ) )  if (!isEmpty(p('reportsEmail.cc')) ),  				
   subject:  vars.emailSubject ++ p('env') ++ " - " ++ (now() as Date),
   body: vars.emailTemplate,
-  bodyType: p('reportsEmail.contentType')
+  bodyType: p('reportsEmail.contentType'),
+  ("attachments": [{
+		"name": (vars.reportType replace " " with "") ++ "s.zip",
+		"content": toBase64(write(payload, "application/octet-stream")),
+		"contentType": "application/zip"
+	}]) if(vars.attachments == true)
 }
 ]]></ee:set-payload>
 			</ee:message>
@@ -57,7 +62,8 @@ p('notification-sapi.endpoints.post.notificationMethod')]]></ee:set-variable>
 		<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="2dafabf4-86c3-4dd1-a493-679bddd719fc" millisBetweenRetries="${until.millisBetweenRetries}">
 			<try doc:name="Try" doc:id="53614bac-d91e-4541-9160-8329c2481788" >
 				<http:request method="#[vars.notificationMethod]" doc:name="Trigger notification SAPI" doc:id="ca5f8618-d601-418a-8a37-acfa1727df1a" config-ref="notificationSAPIRequestConfig" path="#[vars.notificationPath]" sendCorrelationId="ALWAYS" >
-					<http:headers ><![CDATA[#[output application/java
+					<http:headers ><![CDATA[#[import p from Mule
+output application/java
 ---
 {
 	"client_secret" : p('secure::digigold-order-papi.clientSecret'),

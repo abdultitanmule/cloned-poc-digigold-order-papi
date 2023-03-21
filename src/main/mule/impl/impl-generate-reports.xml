@@ -69,23 +69,6 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 			</when>
 			<otherwise >
 				<choice doc:name="Choice" doc:id="7ad01111-a421-409a-a7b7-698c4103ad79" >
-					<when expression="#[payload.batchCount==1 and payload.count == 0]">
-						<json-logger:logger doc:name="Logger" doc:id="86c58dd8-d5dc-4363-a32b-11fe7db1e1ed" config-ref="JSON_Logger_Config" message='#["No Report to be generated for the " ++ payload.reportType]' tracePoint="FLOW" category="${log.category}">
-							<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
-{
-    //payload: JSONLoggerModule::stringifyNonJSON(payload) 
-    payload:  
-    	{
-			reportType: payload.reportType,
-			variables: payload.variables,
-	        dynamodbFetchCount: payload.dynamodbFetchCount,
-			batchCount: payload.batchCount,
-			count: payload.count,
-	        lastEvaluatedKey: payload.lastEvaluatedKey
-	      }
-}]]]></json-logger:content>
-						</json-logger:logger>
-					</when>
 					<when expression="#[payload.count &gt; 0]">
 						<flow-ref doc:name="process-sfcc-write-csv" doc:id="946532f8-a1df-471d-93a5-0e08f76743c9" name="process-sfcc-write-csv" />
 					</when>
@@ -105,6 +88,8 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	      }
 }]]]></json-logger:content>
 						</json-logger:logger>
+						<set-variable value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	reportType: payload.reportType,&#10;	variables: payload.variables,&#10;	dynamodbFetchCount: payload.dynamodbFetchCount,&#10;    	batchCount: payload.batchCount,&#10;	count: payload.count,&#10;    ("lastEvaluatedKey": payload.lastEvaluatedKey) if (payload.lastEvaluatedKey?),&#10;}]' doc:name="HeadersAndlastEvaluatedKey" doc:id="bf18baf3-2359-4025-9b29-65d466a06f97" variableName="HeadersAndlastEvaluatedKey" />
+						<flow-ref doc:name="decide-xls-creation-for-reports" doc:id="dfb6de23-a2b6-4ffb-a48d-c0e06719e239" name="decide-xls-creation-for-reports"/>
 					</otherwise>
 				</choice>
 			</otherwise>
@@ -129,7 +114,6 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 }]]]></json-logger:content>
 		</json-logger:logger>
 		<flow-ref doc:name="process-sfcc-order-sapi-customer-info" doc:id="1800eae8-ce12-4afa-9705-f1b542b16596" name="process-sfcc-order-sapi-customer-info"/>
-<!-- [STUDIO:"customerSearchResponse"]		<set-variable value="#[{}]" doc:name="customerSearchResponse" doc:id="ca74d12f-ccee-469a-a4c0-91a05f8a7433" variableName="customerSearchResponse"/> [STUDIO] -->
 		<json-logger:logger doc:name="Logger" doc:id="9e696ccc-09df-4d86-a9cd-d878f1b4bf7e" config-ref="JSON_Logger_Config" message='Combining Transaction and SFCC Customer Info' tracePoint="BEFORE_TRANSFORM" category="${log.category}">
 			<json-logger:content><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
@@ -147,40 +131,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 		</json-logger:logger>
 		<ee:transform doc:name="CombineTransaction and SFCC Data" doc:id="149fd3b0-a0bb-4815-b5f6-ef6b1174f211" >
 			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-
-var customerGrouped=vars.customerSearchResponse groupBy $.CUSTOMER_NO
-fun lookupCustomer(MEMBER_ID) =
-    customerGrouped[MEMBER_ID][0]
-output application/csv
----
-payload.items map ((item) -> 
-    {
-    "SAFEGOLD_USERID": (customerGrouped[item.MEMBER_ID])[0].SAFEGOLD_USERID,
-    "EMAIL": 	(customerGrouped[item.MEMBER_ID])[0].EMAIL,
-    "MOBILEPHONE": (customerGrouped[item.MEMBER_ID])[0].MOBILEPHONE,
-    ("PAY_TRANSACTION_ID": item.DGORDER_ID ++ "_" ++ item.TRANSACTION_ID) if(payload.reportType == p('reports.dropOrderReport.reportType')),
-    ("REGISTRATION_DATE": (customerGrouped[item.MEMBER_ID])[0].REGISTRATION_DATE) if(payload.reportType != p('reports.dropOrderReport.reportType')),   
-    ("SAFEGOLDTRANSACTION_ID": item.TRANSACTION_ID) if(payload.reportType != p('reports.dropOrderReport.reportType')),
-    "TRANSACTION_DATE": item.TRANSACTION_DATE,
-    "RATE_ID": item.RATE_ID,
-    "GOLD_RATE": item.GOLD_RATE ,
-    "GRAMS_PURCHASED": item.GRAMS_PURCHASED,
-    "TOTALAMOUNT_INR": item.TOTAL_GOLD_AMOUNT,
-    "TRANSACTION_TYPE": item.TRANSACTION_TYPE,
-    "CHANNEL": item.CHANNEL,
-    "PAYMENT_GATEWAY": item.PAYMENT_GATEWAY,
-    "PAYMENT_METHOD": item.PAYMENT_METHOD,
-    "TRANSACTION_STATUS": item.TRANSACTION_STATUS,
-    ("SAFEGOLDTRANSACTION_ID": item.TRANSACTION_ID) if(payload.reportType == p('reports.dropOrderReport.reportType'))
-    }
-)
-
-
-//payload.items map ((item) -> 
-//	((customerGrouped[item.MEMBER_ID])[0] default {}) - 'CUSTOMER_NO' 
-//	++ item
-//)]]></ee:set-payload>
+				<ee:set-payload resource="dwl/combineTransactionSfcc.dwl" />
 			</ee:message>
 			<ee:variables >
 				<ee:set-variable variableName="outputFileName" ><![CDATA[%dw 2.0
@@ -231,37 +182,7 @@ fun reportFolder(reportType) =
 			</ee:variables>
 		</ee:transform>
 		<sftp:write doc:name="WritetoSFTPfolder" doc:id="616965d0-6fcf-48aa-add2-24ba0d2cf344" config-ref="SFTP_Config" path="#[vars.outputFileName]" mode="APPEND"/>
-		<choice doc:name="Choice" doc:id="5d7558b1-1897-4e32-bb02-7815f3e7bf48" >
-			<when expression="#[vars.HeadersAndlastEvaluatedKey.lastEvaluatedKey == null]">
-				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10; "reportType": vars.reportType&#10;}]' doc:name="Set reportType to send to generate xls" doc:id="7a7f1281-4d33-428a-a358-63600dae0910" />
-				<try doc:name="Try" doc:id="7dc0dd0e-8a10-4479-888d-dcb8376ce29f" >
-					<os:remove doc:name="vars.setObjectStoreNameForReports" doc:id="6376bd8b-4f2b-4d93-9ada-530ef027da6f" key="#[vars.setObjectStoreNameForReports]" />
-					<error-handler >
-						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e975b501-74fc-4a90-951f-0f8f21a33f16" type="OS:KEY_NOT_FOUND">
-							<json-logger:logger doc:name="Logger" doc:id="094ae8d6-455d-4934-a15a-eb03d9e76cfa" config-ref="JSON_Logger_Config" message='#["No Object key found for " ++ vars.setObjectStoreNameForReports ++ " for the " ++ payload.reportType default " "]' tracePoint="END" category="${log.category}" priority="WARN"/>
-						</on-error-continue>
-					</error-handler>
-				</try>
-				<vm:publish doc:name="xlsReportsGenerationQueue" doc:id="f1314861-d112-4774-a762-6b801890277f" config-ref="transactions_vm_Config" queueName="xlsReportsGenerationQueue" sendCorrelationId="ALWAYS" />
-			</when>
-			<otherwise >
-				<json-logger:logger doc:name="Logger" doc:id="40b4260a-2a6c-450f-9eb8-c73d8c518104" config-ref="JSON_Logger_Config" message='#["Completed the End of the Customer and Transaction merge"]' tracePoint="END" category="${log.category}">
-			<json-logger:content><![CDATA[#[import modules::JSONLoggerModule output application/json ---
-{
-    //payload: JSONLoggerModule::stringifyNonJSON(payload) 
-    payload:  
-    	{
-			reportType: payload.reportType,
-			variables: payload.variables,
-	        dynamodbFetchCount: payload.dynamodbFetchCount,
-			batchCount: payload.batchCount,
-			count: payload.count,
-	        lastEvaluatedKey: payload.lastEvaluatedKey
-	      }
-}]]]></json-logger:content>
-		</json-logger:logger>
-			</otherwise>
-		</choice>
+		<flow-ref doc:name="decide-xls-creation-for-reports" doc:id="c10994df-8377-44c5-aaa1-b50776d2bd9e" name="decide-xls-creation-for-reports"/>
 		<error-handler ref="reports-global-error-handler" />
 	</flow>
 </mule>

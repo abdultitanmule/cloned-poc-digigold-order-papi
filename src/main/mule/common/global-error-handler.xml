@@ -165,8 +165,10 @@ import p from Mule
 output text/plain
 ---
 vars.reportType default " " ++ " " ++ p('reportsEmail.ErrorSubject')]]></ee:set-variable>
+					<ee:set-variable variableName="attachments" ><![CDATA[false]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
+			<parse-template doc:name="Parse Technical Error Template - HTML EMAIL" doc:id="3437b9c8-6e13-4ae6-a5bc-59607be39170" location="templates/technical-notification-template.html" target="emailTemplate" targetValue="#[payload]" />
 			<flow-ref doc:name="call to notification service" doc:id="d675fdb6-4c09-4db2-8984-0d9fbded704e" name="call-notification-service" />
 		</on-error-continue>
 	</error-handler>

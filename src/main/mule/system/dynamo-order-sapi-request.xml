@@ -12,8 +12,8 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 		<try doc:name="Try" doc:id="f85d37d3-6d4c-4b83-b55f-9e05b94dab83" >
 			<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="69b41abf-82a8-4329-b381-448aad6a970f" millisBetweenRetries="${until.millisBetweenRetries}" >
 				<try doc:name="Try" doc:id="09e62282-bd95-4c81-874d-b1855a92abf7" >
-					<http:request method="#[vars.dynamoSapiMethodAndPath.method]" doc:name="httpRequestToDynamoOrderSapi" doc:id="3bca39c6-fa25-4050-a86f-b85c1d972e08" config-ref="dynamoOrderSapiRequestConfig" path="#[vars.dynamoSapiMethodAndPath.path]" sendCorrelationId="ALWAYS" correlationId="#[vars.correlationId]" targetValue="#[message]" >
-						<http:headers ><![CDATA[#[vars.sapiHeaders]]]></http:headers>
+					<http:request method="#[vars.transactionsMethod]" doc:name="httpRequestToDynamoOrderSapi" doc:id="3bca39c6-fa25-4050-a86f-b85c1d972e08" config-ref="dynamoSAPIRequestConfig" path="#[vars.transactionsPath]" sendCorrelationId="ALWAYS" correlationId="#[vars.correlationId]" targetValue="#[message]" >
+						<http:headers ><![CDATA[#[vars.dynamoSapiHeaders]]]></http:headers>
 					</http:request>
 					
 					
