@@ -35,6 +35,14 @@ jobs:
       CLOUDHUB_PUBLIC_URL: "" #Provide the Endpoint URL if custom public endpoint is needed
       GENERATE_PUBLIC_URL_FLAG: "false" #Set to true only if the app has public Endpoint URL; in all other cases this should be false
       APP_LAYER: ${{ vars.MULE_PROC_API_LAYER }}
+      CLUSTER_ENABLED_FLAG: "false" #Set to true if needed;
+      #Begin S3 Logging Properties
+      MULE_LOG_S3_FREQUENCY_MIN: "${{ vars.MULE_NONPROD_LOG_S3_FREQUENCY_MIN }}"
+      MULE_LOG_S3_AWS_REGION: "${{ vars.MULE_LOG_S3_AWS_REGION }}"
+      MULE_LOG_S3_AWS_BUCKET: "${{ vars.MULE_DEV_LOG_S3_AWS_BUCKET }}"
+      MULE_LOG_S3_COMPRESS_FLAG: "${{ vars.MULE_LOG_S3_COMPRESS_FLAG }}"
+      MULE_LOG_S3_STORAGE_CLASS: "${{ vars.MULE_LOG_S3_STORAGE_CLASS }}"
+      #End S3 Logging Properties
     secrets:
       EX_CONNECTED_APP_ID: "${{ secrets.MULE_EX_CONNECTED_APP_ID }}"
       EX_CONNECTED_APP_SECRET: "${{ secrets.MULE_EX_CONNECTED_APP_SECRET }}"
@@ -44,3 +52,7 @@ jobs:
       MULE_AP_CLIENT_SECRET: "${{ secrets.MULE_AP_CLIENT_SECRET }}"
       TITAN_BIZ_GROUP: "${{ secrets.MULE_TITAN_BIZ_GROUP_JEWELLERY }}"
       SECURE_ENCRYPT_KEY: "${{ secrets.MULE_DEV_SECURE_ENCRYPT_KEY }}"
+      #Begin S3 Logging Properties
+      MULE_AWS_S3_ACCESS_KEY: "${{ secrets.MULE_NONPROD_AWS_S3_ACCESS_KEY }}"
+      MULE_AWS_S3_SECRET_KEY: "${{ secrets.MULE_NONPROD_AWS_S3_SECRET_KEY }}"
+      #End S3 Logging Properties

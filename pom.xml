@@ -8,7 +8,7 @@
 	<artifactId>digigold-order-papi-app</artifactId>
 	<!-- Artifact ID should always have app appended in the end.
 	Ex: If the API name is oauth-sfcc-sapi, then artifactId should be oauth-sfcc-sapi-app -->
-	<version>1.0.12</version>
+	<version>1.0.14</version>
 	<packaging>mule-application</packaging>
 	<name>digigold-order-papi</name>
 	<properties>
@@ -50,6 +50,7 @@
 		<deployment.name>${project.name}</deployment.name>
 		<deployment.timeoutMillis>1000000</deployment.timeoutMillis>
 		<api.layer>{{Set API Layer}}</api.layer>
+		<ap.clusteredFlag>false</ap.clusteredFlag>
 
 	</properties>
 
@@ -107,6 +108,7 @@
 							<!-- Any additional secure properties must be added here -->
 						</secureProperties>
 						<deploymentSettings>
+							<clustered>${ap.clusteredFlag}</clustered>
 							<generateDefaultPublicUrl>${ap.generateDefaultPublicUrl}</generateDefaultPublicUrl>
 							<http>
 								<inbound>
