@@ -20,6 +20,7 @@ http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sft
 output application/json
 ---
 {
+	reportType: vars.reportType,
     count: vars.dynamoResponse.count default 0,
     variables: payload.variables,
     ("lastEvaluatedKey": vars.dynamoResponse.lastEvaluatedKey) if (vars.dynamoResponse.lastEvaluatedKey?),   

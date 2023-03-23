@@ -1,8 +1,18 @@
+
 # Secured Properties
 dynamodb:
-  accesskey: "![n1z+OPkpA1Jsc+RzqqWMxyhKb+88ORWlzlCrkOMDuoo=]"
-  secretkey: "![CdTrP88+5PVUwd9LLoWYt7mj4kCZn3WCjpmwFhx5I+q8FLN7pmysdfDuJ/aMQ0YZ]"
+  accesskey: "![Os1J9J4JYhaj7jq0BpGGwdqs3CjCm1fdWCj2uis+JKI=]"
+  secretkey: "![N9uXZEsfwjjICEPRJzh0dh46dY0GdYe364Rt3KJAkgXxNXQr4mT6F+DvqCt5CqXf]"
+
 titan:
  sftp:
-  username: "![ZibIQHduKBhWhwM1G4K8VA==]" 
-  password: "![EO09WjxFFEVguFoFeXdW3A==]"
+  username: "![CxjQwVj8Y2CJrBmyoeRicw==]" 
+  password: "![Sid/xO1SeSd7WJkSNZmjaQ==]"
+
+# ClientId and ClientSecret of digigoldOrderPAPI to be used in all the Outbound Calls to API's
+digigold-order-papi: 
+  clientId: "![ycsm837gPMGk+jip+La/aTBzdXJBMmoTXTbQMNt21jpejGlA87fmdD/g9hgQ8vGF]"
+  clientSecret: "![gemf02yqKNmnCH53L0eYojYyDQbl4ENEpDE0Fw34fbgjECDcMWTBk6uidw5kGD3t]"
+  
+aes:
+  password: "![8x+qKJDdRb2mpSbTK2CcXTHnKSguV02MkQ1bUb6fb2w=]" 

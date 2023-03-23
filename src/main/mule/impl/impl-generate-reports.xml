@@ -62,7 +62,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	reportType: payload.reportType,&#10;	variables: payload.variables,&#10;	dynamodbFetchCount: payload.dynamodbFetchCount,&#10;    	batchCount: (payload.batchCount default 0) + 1,&#10;	count: 0,&#10;    lastEvaluatedKey: payload.lastEvaluatedKey default {}&#10;}]" doc:name="HeadersAndlastEvaluatedKey" doc:id="87378b91-6368-4d5f-ba2b-023b908da70b" variableName="HeadersAndlastEvaluatedKey" />
 				<flow-ref name="process-sfcc-write-csv" doc:name="process-sfcc-write-csv" doc:id="68ef7345-0759-4667-a785-aa4276882f7e"></flow-ref>
 				<set-payload value='#[vars.HeadersAndlastEvaluatedKey]' doc:name="Set Payload" doc:id="928e4b5f-cf99-4f26-b4a0-f30893e27860" />
-				<os:store doc:name="vars.setObjectStoreNameForReports" doc:id="22d4d03b-7c22-4f88-9e8b-e410d9640a98" key="#[vars.setObjectStoreNameForReports]" >
+				<os:store doc:name="vars.setObjectStoreNameForReports" doc:id="22d4d03b-7c22-4f88-9e8b-e410d9640a98" key="#[vars.setObjectStoreNameForReports]" objectStore="reportNameObjectStore">
 					<os:value ><![CDATA[#[vars.HeadersAndlastEvaluatedKey.lastEvaluatedKey]]]></os:value>
 				</os:store>
 				<vm:publish doc:name="reportsExtractQueue" doc:id="cf9fad30-9491-4f64-9bfa-f6cb22930279" config-ref="transactions_vm_Config" queueName="reportsExtractQueue" sendCorrelationId="ALWAYS"/>

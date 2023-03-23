@@ -36,7 +36,6 @@ output application/json
 	    headers:  
     	{
 			reportType: payload.reportType,
-			reportName: payload.reportName,
 			variables: payload.variables,
 	        dynamodbFetchCount: payload.dynamodbFetchCount,
 			batchCount: payload.batchCount,
@@ -134,7 +133,7 @@ payload]]></ee:set-payload>
 output application/json
 ---
 {
-"reportType": vars.reportType
+"reportType": vars.reportType default " "
 }
 ++ payload
 
