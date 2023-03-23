@@ -10,7 +10,7 @@ https:
 
 api:
   autodiscovery:
-    id: "18556760"
+    id: "18578743"
 
 
 ###############################
@@ -19,7 +19,7 @@ api:
 
 dynamodb:
   regionendpoint: "ap-south-1"
-  tableName: "DEV_XDG_TRANSACTION"
+  tableName: "SIT_XDG_TRANSACTION"
 
 #Titan SFTP Server 
 titan:
@@ -28,14 +28,14 @@ titan:
   port: "22"
   csvfilenamepattern: "*.csv"
   xlsxfilenamepattern: "*.xlsx"
-  oracleReport: "home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/oraclefeed"
-  transactionReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transaction/"
-  transactionConsolidatedReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transactionConsolidated/"
-  dropOrderReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/droporder/"
+  oracleReport: "home/ECOM_MuleSoft/mulesoft/sit/order/jewellery/digigold/oraclefeed"
+  transactionReport: "/home/ECOM_MuleSoft/mulesoft/sit/order/jewellery/digigold/transaction/"
+  transactionConsolidatedReport: "/home/ECOM_MuleSoft/mulesoft/sit/order/jewellery/digigold/transactionConsolidated/"
+  dropOrderReport: "/home/ECOM_MuleSoft/mulesoft/sit/order/jewellery/digigold/droporder/"
   txnMigration:
     migrationfileName: "DigiGoldTransactions.csv"
-    workingDir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/input"
-    archiveDir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/archive"
+    workingDir: "/home/ECOM_MuleSoft/mulesoft/sit/order/jewellery/digigold/migration/input"
+    archiveDir: "/home/ECOM_MuleSoft/mulesoft/sit/order/jewellery/digigold/migration/archive"
 
   
 #COMMON SFTP SAPI
@@ -44,7 +44,7 @@ sftp-sapi:
   connectionTimeout: "60000"
   responseTimeout: "60000"
   sourceChannel: "digigoldOrderPAPI"
-  host: "sftp-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
+  host: "sftp-sapi-sit-0maxdu.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
   endpoints:
@@ -57,7 +57,7 @@ dynamo-sapi:
   connectionTimeout: "60000"
   responseTimeout: "30000"
   sourceChannel: "digigoldOrderPAPI"
-  host: "dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io"
+  host: "dynamo-order-sapi-sit-0maxdu.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
   endpoints:
@@ -74,7 +74,7 @@ notification-sapi:
   connectionTimeout: "60000"
   responseTimeout: "60000"
   sourceChannel: "digigoldOrderPAPI"
-  host: "notification-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
+  host: "notification-sapi-sit-0maxdu.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
   endpoints:
@@ -88,7 +88,7 @@ sfcc-order-sapi:
   connectionTimeout: "60000"
   responseTimeout: "30000"
   sourceChannel: "digigoldOrderPAPI"
-  host: "sfcc-order-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
+  host: "sfcc-order-sapi-sit-0maxdu.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
   endpoints:

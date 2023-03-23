@@ -214,7 +214,7 @@ import * from dw::core::Dates
 				<cron expression="${scheduler.dropOrderReportGeneration}" timeZone="${scheduler.timeZone}" />
 			</scheduling-strategy>
 		</scheduler>
-		<os:retrieve doc:name="dropOrderReportlastEvaluatedKey" doc:id="4ee7342c-55b8-4908-972d-2a9c9c10d57a" key="dropOrderReportlastEvaluatedKey" target="dropOrderReportlastEvaluatedKey" >
+		<os:retrieve doc:name="dropOrderReportlastEvaluatedKey" doc:id="4ee7342c-55b8-4908-972d-2a9c9c10d57a" key="dropOrderReportlastEvaluatedKey" target="dropOrderReportlastEvaluatedKey" objectStore="reportNameObjectStore">
 			<os:default-value ><![CDATA[#["Undefined"]]]></os:default-value>
 		</os:retrieve>
 		<ee:transform doc:name="Pass drop Order Report Data" doc:id="d1a41c60-0a33-437c-bcd3-9465be28de85" >
@@ -251,7 +251,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 				<cron expression="${scheduler.transactionReportGeneration}" timeZone="${scheduler.timeZone}" />
 			</scheduling-strategy>
 		</scheduler>
-		<os:retrieve doc:name="transactionReportlastEvaluatedKey" doc:id="3bffb7f1-90ef-486e-bf3e-0c044f26c6b1" key="transactionReportlastEvaluatedKey" target="transactionReportlastEvaluatedKey">
+		<os:retrieve doc:name="transactionReportlastEvaluatedKey" doc:id="3bffb7f1-90ef-486e-bf3e-0c044f26c6b1" key="transactionReportlastEvaluatedKey" target="transactionReportlastEvaluatedKey" objectStore="reportNameObjectStore">
 			<os:default-value ><![CDATA[#["Undefined"]]]></os:default-value>
 		</os:retrieve>
 		<ee:transform doc:name="Pass Transaction report Data" doc:id="16d48fb1-96d0-49db-b595-3f9a17fe6b89" >
@@ -302,7 +302,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 				<cron expression="${scheduler.transactionConsolidatedReportGeneration}" timeZone="${scheduler.timeZone}" />
 			</scheduling-strategy>
 		</scheduler>
-		<os:retrieve doc:name="transactionConsolidatedReportlastEvaluatedKey" doc:id="5fc67db8-f4ed-4d31-9821-e899a9a14983" key="transactionConsolidatedReportlastEvaluatedKey" target="transactionConsolidatedReportlastEvaluatedKey">
+		<os:retrieve doc:name="transactionConsolidatedReportlastEvaluatedKey" doc:id="5fc67db8-f4ed-4d31-9821-e899a9a14983" key="transactionConsolidatedReportlastEvaluatedKey" target="transactionConsolidatedReportlastEvaluatedKey" objectStore="reportNameObjectStore">
 			<os:default-value ><![CDATA[#["Undefined"]]]></os:default-value>
 		</os:retrieve>
 		<ee:transform doc:name="Pass transaction consolidated report data" doc:id="4978b704-b9dc-442b-8f2f-0d7525352012" >

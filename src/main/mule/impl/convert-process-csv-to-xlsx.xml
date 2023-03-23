@@ -20,6 +20,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 		<sftp:list doc:name="Read All CSV Report Files" doc:id="66fab87b-b986-484a-ae62-1237ba5a3759" config-ref="SFTP_Config" directoryPath="#[vars.folderPath]">
 				<sftp:matcher directories="EXCLUDE" filenamePattern="${titan.sftp.csvfilenamepattern}" />
 			</sftp:list>
+		<set-variable value="#[payload.attributes.fileName]" doc:name="fileNamesList" doc:id="5cdf2518-dd2d-423c-9c9d-1d21e919d21a" variableName="fileNamesList"/>
 		<ee:transform doc:name="Transform Message" doc:id="640212fd-65b0-45ff-9d52-7e25a3af80f3" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -83,13 +84,19 @@ output application/java
 vars.reportType default " " ++ " " ++ p('reportsEmail.Subject')]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-				<flow-ref doc:name="call to notification-sapi" doc:id="83349c23-0c05-453e-8357-7803a1c2c15a" name="call-notification-service" />
+				<try doc:name="Try" doc:id="6b58d5d5-0bc6-4e27-b4d9-8b31f98c1e6f" >
+					<flow-ref doc:name="call to notification-sapi" doc:id="83349c23-0c05-453e-8357-7803a1c2c15a" name="call-notification-service" />
+					<error-handler ref="sapi-request-error-handler" />
+				</try>
 				<json-logger:logger doc:name="Logger" doc:id="a6ad6947-9ac6-48be-a160-c4f817ce2f7b" config-ref="JSON_Logger_Config" message='#["Email for " ++ vars.reportType ++ " successfully sent"]' tracePoint="END" category="${log.category}" />
+				<foreach doc:name="For Each" doc:id="c16deab2-4bc3-4bb8-bf8a-e1df5a3df584" collection="#[vars.fileNamesList]">
+					<sftp:delete doc:name="Delete" doc:id="90ccc2a1-ccc6-41e7-bd01-bc531a810308" config-ref="SFTP_Config" path="#[vars.folderPath ++ payload]"/>
+				</foreach>
 			</when>
 			<otherwise >
 				<json-logger:logger doc:name="Logger" doc:id="89beab36-b085-428a-8e53-f0072db55d32" config-ref="JSON_Logger_Config" message="No Data to be generated" tracePoint="END" category="${log.category}"/>
 			</otherwise>
 		</choice>
-		<error-handler ref="sapi-request-error-handler" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 </mule>

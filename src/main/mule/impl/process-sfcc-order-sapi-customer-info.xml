@@ -36,7 +36,6 @@ output application/json
 	    headers:  
     	{
 			reportType: payload.reportType,
-			reportName: payload.reportName,
 			variables: payload.variables,
 	        dynamodbFetchCount: payload.dynamodbFetchCount,
 			batchCount: payload.batchCount,

@@ -31,43 +31,40 @@ reports:
     StartDate: "01/01/1980 0:0:0"
   dropOrderReport:
     reportType: "DropOrder Report" 
-  batchCount: "5000"
+  batchCount: "4000"
 
 scheduler:
   oracleReportGeneration: "0 0 5 ? * *"
   transactionReportGeneration: "0 0 3 ? * *"
   dropOrderReportGeneration: "0 0 4 ? * *"
-  transactionConsolidatedReportGeneration: "0 0 0 1,15 * ? *"
+  transactionConsolidatedReportGeneration: "0 0 1 1,15 * ? *"
   transactionMigrationSchedule: "0 30 0 20 3 ? *"
   timeZone: "Asia/Kolkata"
 
-############################ Below is the cron expression to trigger periodically in minutes.###############
-################ To Be used for local testing ###############
-
+############################# Below is the cron expression to trigger periodically in minutes.###############
+################# To Be used for local testing ###############
+#
 #reports:
 #  oracleReport:
 #    reportType: "Oracle Report"
 #    reportSequenceNumber: "0"  
 #  transactionReport:
 #    reportType: "Transaction Report" 
-#    StartDate: "01/01/1980 0:0:0"
 #  transactionConsolidatedReport:
 #    reportType: "Transaction Consolidated Report" 
 #    StartDate: "01/01/1980 0:0:0"
 #  dropOrderReport:
 #    reportType: "DropOrder Report" 
-#    StartDate: "03/18/2023 0:0:0"
-#    EndDate: "03/19/2023 0:0:0"
 #  batchCount: "5000"
 #
 #scheduler:
-#  oracleReportGeneration: "0 0/15 * 1/1 * ? *"
-#  transactionReportGeneration: "0 0/15 * 1/1 * ? *"
-#  dropOrderReportGeneration: "0 0/5 * 1/1 * ? *"
-#  transactionConsolidatedReportGeneration: "0 0/12 * 1/1 * ? *"
-#  transactionMigrationSchedule: "0 0/30 * 1/1 * ? *"
+#  oracleReportGeneration: "0 0/50 * 1/1 * ? *"
+#  transactionReportGeneration: "0 0/45 * 1/1 * ? *"
+#  dropOrderReportGeneration: "0 0/45 * 1/1 * ? *"
+#  transactionConsolidatedReportGeneration: "0 0/3 * 1/1 * ? *"
+#  transactionMigrationSchedule: "0 0/45 * 1/1 * ? *"
 #  timeZone: "Asia/Kolkata"
-##########################################################################################
+###########################################################################################
 
 api:
   resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.6:raml:zip:digigold-order-papi.raml"

@@ -1,21 +1,123 @@
 ###############################
 #  INBOUND                    #
 ###############################
+
+https:
+  port: "8081"
+  version: "v1"
+  path: "/api/${https.version}/*"
+  host: "0.0.0.0"
+
 api:
   autodiscovery:
-    id: "" #TODO FOR DEVELOPER - CHANGE ACCORDINGLY THE DEFAULT CONFIGURATION
+    id: " "
+
 
 ###############################
 #  OUTBOUND                   #
 ###############################
+
 dynamodb:
   regionendpoint: "ap-south-1"
+  tableName: "UAT_XDG_TRANSACTION"
 
+#Titan SFTP Server 
 titan:
  sftp:
   host: "172.30.5.115"
   port: "22"
-  workingdir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/input"
-  filenamepattern: "*.csv"
-  archivedir: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/migration/archive"
-  pollingfrequency: "10" # in Minutes
+  csvfilenamepattern: "*.csv"
+  xlsxfilenamepattern: "*.xlsx"
+  oracleReport: "home/ECOM_MuleSoft/mulesoft/uat/order/jewellery/digigold/oraclefeed"
+  transactionReport: "/home/ECOM_MuleSoft/mulesoft/uat/order/jewellery/digigold/transaction/"
+  transactionConsolidatedReport: "/home/ECOM_MuleSoft/mulesoft/uat/order/jewellery/digigold/transactionConsolidated/"
+  dropOrderReport: "/home/ECOM_MuleSoft/mulesoft/uat/order/jewellery/digigold/droporder/"
+  txnMigration:
+    migrationfileName: "DigiGoldTransactions.csv"
+    workingDir: "/home/ECOM_MuleSoft/mulesoft/uat/order/jewellery/digigold/migration/input"
+    archiveDir: "/home/ECOM_MuleSoft/mulesoft/uat/order/jewellery/digigold/migration/archive"
+
+  
+#COMMON SFTP SAPI
+
+sftp-sapi:
+  connectionTimeout: "60000"
+  responseTimeout: "60000"
+  sourceChannel: "digigoldOrderPAPI"
+  host: "sftp-sapi-uat-xzqc7g.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basePath: "/api/v1"
+  endpoints:
+    post:
+      sftpWrite: "/write"
+      sftpMethod: "POST"
+   
+#Dynamo Order SAPI
+dynamo-sapi:
+  connectionTimeout: "60000"
+  responseTimeout: "30000"
+  sourceChannel: "digigoldOrderPAPI"
+  host: "dynamo-order-sapi-uat-xzqc7g.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basePath: "/api/v1"
+  endpoints:
+    get:
+      transactionsPath: "/transactions"
+      transactionsMethod: "GET"
+    post:
+      transactionsPath: "/transactions"
+      transactionsMethod: "POST"
+    batchCount: "5000"
+    
+#COMMON Notification SAPI
+notification-sapi:
+  connectionTimeout: "60000"
+  responseTimeout: "60000"
+  sourceChannel: "digigoldOrderPAPI"
+  host: "notification-sapi-uat-xzqc7g.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basePath: "/api/v1"
+  endpoints:
+    post:
+      notificationPath: "/notifications"
+      notificationMethod: "POST"
+      queryParameter: "Email"
+      
+# SFCC Order SAPI
+sfcc-order-sapi:
+  connectionTimeout: "60000"
+  responseTimeout: "30000"
+  sourceChannel: "digigoldOrderPAPI"
+  host: "sfcc-order-sapi-uat-xzqc7g.internal-1zj8l2.sgp-s1.cloudhub.io"
+  port: "443"
+  basePath: "/api/v1"
+  endpoints:
+    post:
+      customerSearchPath: "/customer/search"
+      notificationMethod: "POST"
+  batchSize: "25"
+
+#Notification Email for Reports
+reportsEmail:
+  to: "gradhakrishna@salesforce.com,amanney@salesforce.com"
+  from: "ecomas@titan.co.in"
+  cc: "gkadam@salesforce.com"
+  ErrorSubject: "Generation Failure Notification - "
+  Subject: "Generation Notification - : "
+  contentType: "text/html"
+  body: "Please find the attachment of the report generated "
+  noDataBody: "There is no data to generate "
+  
+  
+order-papi:
+  buyConfirmed:
+    debit: "245154"
+    credit: "153891"
+  redemption:
+    debit: "245170"
+    credit: "151633"
+
+
+until:
+  retries: "2"
+  millisBetweenRetries: "3000"

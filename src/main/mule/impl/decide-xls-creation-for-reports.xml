@@ -16,7 +16,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 			<when expression="#[vars.HeadersAndlastEvaluatedKey.lastEvaluatedKey == null]">
 				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10; "reportType": vars.reportType&#10;}]' doc:name="Set reportType to send to generate xls" doc:id="f1555e88-e7ed-4ec9-95d0-b5ec6a35e090" />
 				<try doc:name="Try" doc:id="b507ae73-a42f-4b6a-8ba6-2f0a30b9b93b" >
-					<os:remove doc:name="vars.setObjectStoreNameForReports" doc:id="1426f2dc-0601-4dcc-a6a8-ef307468faea" key="#[vars.setObjectStoreNameForReports]" />
+					<os:remove doc:name="vars.setObjectStoreNameForReports" doc:id="1426f2dc-0601-4dcc-a6a8-ef307468faea" key="#[vars.setObjectStoreNameForReports]" objectStore="reportNameObjectStore"/>
 					<error-handler >
 						<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a0d03489-d2cc-42c0-b19a-3dff938bc39d" type="OS:KEY_NOT_FOUND">
 							<json-logger:logger doc:name="Logger" doc:id="8fa45094-b3dd-4bf0-b47d-89165695a865" config-ref="JSON_Logger_Config" message='#["No Object key found for " ++ vars.setObjectStoreNameForReports ++ " for the " ++ payload.reportType default " "]' tracePoint="END" category="${log.category}" priority="WARN"/>
