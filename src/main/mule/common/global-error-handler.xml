@@ -147,9 +147,7 @@ output application/json
 	
 },
  payload: JSONLoggerModule::stringifyNonJSON(payload),
- errorMessage: error
- //Optional - DO NOT LOG whole payload as it will be huge. Log it only when necessary;
- //No sensitive information should be logged in plain text
+ errorMessage: error.description
 }]]]></json-logger:content>
 			</json-logger:logger>
 			<flow-ref doc:name="call to common-error-response-flow" doc:id="e887beb7-16c6-4313-b768-8818ca7b94e1" name="common-error-response-flow" />
