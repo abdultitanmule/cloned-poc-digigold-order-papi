@@ -38,7 +38,11 @@ http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sft
 		<dynamodb:basic-connection accessKey="${secure::dynamodb.accesskey}" secretKey="${secure::dynamodb.secretkey}" region="${dynamodb.regionendpoint}" />
 	</dynamodb:config>
 	<sftp:config name="SFTP_Config" doc:name="SFTP Config" doc:id="747b6110-0dba-45b3-a6d8-ab3760ed312e" >
-		<sftp:connection host="${titan.sftp.host}" port="${titan.sftp.port}" username="${secure::titan.sftp.username}" password="${secure::titan.sftp.password}" />
+		<sftp:connection host="${titan.sftp.host}" port="${titan.sftp.port}" username="${secure::titan.sftp.username}" password="${secure::titan.sftp.password}" >
+			<reconnection >
+				<reconnect count="3" />
+			</reconnection>
+		</sftp:connection>
 	</sftp:config>
    <import doc:name="Import error configs" doc:id="2a1825bc-2e7a-4bb9-886b-602984474997" file="error-common.xml" />
 	<import doc:name="Import error log" doc:id="c51c2d99-268b-4c29-acf5-ecfaee712770" file="logging-common.xml" />
