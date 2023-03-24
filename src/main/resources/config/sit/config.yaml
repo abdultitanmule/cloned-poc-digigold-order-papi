@@ -57,7 +57,7 @@ dynamo-sapi:
   connectionTimeout: "60000"
   responseTimeout: "30000"
   sourceChannel: "digigoldOrderPAPI"
-  host: "dynamo-order-sapi-sit-0maxdu.internal-1zj8l2.sgp-s1.cloudhub.io"
+  host: "dynamo-order-sapi-sit-n46pgz.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
   endpoints:
@@ -67,7 +67,7 @@ dynamo-sapi:
     post:
       transactionsPath: "/transactions"
       transactionsMethod: "POST"
-    batchCount: "5000"
+  
     
 #COMMON Notification SAPI
 notification-sapi:

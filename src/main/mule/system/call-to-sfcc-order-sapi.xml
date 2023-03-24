@@ -22,7 +22,7 @@ output application/json skipNullOn = "everywhere"
 		method: vars.httpMethod
 	},
 	eventInfo: {
-		//payload: JSONLoggerModule::stringifyAny(payload)
+		payload: JSONLoggerModule::stringifyAny(payload)
 	}
 }]]]></json-logger:content>
 		</json-logger:logger>

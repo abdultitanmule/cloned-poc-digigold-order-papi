@@ -41,31 +41,6 @@ scheduler:
   transactionMigrationSchedule: "0 30 0 20 3 ? *"
   timeZone: "Asia/Kolkata"
 
-############################# Below is the cron expression to trigger periodically in minutes.###############
-################# To Be used for local testing ###############
-#
-#reports:
-#  oracleReport:
-#    reportType: "Oracle Report"
-#    reportSequenceNumber: "0"  
-#  transactionReport:
-#    reportType: "Transaction Report" 
-#  transactionConsolidatedReport:
-#    reportType: "Transaction Consolidated Report" 
-#    StartDate: "01/01/1980 0:0:0"
-#  dropOrderReport:
-#    reportType: "DropOrder Report" 
-#  batchCount: "5000"
-#
-#scheduler:
-#  oracleReportGeneration: "0 0/50 * 1/1 * ? *"
-#  transactionReportGeneration: "0 0/45 * 1/1 * ? *"
-#  dropOrderReportGeneration: "0 0/45 * 1/1 * ? *"
-#  transactionConsolidatedReportGeneration: "0 0/3 * 1/1 * ? *"
-#  transactionMigrationSchedule: "0 0/45 * 1/1 * ? *"
-#  timeZone: "Asia/Kolkata"
-###########################################################################################
-
 api:
   resource: "resource::16d6a22d-7691-4a2e-bbcb-8a81c9c5d4e6:digigold-order-papi:1.0.6:raml:zip:digigold-order-papi.raml"
  

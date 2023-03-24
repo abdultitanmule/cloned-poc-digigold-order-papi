@@ -67,7 +67,7 @@ dynamo-sapi:
     post:
       transactionsPath: "/transactions"
       transactionsMethod: "POST"
-    batchCount: "5000"
+
     
 #COMMON Notification SAPI
 notification-sapi:
