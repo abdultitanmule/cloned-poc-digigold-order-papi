@@ -177,7 +177,7 @@ output application/json
 }]]]></json-logger:content>
 		</json-logger:logger>
 		<flow-ref doc:name="impl-transaction-migration" doc:id="7f79b139-96ab-4f4a-947f-4dc55cb533e1" name="impl-transaction-migration" />
-		<error-handler ref="error-handler-migration" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	<flow name="digigold-order-daily-oracle-report-generation" doc:id="ba577b05-b621-4a76-824d-a6f264fb9964">
 		<scheduler doc:name="Scheduler" doc:id="36145a30-6fe7-4b75-a291-35296901e394">
@@ -244,6 +244,8 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="a2cce765-441f-4453-bf08-c33b8c8df177" name="impl-generate-reports" />
+		<json-logger:logger doc:name="Logger" doc:id="07d30d46-6873-4a91-8c27-9f2da776c08b" config-ref="JSON_Logger_Config" tracePoint="END" message="Completion of the Drop Porder trigger process"/>
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	<flow name="digigold-order-daily-transaction-report-generation" doc:id="24913856-977d-4638-8af8-59f0aaba55c0">
 		<scheduler doc:name="TransactionReportScheduler" doc:id="2fbe7215-b3fd-4ff6-bcc2-767b88a05743" >
@@ -295,6 +297,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="bb206e3b-7480-4908-8b39-61854e2bf457" name="impl-generate-reports" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	<flow name="digigold-order-fortnightly-transaction-consolidated-report-generation" doc:id="23fda268-7e03-4bff-ad8a-a5fd9f069adc">
 		<scheduler doc:name="TransactionConsolidatedReportScheduler" doc:id="20fc7d22-3722-4ca0-bdad-28c25fc84a69" >
@@ -329,6 +332,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="a25abaaf-89f1-4d8f-b440-792da3f36c90" name="impl-generate-reports" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 
 </mule>

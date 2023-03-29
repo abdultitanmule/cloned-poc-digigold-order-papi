@@ -50,11 +50,11 @@ output application/json
 			</on-error-continue>
 					</error-handler>
 					
-					<error-handler name="error-handler-migration" doc:id="d5941d27-b0b3-47c8-92e1-d3b2fe62c554" >
+<!-- [STUDIO:"error-handler-migration"]					<error-handler name="error-handler-migration" doc:id="d5941d27-b0b3-47c8-92e1-d3b2fe62c554" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2ded639e-05d1-4e06-8a53-c343f8b075c1" type="ANY">
 			<json-logger:logger doc:name="ON Log" doc:id="c1468898-8fe6-4df2-8037-6e53f31b515d" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" category="${log.category}" priority="ERROR" />
 		</on-error-propagate>
-	</error-handler>
+	</error-handler> [STUDIO] -->
 	
 	<sub-flow name="common-set-error-details" doc:id="e9eb6947-fc1a-47dc-9eeb-02b8e434ee4f" >
 		<set-variable value="#[false]" doc:name="Set Successful" doc:id="0e50279f-189e-472f-8e66-574e22b838b0" variableName="successful" />
@@ -110,10 +110,10 @@ output application/json
 			</json-logger:logger>
 		</on-error-continue>
 	</error-handler>
-	<error-handler name="digigold-report-error-handler" doc:id="68998422-32f6-42cf-9cb3-5bd724305afe" >
+<!-- [STUDIO:"digigold-report-error-handler"]	<error-handler name="digigold-report-error-handler" doc:id="68998422-32f6-42cf-9cb3-5bd724305afe" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e4154399-308d-49ae-9487-5952da1373e7" type="ANY">
 			<json-logger:logger doc:name="Exception Log" doc:id="66c7e5f4-f105-4b21-91b6-611d83d38a62" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}" >
-				<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+				<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" &#45;&#45;-
 {
 	eventContext: {
 	businessID: "${global.properties.businessId}",
@@ -131,7 +131,7 @@ output application/json
 }]]]></json-logger:content>
 			</json-logger:logger>
 		</on-error-propagate>
-	</error-handler>
+	</error-handler> [STUDIO] -->
 	<error-handler name="reports-global-error-handler" doc:id="1a0ba560-69dd-448f-99ab-17d1eb3c45fb" >
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5e24f259-8750-4747-9057-f7f1969abb43" type="ANY" >
 			<json-logger:logger doc:name="Exception Log" doc:id="c6ed0f45-5179-4f32-8da3-ce87ccc5abcc" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}">

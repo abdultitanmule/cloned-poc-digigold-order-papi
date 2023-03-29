@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="digigold-order-papi-test-suite.xml" />
+	<munit:test name="digigold-order-papi-test-suite-digigold-order-fortnightly-transaction-consolidated-report-transactionConsolidatedObjectStoreUndefined" doc:id="4b5228ea-12ef-4a9c-8058-f8c61b16d21d" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock TransactionConsolidatedScheduler" doc:id="53de0553-6eff-4ce5-8047-17349c34fe7c" processor="scheduler">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="TransactionConsolidatedReportScheduler" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[{}]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock transactionConsolidatedReportlastEvaluatedKeyObjectStoreAsUndefined" doc:id="0faa953e-d36a-49cb-b730-421c6b62d34e" processor="os:retrieve">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="transactionConsolidatedReportlastEvaluatedKey" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="transactionConsolidatedReportlastEvaluatedKey" attributeName="key" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:variables>
+						<munit-tools:variable key="transactionConsolidatedReportlastEvaluatedKey" value='#["Undefined"]' mediaType="application/java" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock call to VM" doc:id="11678035-3b4d-44c4-b094-86207c4b8b22" processor="vm:publish">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="reportsExtractQueue" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/successful-message-to-vm-without-lastEvaluatedkey.json")]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow-ref to digigold-order-fortnightly-transaction-consolidated-report-generation" doc:id="e6315cc3-d6d7-4c12-9918-2ec0eb196a02" name="digigold-order-fortnightly-transaction-consolidated-report-generation" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="411323ca-a10b-4bb8-bf84-182b656973ae" processor="vm:publish" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="reportsExtractQueue" attributeName="queueName" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="digigold-order-papi-test-suite-digigold-order-fortnightly-transaction-consolidated-report-transactionReportObjectStoreHasValue" doc:id="4ac4a0d5-5fb8-4ebd-93d1-599fd2e8cc06" description="Test">
+		<munit:behavior>
+			<munit-tools:mock-when doc:name="Mock TransactionConsolidatedScheduler" doc:id="8715ff2d-6649-4529-b6b7-2a11401291a0" processor="scheduler">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="TransactionConsolidatedReportScheduler" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[{}]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock transactionConsolidatedReportlastEvaluatedKeyObjectStoreAsUndefined" doc:id="ceb15851-ec1e-402e-8fe8-d6be0faf172e" processor="os:retrieve">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="transactionConsolidatedReportlastEvaluatedKey" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="transactionConsolidatedReportlastEvaluatedKey" attributeName="key" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:variables>
+						<munit-tools:variable key="transactionConsolidatedReportlastEvaluatedKey" value='#[readUrl("classpath://input/lastevaluatedkey-from-objectstore.json")]' mediaType="application/java" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock call to VM" doc:id="74baaf6c-c780-49b4-8c8f-194772911e95" processor="vm:publish">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="reportsExtractQueue" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/successful-message-to-vm-with-lastEvaluatedkey.json")]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow-ref to digigold-order-fortnightly-transaction-consolidated-report-generation" doc:id="aab09ef8-d32b-47b9-9f2f-12a410c7a490" name="digigold-order-fortnightly-transaction-consolidated-report-generation" />
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:verify-call doc:name="Verify call" doc:id="377193fd-5010-4e97-bb84-73aa6c02459b" processor="vm:publish" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="reportsExtractQueue" attributeName="queueName" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="digigold-order-papi-test-suite-digigold-order-daily-transaction-consolidated-report-entireExecution-nolastEvaluatedkey" doc:id="dc2c3a9e-b552-488f-b75c-4b4cd0b3f510" description="Test" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock TransactionConsolidatedScheduler" doc:id="b522073c-7c1f-48a4-a0ae-b64700b21b63" processor="scheduler">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="TransactionConsolidatedReportScheduler" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:payload value="#[{}]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock transactionConsolidatedReportlastEvaluatedKeyObjectStoreAsUndefined" doc:id="542213fb-2ce9-4e7c-a072-f3de29f77944" processor="os:retrieve">
+				<munit-tools:with-attributes>
+					<munit-tools:with-attribute whereValue="transactionConsolidatedReportlastEvaluatedKey" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="transactionConsolidatedReportlastEvaluatedKey" attributeName="key" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return>
+					<munit-tools:variables>
+						<munit-tools:variable key="transactionConsolidatedReportlastEvaluatedKey" value='#["Undefined"]' mediaType="application/java" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+
+			<munit-tools:mock-when doc:name="Mock call to VM" doc:id="669aa1cb-17ad-4f17-851c-093be914fd80" processor="vm:publish" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="reportsExtractQueue" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" mediaType="application/json" />
+				</munit-tools:then-return>
+				<munit-tools:then-call flow="extract-reports-generation-data-flow" />
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when DynamoDBFetch" doc:id="477b7024-1b92-4e9b-b495-c338d12989a9" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="dynamoSAPIRequestConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/dropOrder-dynamo-sapi-success-response.json")]' mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:attributes value='#[{"statusCode" : 200}]' mediaType="application/java" encoding="UTF-8" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when SFCC-Order-Sapi" doc:id="e0e5133c-dd11-42cf-80f1-876a1b64394e" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="SFCC Order SAPI Customer Search API Call" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/order-sfcc-success.json")]' mediaType="application/json" />
+					<munit-tools:attributes value='#[{"statusCode" : 200}]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when SFTPWrite" doc:id="4b234912-ae8d-46d0-bdbd-331d1296bd01" processor="sftp:write" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="WritetoSFTPfolder" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[{}]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when DropOrderObjectStore" doc:id="3563536e-5556-4312-ad6b-6787d9bdecc8" processor="os:remove" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="vars.setObjectStoreNameForReports" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="OS:KEY_NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when VMPublish" doc:id="fa487787-9756-416d-93b8-15898866cb14" processor="vm:publish" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="xlsReportsGenerationQueue" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[payload]" />
+				</munit-tools:then-return>
+				<munit-tools:then-call flow="convert-csv-to-xml-send-attachments" />
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when ReadAllCSV" doc:id="6bb4f3cc-cf83-494c-a7e7-dde0f2948126" processor="sftp:list" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Read All CSV Report Files" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/mock-read-all-files.json")]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when Write XLSXreport" doc:id="2afb9e0f-4af2-4694-a33a-c3cfc8b2fbf9" processor="sftp:write">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Write XLSX Report" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[MunitTools::getResourceAsString("input/mock-write-xls.json")]' mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when List Xlsx" doc:id="12f5f20a-72c2-432a-8c5c-e389611eeb33" processor="sftp:list">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="List XLSX Reports" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[MunitTools::getResourceAsString("input/mock-list-xls-files.json")]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when notification SAPI" doc:id="08f794d9-8c9a-42ab-8f0e-2c607eb85744" processor="http:request" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Trigger notification SAPI" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#["Mock Notification SAPI"]' mediaType="application/java" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when DeleteFile" doc:id="21cd9016-b9f3-446d-9914-f64418106ae8" processor="sftp:delete">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Delete" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#["Deleted"]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow-ref to digigold-order-fortnightly-transaction-consolidated-report-generation" doc:id="a2ba5373-22ad-4106-b2dc-cf97050235d9" name="digigold-order-fortnightly-transaction-consolidated-report-generation" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="f3c20195-8078-4434-89ab-603a038c4953" processor="sftp:delete" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Delete" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+</mule>

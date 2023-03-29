@@ -13,7 +13,9 @@ http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sft
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="impl-generate-reports" doc:id="335ee61b-3fe4-4a4d-ab29-8abfc6526e4b">
 		<json-logger:logger doc:name="Logger" doc:id="0406acea-d009-4e43-8fd8-ce5d1c7eb63b" config-ref="JSON_Logger_Config" message='#["Starting the report generation for " ++ payload.reportType]' category="${log.category}" />
-		<vm:publish queueName="reportsExtractQueue" doc:name="reportsExtractQueue" doc:id="8c18a4f5-f51a-4043-8e7b-74813bff0d63" config-ref="transactions_vm_Config" sendCorrelationId="ALWAYS" />
+		<vm:publish queueName="reportsExtractQueue" doc:name="reportsExtractQueue" doc:id="8c18a4f5-f51a-4043-8e7b-74813bff0d63" config-ref="transactions_vm_Config" sendCorrelationId="ALWAYS" >
+			<reconnect count="3" />
+		</vm:publish>
 		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	

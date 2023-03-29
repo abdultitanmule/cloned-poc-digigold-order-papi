@@ -32,6 +32,9 @@ reports:
   dropOrderReport:
     reportType: "DropOrder Report" 
   batchCount: "4000"
+  dateformat: "yyyy-M-d H:m:s.n"
+#  dateformatnew: "M/d/yyyy H:m:s"
+  
 
 scheduler:
   oracleReportGeneration: "0 0 5 ? * *"

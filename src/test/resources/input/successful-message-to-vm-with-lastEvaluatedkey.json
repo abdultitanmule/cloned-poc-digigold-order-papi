@@ -1,0 +1,21 @@
+{
+  "reportType": "DropOrder Report",
+  "variables": {
+    "startDate": "1/27/2023 0:0:0",
+    "endDate": "3/26/2023 23:59:59"
+  },
+  "dynamodbFetchCount": 0,
+  "batchCount": 1,
+  "count": 0,
+  "lastEvaluatedKey": {
+    "TRANSACTION_ID": {
+        "n": "175672361"
+    },
+    "STATIC_ATTR": {
+        "n": "1"
+    },
+    "LASTUPDATED_INMILLIS": {
+        "n": "1679135456000"
+    }
+ }
+}

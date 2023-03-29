@@ -1,0 +1,5 @@
+{
+  "errorType": "HTTP:CONNECTIVITY",
+  "errorDescription": "HTTP GET on resource 'https://dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io:443/api/v1/transactions' failed: Remotely closed.",
+  "errorDetailedDescription": "HTTP GET on resource 'https://dynamo-order-sapi-dev-230pwz.internal-1zj8l2.sgp-s1.cloudhub.io:443/api/v1/transactions' failed: Remotely closed."
+}
