@@ -21,10 +21,11 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 						<ee:message>
 							<ee:set-payload><![CDATA[%dw 2.0
 import * from dw::util::Timer
+import p from Mule
 import isWhitespace from dw::core::Strings
 
 fun convertStringtoDatetime(sdate)=
-  sdate as LocalDateTime {format: "M/d/yyyy H:m:s"} ++ 'IST'
+  sdate as LocalDateTime {format: p('dateformat.datadateformat')} ++ 'IST'
 fun generateStringField(fieldName,fieldValue)=
   ("$(fieldName)":{"S": fieldValue}) if(!isWhitespace(fieldValue))
 fun generateNumberField(fieldName,fieldValue)=
@@ -85,6 +86,7 @@ payload map ((row) -> {
 ]]></ee:set-payload>
 							</ee:message>
 						</ee:transform>
+						<json-logger:logger doc:name="Logger" doc:id="ff8ed65e-1b56-4901-86b0-8d2208cdae69" config-ref="JSON_Logger_Config" message="Before batchPut"/>
 						<dynamodb:batch-put-item doc:name="Batch put item" doc:id="eed1a485-1991-4d79-8233-7d6d6e4fba44" requestPutItems="#[payload]" config-ref="Amazon_DynamoDB_Configuration"/>
 						<json-logger:logger doc:name="ON Log" doc:id="a3a1c39a-9b22-474e-9cde-6cc18e6ac92c" config-ref="JSON_Logger_Config" message="Batch complete" tracePoint="AFTER_REQUEST" category="${log.category}" >
 							<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
@@ -144,6 +146,6 @@ payload map ((row) -> {
   //No sensitive information should be logged in plain text
 }]]]></json-logger:content>
 		</json-logger:logger>
-		<error-handler ref="error-handler-migration" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 </mule>

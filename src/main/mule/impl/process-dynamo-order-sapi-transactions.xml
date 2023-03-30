@@ -43,38 +43,39 @@ output application/json
 }]]]></json-logger:content>
 				</json-logger:logger>
 			</when>
-			<!--  <when expression="#[payload.errorCode contains 'SAPI']" >
+			<when expression="#[payload.errorCode contains 'SAPI']" >
 				<ee:transform doc:name="Failure response body incase of any error post DynamoDB Transactions SAPI call" doc:id="98afe04d-9222-4a5d-a6dc-57504e1c7711" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
--&#45;&#45;
+---
 payload]]></ee:set-payload>
 					</ee:message>
 					<ee:variables />
 				</ee:transform>
 				<raise-error doc:name="CUSTOM:DYNAMODB_TRANSACTIONS_ERROR" doc:id="f0e33bf8-05b9-475a-9574-e2deb26e9fb0" type="CUSTOM:DYNAMODB_TRANSACTIONS_ERROR" description='#[write(payload,"application/json")]' />
 			
-			</when>-->
+			</when>
 			<otherwise >
 				<ee:transform doc:name="Failure response body incase of any error in DynamoDB Transactions SAPI call" doc:id="7223ad6f-b64a-4f70-8bc2-dcc7636249a8" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-{
-"reportType": vars.reportType default " "
-}
-++ payload
+//{
+//"reportType": vars.reportType default " "
+//}
+//++ payload
 
-/* 
+
 {
+	"reportType": vars.reportType default " ",
 	transactionId: vars.correlationId,
 	errorCode: vars.errorDetails.errorType,
 	errorMessage: vars.errorDetails.errorDescription,
 	errorDescription: vars.errorDetails.errorDetailedDescription,
-	timestamp: now()>>'IST' as String {format: "yyyy-MM-dd HH:mm:ss.SSS"}
-}*/]]></ee:set-payload>
+	timestamp: now()>>'IST' as String {format: Mule::p('dateformat.datadateformat')}
+}]]></ee:set-payload>
 					</ee:message>
 					<ee:variables >
 						<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>

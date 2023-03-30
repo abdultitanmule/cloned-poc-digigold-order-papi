@@ -1,0 +1,6 @@
+{
+  "errorCode": "DIGORDFETSAPI01",
+  "errorType": "HTTP:INTERNAL_SERVER_ERRROR",
+  "errorDescription": "Please try after sometime",
+  "errorDetailedDescription": "Error in Get"
+}
