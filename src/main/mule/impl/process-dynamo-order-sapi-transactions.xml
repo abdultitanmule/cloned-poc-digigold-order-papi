@@ -74,7 +74,7 @@ output application/json
 	errorCode: vars.errorDetails.errorType,
 	errorMessage: vars.errorDetails.errorDescription,
 	errorDescription: vars.errorDetails.errorDetailedDescription,
-	timestamp: now()>>'IST' as String {format: "yyyy-MM-dd HH:mm:ss.SSS"}
+	timestamp: now()>>'IST' as String {format: Mule::p('dateformat.datadateformat')}
 }]]></ee:set-payload>
 					</ee:message>
 					<ee:variables >

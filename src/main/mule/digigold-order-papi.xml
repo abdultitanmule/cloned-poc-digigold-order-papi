@@ -195,12 +195,12 @@ import * from dw::core::Dates
 ---
 {
   variables:{
-	"startDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 23:59:0"}
+	"startDate": (today() as Date - |P1D|) as String {format: p('dateformat.startdateformat')},
+	"endDate": (today() as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
+
 	},
   reportType: p('reports.oracleReport.reportType')
 }
-
 
 
 ]]></ee:set-payload>
@@ -230,10 +230,9 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 	"reportType":p('reports.dropOrderReport.reportType'),
   	"variables":
 	 {
-		"startDate": if (nullCheck(p('reports.dropOrderReport.StartDate'))) p('reports.dropOrderReport.StartDate') else (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
-		"endDate": if (nullCheck(p('reports.dropOrderReport.EndDate'))) p('reports.dropOrderReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+		"startDate": if (nullCheck(p('reports.dropOrderReport.StartDate'))) p('reports.dropOrderReport.StartDate') else (currentDay as Date - |P2M|) as String {format: p('dateformat.startdateformat')},
+		"endDate": if (nullCheck(p('reports.dropOrderReport.EndDate'))) p('reports.dropOrderReport.EndDate') else (currentDay as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
 	 },
-//	"ReportGeneratedDate": currentDay,
 	"dynamodbFetchCount": 0,
 	"batchCount": 1,
 	"count": 0,
@@ -267,32 +266,16 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 ---
 {
 	"reportType":p('reports.transactionReport.reportType'),
-//	"reportName":p('reports.transactionReport.reportName'),
 	"variables":
 	{
-	"startDate": if (nullCheck(p('reports.transactionReport.StartDate'))) p('reports.transactionReport.StartDate') else (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": if (nullCheck(p('reports.transactionReport.EndDate'))) p('reports.transactionReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+	"startDate": if (nullCheck(p('reports.transactionReport.StartDate'))) p('reports.transactionReport.StartDate') else (currentDay as Date - |P2M|) as String {format: p('dateformat.startdateformat')},
+	"endDate": if (nullCheck(p('reports.transactionReport.EndDate'))) p('reports.transactionReport.EndDate') else (currentDay as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
 	},
-//	"ReportGeneratedDate": currentDay,
 	"dynamodbFetchCount": 0,
 	"batchCount": 1,
 	"count": 0,
 	("lastEvaluatedKey": vars.transactionReportlastEvaluatedKey) if(vars.transactionReportlastEvaluatedKey != "Undefined")
 }
-
-	
-	//"StartDate": (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
-	//"EndDate": (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 11:59:59"},
-
-	
-	
-	//currently the below logic works only when sending payload as empty json. Need to figure this out. 
-	//("KeyLastUpdatedInMillis": payload.lastEvaluatedKey.LASTUPDATED_INMILLIS.n) if(payload.lastEvaluatedKey?),
-	//("KeyTransactionId": payload.lastEvaluatedKey.TRANSACTION_ID.n) if(payload.lastEvaluatedKey?)
-	//("KeyLastUpdatedInMillis": payload.lastEvaluatedKey.LASTUPDATED_INMILLIS.n) if(payload.lastEvaluatedKey != null),
-	//("KeyTransactionId": payload.lastEvaluatedKey.TRANSACTION_ID.n) if(payload.lastEvaluatedKey != null)
-	//"KeyLastUpdatedInMillis": "1672402860000",
-	//"KeyTransactionId": "175676235"
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -321,8 +304,8 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 	"reportType":p('reports.transactionConsolidatedReport.reportType'),
 	"variables":
 	{
-	"startDate": if (nullCheck(p('reports.transactionConsolidatedReport.StartDate'))) p('reports.transactionConsolidatedReport.StartDate') else (currentDay as Date - |P5Y|) as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": if (nullCheck(p('reports.transactionConsolidatedReport.EndDate'))) p('reports.transactionConsolidatedReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+	"startDate": if (nullCheck(p('reports.transactionConsolidatedReport.StartDate'))) p('reports.transactionConsolidatedReport.StartDate') else (currentDay as Date - |P5Y|) as String {format: p('dateformat.startdateformat')},
+	"endDate": if (nullCheck(p('reports.transactionConsolidatedReport.EndDate'))) p('reports.transactionConsolidatedReport.EndDate') else (currentDay as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
 	},
 	"dynamodbFetchCount": 0,
 	"batchCount": 1,

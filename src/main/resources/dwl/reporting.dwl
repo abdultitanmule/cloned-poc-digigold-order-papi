@@ -43,15 +43,15 @@ flatten(payload.items map using ( item = $, rootIndex = $$) (
         FIELD13:"JEWL",
         FIELD14:"TQ",
         FIELD15:"00",
-        FIELD16:getFinancialYear(item.LASTUPDATED as LocalDateTime {format: "yyyy-M-d H:m:s.n"} as Date), 
-        FIELD17:item.LASTUPDATED as LocalDateTime {format: "yyyy-M-d H:m:s.n"} as String{format: "dd-MMM-yy"},
+        FIELD16:getFinancialYear(item.LASTUPDATED as LocalDateTime {format: p('dateformat.datadateformat')} as Date), 
+        FIELD17:item.LASTUPDATED as LocalDateTime {format: p('dateformat.datadateformat')} as String{format: "dd-MMM-yy"},
         FIELD18:"DIGIGOLD",
-        FIELD19:item.LASTUPDATED as LocalDateTime {format: "yyyy-M-d H:m:s.n"} as String{format: "dd-MMM-yy"},
+        FIELD19:item.LASTUPDATED as LocalDateTime {format: p('dateformat.datadateformat')} as String{format: "dd-MMM-yy"},
         FIELD20:1058,
         FIELD21:"A",
         FIELD22:"4265",
         FIELD23:(if(item.TRANSACTION_STATUS ~= "buy confirmed" and $$ == 0) 
-				("UEC" ++ item.LASTUPDATED as LocalDateTime {format: "yyyy-M-d H:m:s.n"} as String {format: "ddMMyyyy"} ++ "_Online")
+				("UEC" ++ item.LASTUPDATED as LocalDateTime {format: p('dateformat.datadateformat')} as String {format: "ddMMyyyy"} ++ "_Online")
             else if (item.TRANSACTION_STATUS ~= "buy confirmed" and $$ == 1)
                 (item.TRANSACTION_ID)
 			else item.TRANSACTION_ID),
@@ -61,7 +61,7 @@ flatten(payload.items map using ( item = $, rootIndex = $$) (
 			    else  "DIGIGOLD BOND REDEMPTION_UEC"),
         FIELD26:rootIndex + $,
         FIELD27:"UEC",
-        FIELD28:item.LASTUPDATED as LocalDateTime {format: "yyyy-M-d H:m:s.n"} as String{format: "dd-MMM-yy"},
+        FIELD28:item.LASTUPDATED as LocalDateTime {format: p('dateformat.datadateformat')} as String{format: "dd-MMM-yy"},
         FIELD29: vars.outputReportName
     
     }
