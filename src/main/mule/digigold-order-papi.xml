@@ -74,8 +74,8 @@ output application/json
 {
   reportType: attributes.headers."report-name",
   variables:{
-	"startDate": payload.date as Date as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": payload.date as Date as String {format: "M/d/yyyy 23:59:0"}
+	"startDate": payload.date as Date as String {format: p('dateformat.startdateformat')},
+	"endDate": payload.date as Date as String {format: p('dateformat.enddateformat')}
 	}
 }
 

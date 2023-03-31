@@ -41,7 +41,7 @@ output application/java
 	"client_id" : p('secure::digigold-order-papi.clientId')
 }]]]></http:headers>
 		</http:request>
-				<error-handler ref="sapi-request-error-handler">
+				<error-handler ref="digigold-papi-request-error-handler">
 				</error-handler>
 				</try>
 			</until-successful>

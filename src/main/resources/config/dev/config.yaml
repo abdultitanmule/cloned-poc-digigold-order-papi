@@ -28,7 +28,7 @@ titan:
   port: "22"
   csvfilenamepattern: "*.csv"
   xlsxfilenamepattern: "*.xlsx"
-  oracleReport: "home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/oraclefeed/"
+  oracleReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/oraclefeed/"
   transactionReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transaction/"
   transactionConsolidatedReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/transactionConsolidated/"
   dropOrderReport: "/home/ECOM_MuleSoft/mulesoft/dev/order/jewellery/digigold/droporder/"

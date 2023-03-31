@@ -28,13 +28,13 @@ reports:
     reportType: "Transaction Report" 
   transactionConsolidatedReport:
     reportType: "Transaction Consolidated Report" 
-    StartDate: "1980-01-01 00:00:00:000"
+    StartDate: "1980-01-01 00:00:00.000"
   dropOrderReport:
     reportType: "DropOrder Report" 
   batchCount: "4000"
 
 dateformat: 
-  datadateformat: "yyyy-MM-dd HH:mm:ss.SSS"
+  datadateformat: "yyyy-MM-dd HH:mm:ss.n"
   startdateformat: "yyyy-MM-dd 00:00:00.000"
   enddateformat: "yyyy-MM-dd 23:59:59.000"
 

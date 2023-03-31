@@ -1,8 +1,8 @@
 {
   "reportType": "DropOrder Report",
   "variables": {
-    "startDate": "1/27/2023 0:0:0",
-    "endDate": "3/26/2023 23:59:59"
+    "startDate": "2023-01-07 0:0:0",
+    "endDate": "2023-03-26 23:59:59"
   },
   "dynamodbFetchCount": 0,
   "batchCount": 1,

@@ -49,16 +49,9 @@ output application/json
 			</json-logger:logger>
 			</on-error-continue>
 					</error-handler>
-					
-<!-- [STUDIO:"error-handler-migration"]					<error-handler name="error-handler-migration" doc:id="d5941d27-b0b3-47c8-92e1-d3b2fe62c554" >
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2ded639e-05d1-4e06-8a53-c343f8b075c1" type="ANY">
-			<json-logger:logger doc:name="ON Log" doc:id="c1468898-8fe6-4df2-8037-6e53f31b515d" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" category="${log.category}" priority="ERROR" />
-		</on-error-propagate>
-	</error-handler> [STUDIO] -->
-	
-	<sub-flow name="common-set-error-details" doc:id="e9eb6947-fc1a-47dc-9eeb-02b8e434ee4f" >
-		<set-variable value="#[false]" doc:name="Set Successful" doc:id="0e50279f-189e-472f-8e66-574e22b838b0" variableName="successful" />
-		<ee:transform doc:name="Prepare Error Message" doc:id="f8292c02-6ae1-40a9-abf4-76978c12bc4a">
+	<error-handler name="digigold-papi-request-error-handler" doc:id="ba1a465a-1a80-4856-90ee-63d31932959a" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="fac6bfea-1a19-46c1-addc-018152350cc3" type="ANY" when="#[(['TOO_MANY_REQUESTS','SERVICE_UNAVAILABLE','TIMEOUT','CONNECTIVITY'] contains error.errorType.identifier)]" >
+			<ee:transform doc:name="Prepare Error Message" doc:id="f8292c02-6ae1-40a9-abf4-76978c12bc4a">
 				<ee:message>
 					<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -86,14 +79,37 @@ output application/json
 }]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
-	</sub-flow>
-	<error-handler name="digigold-papi-request-error-handler" doc:id="ba1a465a-1a80-4856-90ee-63d31932959a" >
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="fac6bfea-1a19-46c1-addc-018152350cc3" type="ANY" when="#[(['TOO_MANY_REQUESTS','SERVICE_UNAVAILABLE','TIMEOUT','CONNECTIVITY'] contains error.errorType.identifier)]" >
-			<flow-ref doc:name="common-set-error-details" doc:id="7a913847-c2ea-4ec1-99f7-6d65e885a54c" name="common-set-error-details" />
 		</on-error-propagate>
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ae15ef15-67b1-4e91-9f33-beeed78d35a0" type="ANY" >
-			<flow-ref doc:name="common-set-error-details" doc:id="e122b791-23f5-4964-aac2-2405f1140561" name="common-set-error-details" />
-			<json-logger:logger doc:name="ERROR Sterling OMS API Request" doc:id="a0c9f0b7-b3f3-419a-833f-506c7e859095" config-ref="JSON_Logger_Config" message="ERROR Sterling OMS API Request" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}" >
+			<ee:transform doc:name="Prepare Error Message" doc:id="e31764ec-0e7c-408c-97d6-9c5413794b59">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+if(error.muleMessage.payload != null)
+	error.muleMessage.payload
+else
+	payload]]></ee:set-payload>
+				</ee:message>
+				<ee:variables>
+					<ee:set-variable variableName="httpStatus"><![CDATA[%dw 2.0
+output application/java
+---
+if(error.muleMessage.attributes.statusCode != null)
+	error.muleMessage.attributes.statusCode
+else
+	attributes.statusCode]]></ee:set-variable>
+					<ee:set-variable variableName="errorDetails"><![CDATA[%dw 2.0
+output application/json
+---
+{
+	errorType: (error.errorType.namespace default "" as String) ++ ":" ++ (error.errorType.identifier default "" as String),
+    errorDescription: error.description,
+    errorDetailedDescription: error.detailedDescription
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<json-logger:logger doc:name="ERROR in Request" doc:id="a0c9f0b7-b3f3-419a-833f-506c7e859095" config-ref="JSON_Logger_Config" message="ERROR PAPI" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}" >
 
 				<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
 {
@@ -110,28 +126,6 @@ output application/json
 			</json-logger:logger>
 		</on-error-continue>
 	</error-handler>
-<!-- [STUDIO:"digigold-report-error-handler"]	<error-handler name="digigold-report-error-handler" doc:id="68998422-32f6-42cf-9cb3-5bd724305afe" >
-		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e4154399-308d-49ae-9487-5952da1373e7" type="ANY">
-			<json-logger:logger doc:name="Exception Log" doc:id="66c7e5f4-f105-4b21-91b6-611d83d38a62" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}" >
-				<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" &#45;&#45;-
-{
-	eventContext: {
-	businessID: "${global.properties.businessId}",
-	clientId: attributes.headers.'x-source-channel', // Change accordingly
-	inboundURI: attributes.requestUri,
-	method: attributes.method,
-	muleCorrelationId: vars.muleCorrelationId,
-	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
-	
-},
- payload: JSONLoggerModule::stringifyNonJSON(payload),
- errorMessage: error
- //Optional - DO NOT LOG whole payload as it will be huge. Log it only when necessary;
- //No sensitive information should be logged in plain text
-}]]]></json-logger:content>
-			</json-logger:logger>
-		</on-error-propagate>
-	</error-handler> [STUDIO] -->
 	<error-handler name="reports-global-error-handler" doc:id="1a0ba560-69dd-448f-99ab-17d1eb3c45fb" >
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5e24f259-8750-4747-9057-f7f1969abb43" type="ANY" >
 			<json-logger:logger doc:name="Exception Log" doc:id="c6ed0f45-5179-4f32-8da3-ce87ccc5abcc" config-ref="JSON_Logger_Config" message="Log Message" tracePoint="EXCEPTION" priority="ERROR" category="${log.category}">
