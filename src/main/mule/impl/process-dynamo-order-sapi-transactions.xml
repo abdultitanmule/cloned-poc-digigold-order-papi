@@ -43,7 +43,7 @@ output application/json
 }]]]></json-logger:content>
 				</json-logger:logger>
 			</when>
-			<when expression="#[payload.errorCode contains 'SAPI']" >
+			<when expression="#[!isEmpty(payload) and (payload.errorCode contains 'SAPI')]" >
 				<ee:transform doc:name="Failure response body incase of any error post DynamoDB Transactions SAPI call" doc:id="98afe04d-9222-4a5d-a6dc-57504e1c7711" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0

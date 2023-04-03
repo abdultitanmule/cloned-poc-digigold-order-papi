@@ -10,7 +10,7 @@ https:
 
 api:
   autodiscovery:
-    id: " "
+    id: "18585486"
 
 
 ###############################
@@ -57,7 +57,7 @@ dynamo-sapi:
   connectionTimeout: "60000"
   responseTimeout: "30000"
   sourceChannel: "digigoldOrderPAPI"
-  host: "dynamo-order-sapi-uat-xzqc7g.internal-1zj8l2.sgp-s1.cloudhub.io"
+  host: "dynamo-order-sapi-uat-upqz0e.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
   endpoints:
