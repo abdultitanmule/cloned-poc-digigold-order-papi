@@ -74,8 +74,8 @@ output application/json
 {
   reportType: attributes.headers."report-name",
   variables:{
-	"startDate": payload.date as Date as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": payload.date as Date as String {format: "M/d/yyyy 23:59:0"}
+	"startDate": payload.date as Date as String {format: p('dateformat.startdateformat')},
+	"endDate": payload.date as Date as String {format: p('dateformat.enddateformat')}
 	}
 }
 
@@ -177,7 +177,7 @@ output application/json
 }]]]></json-logger:content>
 		</json-logger:logger>
 		<flow-ref doc:name="impl-transaction-migration" doc:id="7f79b139-96ab-4f4a-947f-4dc55cb533e1" name="impl-transaction-migration" />
-		<error-handler ref="error-handler-migration" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	<flow name="digigold-order-daily-oracle-report-generation" doc:id="ba577b05-b621-4a76-824d-a6f264fb9964">
 		<scheduler doc:name="Scheduler" doc:id="36145a30-6fe7-4b75-a291-35296901e394">
@@ -195,12 +195,12 @@ import * from dw::core::Dates
 ---
 {
   variables:{
-	"startDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": (today() as Date - |P1D|) as String {format: "M/d/yyyy 23:59:0"}
+	"startDate": (today() as Date - |P1D|) as String {format: p('dateformat.startdateformat')},
+	"endDate": (today() as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
+
 	},
   reportType: p('reports.oracleReport.reportType')
 }
-
 
 
 ]]></ee:set-payload>
@@ -230,10 +230,9 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 	"reportType":p('reports.dropOrderReport.reportType'),
   	"variables":
 	 {
-		"startDate": if (nullCheck(p('reports.dropOrderReport.StartDate'))) p('reports.dropOrderReport.StartDate') else (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
-		"endDate": if (nullCheck(p('reports.dropOrderReport.EndDate'))) p('reports.dropOrderReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+		"startDate": if (nullCheck(p('reports.dropOrderReport.StartDate'))) p('reports.dropOrderReport.StartDate') else (currentDay as Date - |P2M|) as String {format: p('dateformat.startdateformat')},
+		"endDate": if (nullCheck(p('reports.dropOrderReport.EndDate'))) p('reports.dropOrderReport.EndDate') else (currentDay as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
 	 },
-//	"ReportGeneratedDate": currentDay,
 	"dynamodbFetchCount": 0,
 	"batchCount": 1,
 	"count": 0,
@@ -244,6 +243,8 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="a2cce765-441f-4453-bf08-c33b8c8df177" name="impl-generate-reports" />
+		<json-logger:logger doc:name="Logger" doc:id="07d30d46-6873-4a91-8c27-9f2da776c08b" config-ref="JSON_Logger_Config" tracePoint="END" message="Completion of the Drop order trigger process" category="${log.category}"/>
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	<flow name="digigold-order-daily-transaction-report-generation" doc:id="24913856-977d-4638-8af8-59f0aaba55c0">
 		<scheduler doc:name="TransactionReportScheduler" doc:id="2fbe7215-b3fd-4ff6-bcc2-767b88a05743" >
@@ -265,36 +266,22 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 ---
 {
 	"reportType":p('reports.transactionReport.reportType'),
-//	"reportName":p('reports.transactionReport.reportName'),
 	"variables":
 	{
-	"startDate": if (nullCheck(p('reports.transactionReport.StartDate'))) p('reports.transactionReport.StartDate') else (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": if (nullCheck(p('reports.transactionReport.EndDate'))) p('reports.transactionReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+	"startDate": if (nullCheck(p('reports.transactionReport.StartDate'))) p('reports.transactionReport.StartDate') else (currentDay as Date - |P2M|) as String {format: p('dateformat.startdateformat')},
+	"endDate": if (nullCheck(p('reports.transactionReport.EndDate'))) p('reports.transactionReport.EndDate') else (currentDay as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
 	},
-//	"ReportGeneratedDate": currentDay,
 	"dynamodbFetchCount": 0,
 	"batchCount": 1,
 	"count": 0,
 	("lastEvaluatedKey": vars.transactionReportlastEvaluatedKey) if(vars.transactionReportlastEvaluatedKey != "Undefined")
 }
-
-	
-	//"StartDate": (currentDay as Date - |P2M|) as String {format: "M/d/yyyy 0:0:0"},
-	//"EndDate": (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 11:59:59"},
-
-	
-	
-	//currently the below logic works only when sending payload as empty json. Need to figure this out. 
-	//("KeyLastUpdatedInMillis": payload.lastEvaluatedKey.LASTUPDATED_INMILLIS.n) if(payload.lastEvaluatedKey?),
-	//("KeyTransactionId": payload.lastEvaluatedKey.TRANSACTION_ID.n) if(payload.lastEvaluatedKey?)
-	//("KeyLastUpdatedInMillis": payload.lastEvaluatedKey.LASTUPDATED_INMILLIS.n) if(payload.lastEvaluatedKey != null),
-	//("KeyTransactionId": payload.lastEvaluatedKey.TRANSACTION_ID.n) if(payload.lastEvaluatedKey != null)
-	//"KeyLastUpdatedInMillis": "1672402860000",
-	//"KeyTransactionId": "175676235"
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="bb206e3b-7480-4908-8b39-61854e2bf457" name="impl-generate-reports" />
+		<json-logger:logger doc:name="Logger" doc:id="285dcdcb-ae44-4036-9416-1d53cc5dd84d" config-ref="JSON_Logger_Config" message="Completion of the Drop order trigger process" tracePoint="END" category="${log.category}" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	<flow name="digigold-order-fortnightly-transaction-consolidated-report-generation" doc:id="23fda268-7e03-4bff-ad8a-a5fd9f069adc">
 		<scheduler doc:name="TransactionConsolidatedReportScheduler" doc:id="20fc7d22-3722-4ca0-bdad-28c25fc84a69" >
@@ -318,8 +305,8 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 	"reportType":p('reports.transactionConsolidatedReport.reportType'),
 	"variables":
 	{
-	"startDate": if (nullCheck(p('reports.transactionConsolidatedReport.StartDate'))) p('reports.transactionConsolidatedReport.StartDate') else (currentDay as Date - |P5Y|) as String {format: "M/d/yyyy 0:0:0"},
-	"endDate": if (nullCheck(p('reports.transactionConsolidatedReport.EndDate'))) p('reports.transactionConsolidatedReport.EndDate') else (currentDay as Date - |P1D|) as String {format: "M/d/yyyy 23:59:59"}
+	"startDate": if (nullCheck(p('reports.transactionConsolidatedReport.StartDate'))) p('reports.transactionConsolidatedReport.StartDate') else (currentDay as Date - |P5Y|) as String {format: p('dateformat.startdateformat')},
+	"endDate": if (nullCheck(p('reports.transactionConsolidatedReport.EndDate'))) p('reports.transactionConsolidatedReport.EndDate') else (currentDay as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
 	},
 	"dynamodbFetchCount": 0,
 	"batchCount": 1,
@@ -329,6 +316,8 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="a25abaaf-89f1-4d8f-b440-792da3f36c90" name="impl-generate-reports" />
+		<json-logger:logger doc:name="Logger" doc:id="9a8313c5-631d-43f5-b002-a22c75e90567" config-ref="JSON_Logger_Config" message="Completion of the Drop order trigger process" tracePoint="END" category="${log.category}" />
+		<error-handler ref="reports-global-error-handler" />
 	</flow>
 
 </mule>

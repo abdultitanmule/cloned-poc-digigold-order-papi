@@ -26,19 +26,14 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 				<vm:publish doc:name="xlsReportsGenerationQueue" doc:id="bd71cf80-9404-4de8-bf4d-bc77a8f1f0ba" config-ref="transactions_vm_Config" queueName="xlsReportsGenerationQueue" sendCorrelationId="ALWAYS" />
 			</when>
 			<otherwise >
-				<json-logger:logger doc:name="Logger" doc:id="1b3f2a20-5812-4b3e-b6e8-d58050a4ef96" config-ref="JSON_Logger_Config" message='#["Completed the End of the Customer and Transaction merge"]' tracePoint="END" category="${log.category}">
+				<json-logger:logger doc:name="Logger" doc:id="1b3f2a20-5812-4b3e-b6e8-d58050a4ef96" config-ref="JSON_Logger_Config" message='#["Generated output csv file for the batch"]' tracePoint="FLOW" category="${log.category}">
 			<json-logger:content><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
-    //payload: JSONLoggerModule::stringifyNonJSON(payload) 
-    payload:  
-    	{
-			reportType: payload.reportType,
-			variables: payload.variables,
-	        dynamodbFetchCount: payload.dynamodbFetchCount,
-			batchCount: payload.batchCount,
-			count: payload.count,
-	        lastEvaluatedKey: payload.lastEvaluatedKey
-	      }
+    //payload: JSONLoggerModule::stringifyNonJSON(payload)
+    payload:
+    {
+    	outputFileGenerated: vars.outputFileName
+    }
 }]]]></json-logger:content>
 		</json-logger:logger>
 			</otherwise>

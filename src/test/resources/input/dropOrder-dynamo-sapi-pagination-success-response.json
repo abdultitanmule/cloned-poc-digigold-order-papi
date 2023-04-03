@@ -1,69 +1,59 @@
 {
-    "scannedCount": 2292,
-    "count": 1125,
+    "scannedCount": 2836,
+    "count": 1402,
+    "lastEvaluatedKey": {
+        "LASTUPDATED_INMILLIS": {
+            "n": "1672424292000"
+        },
+        "STATIC_ATTR": {
+            "n": "1"
+        },
+        "TRANSACTION_ID": {
+            "n": "173796230"
+        }
+    },
     "items": [
         {
             "PAYMENT_GATEWAY": "RazorPay",
-            "TRANSACTION_DATE": "2023-01-04 12:02:09:45",
+            "TRANSACTION_DATE": "2023-01-04 12:02:09.5",
             "LASTUPDATED_INMILLIS": "1672833775000",
             "GOLD_RATE": "5714.51",
             "TRANSACTION_DATE_INMILLIS": "1672833729000",
             "PRECHECKOUT_INITATED": "Yes",
-            "LASTUPDATED": "2023-01-04 12:02:55:4",
+            "LASTUPDATED": "2023-01-04 12:02:09.5",
             "PAYMENT_METHOD": "UPIRazorPay",
             "TOTAL_GOLD_AMOUNT": "1000",
             "TRANSACTION_TYPE": "B",
-            "TRANSACTION_STATUS": "buy confirmed",
+            "TRANSACTION_STATUS": "Precheckout Initiated",
             "GRAMS_PURCHASED": "0.1698",
             "RATE_ID": "1087364496",
             "INVOICE_ID": "SG230104120254175665133",
             "CHANNEL": "M-APP-JW",
             "STATIC_ATTR": "1",
-            "MEMBER_ID": "524782",
+            "MEMBER_ID": "317526",
             "DGORDER_ID": "5786025",
             "TRANSACTION_ID": "175665133"
         },
         {
             "PAYMENT_GATEWAY": "RazorPay",
-            "TRANSACTION_DATE": "2023-01-04 11:57:42:4",
+            "TRANSACTION_DATE": "2023-01-04 11:57:42",
             "LASTUPDATED_INMILLIS": "1672833495000",
             "GOLD_RATE": "5714.51",
             "TRANSACTION_DATE_INMILLIS": "1672833462000",
             "PRECHECKOUT_INITATED": "Yes",
-            "LASTUPDATED": "2023-01-04 11:58:15:6",
+            "LASTUPDATED": "2023-01-04 11:58:15:87",
             "PAYMENT_METHOD": "UPIRazorPay",
             "TOTAL_GOLD_AMOUNT": "500",
             "TRANSACTION_TYPE": "B",
-            "TRANSACTION_STATUS": "buy confirmed",
+            "TRANSACTION_STATUS": "Confirm Timeout",
             "GRAMS_PURCHASED": "0.0849",
             "RATE_ID": "1087360091",
             "INVOICE_ID": "SG230104115815175661603",
             "CHANNEL": "WEB",
             "STATIC_ATTR": "1",
-            "MEMBER_ID": "108069",
+            "MEMBER_ID": "524782",
             "DGORDER_ID": "5779047",
             "TRANSACTION_ID": "175661603"
-        },
-        {
-            "PAYMENT_GATEWAY": "RazorPay",
-            "TRANSACTION_DATE": "2022-12-31 18:35:14:45",
-            "LASTUPDATED_INMILLIS": "1672511746000",
-            "GOLD_RATE": "5641.63",
-            "TRANSACTION_DATE_INMILLIS": "1672511714000",
-            "PRECHECKOUT_INITATED": "Yes",
-            "LASTUPDATED": "2022-12-31 18:35:46:567",
-            "PAYMENT_METHOD": "UPIRazorPay",
-            "TOTAL_GOLD_AMOUNT": "500",
-            "TRANSACTION_TYPE": "B",
-            "TRANSACTION_STATUS": "buy confirmed",
-            "GRAMS_PURCHASED": "0.086",
-            "RATE_ID": "1084366299",
-            "INVOICE_ID": "SG221231063545174185640",
-            "CHANNEL": "M-APP-JW",
-            "STATIC_ATTR": "1",
-            "MEMBER_ID": "541637",
-            "DGORDER_ID": "5763501",
-            "TRANSACTION_ID": "174185640"
         }
     ]
 }

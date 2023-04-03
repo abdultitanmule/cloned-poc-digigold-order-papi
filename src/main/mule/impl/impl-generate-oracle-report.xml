@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
 	<flow name="impl-generate-oracle-report" doc:id="3359e058-6b64-4ad2-a9ad-e919a5e7e90e" >
-		<json-logger:logger doc:name="Flow Log" doc:id="8d827cfa-0523-43ad-b983-9f74c63b13f4" config-ref="JSON_Logger_Config" tracePoint="FLOW" category="${log.category}" message="Oracle report generation started" priority="DEBUG"/>
+		<json-logger:logger doc:name="Flow Log" doc:id="8d827cfa-0523-43ad-b983-9f74c63b13f4" config-ref="JSON_Logger_Config" tracePoint="FLOW" category="${log.category}" message="Oracle report generation started"/>
 		<set-variable value="#[payload.reportType]" doc:name="reportType" doc:id="65a8c11e-2b56-4f88-8188-5246da41cd77" variableName="reportType" />
 		<flow-ref doc:name="process-dynamo-order-sapi-transactions" doc:id="cd63f9ab-3f4e-4315-aea4-5a4441cac590" name="process-dynamo-order-sapi-transactions" target="dynamoResponse"/>
 		<ee:transform doc:name="Consolidate mule message" doc:id="77a2876e-27ab-4be0-83ed-5cd48134a9a1" >
@@ -53,7 +53,7 @@ payload default {}]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="07560036-3979-4637-aa68-5c123a84dd1a" >
-			<when expression="#[payload.lastEvaluatedKey != null and vars.successful == null]">
+			<when expression="#[payload.lastEvaluatedKey != null]">
 				<flow-ref doc:name="recall to process-dynamo-order-sapi-transactions" doc:id="93fff44d-c216-43e1-8781-1ef0b97dd7eb" name="process-dynamo-order-sapi-transactions"/>
 				<ee:transform doc:name="AggregatedPayload" doc:id="92369cf0-1f18-4c6d-b510-4817a1991259">
 					<ee:message>
@@ -100,7 +100,7 @@ fun getFinancialYearForReportName(date :Date) = do {
 								<ee:set-variable variableName="folderName" ><![CDATA[%dw 2.0
 output application/json
 ---
-payload.variables.startDate as LocalDateTime {format: "M/d/yyyy H:m:s"} as String {format: "ddMMyyyy"}
+payload.variables.startDate as LocalDateTime {format: Mule::p('dateformat.datadateformat')} as String {format: "ddMMyyyy"}
     ]]></ee:set-variable>
 							</ee:variables>
 				</ee:transform>
@@ -109,7 +109,7 @@ payload.variables.startDate as LocalDateTime {format: "M/d/yyyy H:m:s"} as Strin
 								<ee:set-payload resource="dwl/reporting.dwl" />
 					</ee:message>
 				</ee:transform>
-						<sftp:create-directory doc:name="Create directory for Report Generation" doc:id="03676976-3dcb-422a-9d52-cdc3ae1a481e" config-ref="SFTP_Config" directoryPath="#[p('titan.sftp.oracleReport') ++ &quot;/&quot; ++ vars.folderName]" />
+<!-- [STUDIO:"Create directory for Report Generation"]						<sftp:create-directory doc:name="Create directory for Report Generation" doc:id="03676976-3dcb-422a-9d52-cdc3ae1a481e" config-ref="SFTP_Config" directoryPath="#[p('titan.sftp.oracleReport') ++ &quot;/&quot; ++ vars.folderName]" /> [STUDIO] -->
 						<flow-ref doc:name="call to sftp-sapi" doc:id="051371c4-54b7-4edd-8e64-d8a1e5194d06" name="call-to-sftp-sapi" />
 						<os:store doc:name="Store outputReportSequence" doc:id="f5297d5e-d645-4a18-bdba-92c82a8438b2" key="oracleReportName" objectStore="reportNameObjectStore">
 							<os:value ><![CDATA[#[{

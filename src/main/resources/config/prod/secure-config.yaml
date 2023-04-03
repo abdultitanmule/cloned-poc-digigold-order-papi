@@ -1,19 +1,19 @@
 
 # Secured Properties
 dynamodb:
-  accesskey: "![PleaseinsertEncryptedPwd]"
-  secretkey: "![PleaseinsertEncryptedPwd]"
+  accesskey: "![zWjGkmCtJxw6Fzs/R70znRIufqrqqdzfr9eUIiFOCX4=]"
+  secretkey: "![qjPMFXJHyDLwx1Iporh06p0eKxB7EafGr82823zATdinOvjaEsg9Nhni/vB93rVZ]"
 
 titan:
  sftp:
-  username: "![PleaseinsertEncryptedPwd]" 
-  password: "![PleaseinsertEncryptedPwd]"
+  username: "![Rv7n7WqWot/COLi99oeGnc+Jd2rQOZRZ1Wwubvt7Lto=]"
+  password: "![tW/NQfC4+o97FkLpjKi+sA==]"
 
 # ClientId and ClientSecret of digigoldOrderPAPI to be used in all the Outbound Calls to API's
-digigold-order-papi: 
-  clientId: "![PleaseinsertEncryptedPwd]"
-  clientSecret: "![PleaseinsertEncryptedPwd]"
-  
+digigold-order-papi:
+  clientId: "![7bl6bbu7YLgC6F5uqTrXoIk02tkHYP+JoD9xpLje8rjQI8x3zmY8+hS7e+vtwh6E]"
+  clientSecret: "![e6Uq9bxnEeeyBDn1cXmDlCEYKHPfjP+0wXAHU5OEGsVtNJynTolO6oThfgbcrtmS]"
+
 aes:
-  password: "![PleaseinsertEncryptedPwd]" 
-  
+  password: "![a5HDCYNrbDISortTmn4thkQ3cXwHb4KLcs9Zr9eF/AA=]"
+

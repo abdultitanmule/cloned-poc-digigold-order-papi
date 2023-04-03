@@ -1,0 +1,76 @@
+[
+  {
+    "data": [
+      {
+        "SAFEGOLD_USERID": "282971",
+        "EMAIL": "alkarobosoft@gmail.com",
+        "MOBILEPHONE": "9742281704",
+        "REGISTRATION_DATE": "2022-03-09T06:47:31.000Z",
+        "SAFEGOLDTRANSACTION_ID": "175660034",
+        "TRANSACTION_DATE": "2023-03-23 14:57:42",
+        "RATE_ID": "1087360091",
+        "GOLD_RATE": "5714.51",
+        "GRAMS_PURCHASED": "0.0849",
+        "TOTALAMOUNT_INR": "500",
+        "TRANSACTION_TYPE": "B",
+        "CHANNEL": "WEB",
+        "PAYMENT_GATEWAY": "RazorPay",
+        "PAYMENT_METHOD": "UPIRazorPay",
+        "TRANSACTION_STATUS": "buy confirmed"
+      },
+      {
+        "SAFEGOLD_USERID": "278819",
+        "EMAIL": "shweta.kulkarni@qualitestgroup.com",
+        "MOBILEPHONE": "9845101709",
+        "REGISTRATION_DATE": "2022-03-07T10:56:55.000Z",
+        "SAFEGOLDTRANSACTION_ID": "175650036",
+        "TRANSACTION_DATE": "2023-03-22 14:53:50",
+        "RATE_ID": "1087356027",
+        "GOLD_RATE": "5527.5",
+        "GRAMS_PURCHASED": "0.0544",
+        "TOTALAMOUNT_INR": "300.7",
+        "TRANSACTION_TYPE": "S",
+        "CHANNEL": "M-APP-JW",
+        "PAYMENT_GATEWAY": "",
+        "PAYMENT_METHOD": "",
+        "TRANSACTION_STATUS": "sell confirmed"
+      },
+      {
+        "SAFEGOLD_USERID": "276781",
+        "EMAIL": "Sruthi.P.M@cognizant.com",
+        "MOBILEPHONE": "9916775655",
+        "REGISTRATION_DATE": "2021-10-07T01:46:23.000Z",
+        "SAFEGOLDTRANSACTION_ID": "175650038",
+        "TRANSACTION_DATE": "2023-03-22 14:47:35:23",
+        "RATE_ID": "1087349760",
+        "GOLD_RATE": "5526.91",
+        "GRAMS_PURCHASED": "0.1809",
+        "TOTALAMOUNT_INR": "1000",
+        "TRANSACTION_TYPE": "S",
+        "CHANNEL": "M-APP-JW",
+        "PAYMENT_GATEWAY": "",
+        "PAYMENT_METHOD": "",
+        "TRANSACTION_STATUS": "sell confirmed"
+      },
+      {
+        "SAFEGOLD_USERID": "284393",
+        "EMAIL": "vikas.singh@robosoft.in",
+        "MOBILEPHONE": "7506311735",
+        "REGISTRATION_DATE": "2022-05-12T06:22:21.000Z",
+        "SAFEGOLDTRANSACTION_ID": "175650039",
+        "TRANSACTION_DATE": "2023-02-33 14:45:46:34",
+        "RATE_ID": "1087348012",
+        "GOLD_RATE": "5712.37",
+        "GRAMS_PURCHASED": "0.1699",
+        "TOTALAMOUNT_INR": "1000",
+        "TRANSACTION_TYPE": "B",
+        "CHANNEL": "M-APP-JW",
+        "PAYMENT_GATEWAY": "RazorPay",
+        "PAYMENT_METHOD": "UPIRazorPay",
+        "TRANSACTION_STATUS": "buy confirmed"
+      }
+    ]
+  }
+]
+
+

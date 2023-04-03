@@ -11,10 +11,9 @@
 	</munit:config>
 	<munit:test name="digi-fetch-transaction-test-suite-successful" doc:id="a8005ece-b5a0-43e4-9d4b-40b9dd6484ea" >
 		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when" doc:id="02af9453-e218-4108-9410-8b2cb59e9f0b" processor="http:request">
+			<munit-tools:mock-when doc:name="Mock when DynamoSapi" doc:id="02af9453-e218-4108-9410-8b2cb59e9f0b" processor="http:request">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="dynamoOrderSapiRequestConfig" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
 					<munit-tools:payload value='#[MunitTools::getResourceAsString("test-outputs/fetch-transactions-success-response1.json")]' mediaType="application/json" encoding="UTF-8" />
@@ -37,10 +36,9 @@
 	
 	<munit:test name="digi-fetch-transaction-test-suite-key-successful" doc:id="41aaba20-a958-4e9b-a4c4-c78f0259369f" >
 	<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when" doc:id="259a54e2-4471-4335-bf6c-29dda3305e87" processor="http:request">
+			<munit-tools:mock-when doc:name="Mock DynamoSapi" doc:id="259a54e2-4471-4335-bf6c-29dda3305e87" processor="http:request">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="dynamoOrderSapiRequestConfig" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
 					<munit-tools:payload value='#[MunitTools::getResourceAsString("test-outputs/fetch-transactions-success-response1.json")]' mediaType="application/json" encoding="UTF-8" />
@@ -62,10 +60,9 @@
 		
 	<munit:test name="digi-fetch-transaction-test-suite-key-successful-negative" doc:id="1badb9f3-0cac-4c89-abee-4c36b7d1d287">
 	<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when" doc:id="ac9516b8-b5f5-43bd-8d9c-e5922a925195" processor="http:request">
+			<munit-tools:mock-when doc:name="Mock DynamoSapi" doc:id="ac9516b8-b5f5-43bd-8d9c-e5922a925195" processor="http:request">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="dynamoOrderSapiRequestConfig" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
 					<munit-tools:payload value='#[MunitTools::getResourceAsString("test-outputs/fetch-transactions-success-response2.json")]' mediaType="application/json" encoding="UTF-8" />
@@ -85,10 +82,9 @@
 		</munit:test>
 	<munit:test name="digi-fetch-transaction-test-suite-connectivity-error" doc:id="374eb704-bacb-470e-a53a-3a54312a1a22">
 	<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock when" doc:id="80856bc0-5fbd-415a-a642-6ec40b417849" processor="http:request">
+			<munit-tools:mock-when doc:name="Mock DynamoSapi" doc:id="80856bc0-5fbd-415a-a642-6ec40b417849" processor="http:request">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="dynamoOrderSapiRequestConfig" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
 					<munit-tools:error typeId="HTTP:CONNECTIVITY" />

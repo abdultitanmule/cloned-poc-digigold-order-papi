@@ -87,7 +87,8 @@ p('sfcc-order-sapi.endpoints.post.customerSearchPath')]]></ee:set-variable>
 import p from Mule
 output application/java
 ---
-p('sfcc-order-sapi.endpoints.post.notificationMethod')]]></ee:set-variable>
+p('sfcc-order-sapi.endpoints.post.notificationMethod')
+]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 			<flow-ref doc:name='call-to-sfcc-order-sapi' doc:id="cf7cd502-5aba-4cf1-8f2d-5d15a2b6f7ec" name="call-to-sfcc-order-sapi" />
@@ -112,39 +113,41 @@ vars.customerSearchResponse ++ ((payload.Customers map ((item, index) ->
 			</ee:variables>
 		</ee:transform>
 				</when>
-				<!--  <when expression="#[payload.errorCode contains 'SAPI']">
+				 <when expression="#[!isEmpty(payload) and (payload.errorCode contains 'SAPI')]">
 					<ee:transform doc:name="Failure response body incase of any error post SFCC Order SAPI call" doc:id="66853e8a-bdee-4c93-9863-ebe7fbf6d2ae">
 						<ee:message>
 							<ee:set-payload><![CDATA[%dw 2.0
 output application/json 
--&#45;&#45;
+---
 payload]]></ee:set-payload>
 						</ee:message>
 						<ee:variables>
+							<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
 						</ee:variables>
 					</ee:transform>
 					<raise-error doc:name="CUSTOM:CUSTOMER_SEARCH_ERROR" doc:id="b3dfb946-4ea2-4cfa-950c-4c860dd7f10f" type="CUSTOM:CUSTOMER_SEARCH_ERROR" description='#[write(payload,"application/json")]' />
 				</when>
-				-->
+				
 				<otherwise>
 					<ee:transform doc:name="Failure response body incase of any error in SFCC Order SAPI call" doc:id="6f521425-b79b-4a1c-ad15-392041a8cf6c">
 						<ee:message>
 							<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
-{
-"reportType": vars.reportType default " "
-}
-++ payload
+//{
+//"reportType": vars.reportType default " "
+//}
+//++ payload
 
-/* 
+ 
 {
+	"reportType": vars.reportType default " ",
 	transactionId: vars.correlationId,
 	errorCode: vars.errorDetails.errorType,
 	errorMessage: vars.errorDetails.errorDescription,
 	errorDescription: vars.errorDetails.errorDetailedDescription,
 	timestamp: now()>>'IST' as String {format: "yyyy-MM-dd HH:mm:ss.SSS"}
-}*/]]></ee:set-payload>
+}]]></ee:set-payload>
 						</ee:message>
 						<ee:variables>
 							<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
