@@ -12,16 +12,15 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="impl-generate-reports" doc:id="335ee61b-3fe4-4a4d-ab29-8abfc6526e4b">
-		<json-logger:logger doc:name="Logger" doc:id="0406acea-d009-4e43-8fd8-ce5d1c7eb63b" config-ref="JSON_Logger_Config" message='#["Starting the report generation for " ++ payload.reportType]' category="${log.category}" />
+		<json-logger:logger doc:name="Logger" doc:id="0406acea-d009-4e43-8fd8-ce5d1c7eb63b" config-ref="JSON_Logger_Config" message='#["Report generation for " ++ payload.reportType ++ " triggered"]' category="${log.category}" />
 		<vm:publish queueName="reportsExtractQueue" doc:name="reportsExtractQueue" doc:id="8c18a4f5-f51a-4043-8e7b-74813bff0d63" config-ref="transactions_vm_Config" sendCorrelationId="ALWAYS" >
 			<reconnect count="3" />
 		</vm:publish>
-		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	
 	<flow name="extract-reports-generation-data-flow" doc:id="bc21ea4c-a4fc-4dac-8d3e-61de53bd4af9" >
 		<vm:listener doc:name="reportsExtractQueue" doc:id="de38ede6-0240-4b80-9d05-c369c0e85aae" config-ref="transactions_vm_Config" queueName="reportsExtractQueue" timeoutUnit="MINUTES"/>
-		<json-logger:logger doc:name="Logger" doc:id="2b59c2cc-5515-4510-8d02-6d674dac9cb0" config-ref="JSON_Logger_Config" message='#["Starting the report generation for " ++ payload.reportType]' tracePoint="FLOW" category="${log.category}">
+		<json-logger:logger doc:name="Logger" doc:id="2b59c2cc-5515-4510-8d02-6d674dac9cb0" config-ref="JSON_Logger_Config" message='#["Fetching data for report generation of " ++ payload.reportType]' tracePoint="FLOW" category="${log.category}">
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
     //payload: JSONLoggerModule::stringifyNonJSON(payload) 
@@ -41,7 +40,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 		<set-variable value='#[import * from dw::core::Strings&#10;output application/java&#10;---&#10;camelize(vars.reportType replace " " with "") ++ "lastEvaluatedKey"]' doc:name="setObjectStoreNameForReports" doc:id="19905413-61cd-470d-a317-58a34d5d5ec9" variableName="setObjectStoreNameForReports" />
 		<flow-ref doc:name="process-dynamo-order-sapi-transactions" doc:id="999bc535-7450-498f-ad10-04052af35ab3" name="process-dynamo-order-sapi-transactions"/>
 		<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;&#10;{	&#10;	reportType : payload.reportType,&#10;	variables: vars.previouspayload.variables default {},&#10;	dynamodbFetchCount: (vars.previouspayload.dynamodbFetchCount default 0 ) + 1,&#10;	batchCount: (vars.previouspayload.batchCount),&#10;    count: (vars.previouspayload.count default 0 ) + (payload.count default 0),&#10;    ("lastEvaluatedKey": payload.lastEvaluatedKey) if (payload.lastEvaluatedKey?),   &#10;    "items":  (vars.previouspayload.items default []) ++ payload.items default []&#10;}]' doc:name="Agrregated Payload" doc:id="a304ef08-45bf-4115-8f1f-bbccc62e1786" />
-		<json-logger:logger doc:name="Logger" doc:id="b684811f-8db0-4ae9-91ad-d423ba839513" config-ref="JSON_Logger_Config" message="After DynamoDbSAPI. Processing further" tracePoint="FLOW" category="${log.category}">
+		<json-logger:logger doc:name="Logger" doc:id="b684811f-8db0-4ae9-91ad-d423ba839513" config-ref="JSON_Logger_Config" message="After DynamoDBSAPI. Processing further" tracePoint="FLOW" category="${log.category}">
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
     //payload: JSONLoggerModule::stringifyNonJSON(payload) 
@@ -62,6 +61,21 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 			</when>
 			<when expression="#[((payload.count &gt;= p('reports.batchCount') and payload.lastEvaluatedKey != null))]">
 				<set-variable value="#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;	reportType: payload.reportType,&#10;	variables: payload.variables,&#10;	dynamodbFetchCount: payload.dynamodbFetchCount,&#10;    	batchCount: (payload.batchCount default 0) + 1,&#10;	count: 0,&#10;    lastEvaluatedKey: payload.lastEvaluatedKey default {}&#10;}]" doc:name="HeadersAndlastEvaluatedKey" doc:id="87378b91-6368-4d5f-ba2b-023b908da70b" variableName="HeadersAndlastEvaluatedKey" />
+				<json-logger:logger doc:name="Logger" doc:id="4137fcd7-5fa4-44e3-a339-48fbd32dde25" config-ref="JSON_Logger_Config" message="Current Batch fetch Complete. SFCC Process to be called for the below batch:" category="${log.category}" tracePoint="FLOW">
+					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+    //payload: JSONLoggerModule::stringifyNonJSON(payload) 
+    payload:  
+    	{
+			reportType: payload.reportType,
+			variables: payload.variables,
+	        dynamodbFetchCount: payload.dynamodbFetchCount,
+			batchCount: payload.batchCount,
+			count: payload.count,
+	        lastEvaluatedKey: payload.lastEvaluatedKey
+	      }
+}]]]></json-logger:content>
+				</json-logger:logger>
 				<flow-ref name="process-sfcc-write-csv" doc:name="process-sfcc-write-csv" doc:id="68ef7345-0759-4667-a785-aa4276882f7e"></flow-ref>
 				<set-payload value='#[vars.HeadersAndlastEvaluatedKey]' doc:name="Set Payload" doc:id="928e4b5f-cf99-4f26-b4a0-f30893e27860" />
 				<os:store doc:name="vars.setObjectStoreNameForReports" doc:id="22d4d03b-7c22-4f88-9e8b-e410d9640a98" key="#[vars.setObjectStoreNameForReports]" objectStore="reportNameObjectStore">
@@ -100,7 +114,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	</flow>
 
 	<flow name="process-sfcc-write-csv" doc:id="6868a542-3e6c-4d73-be89-479a061ec0ca" >
-		<json-logger:logger doc:name="Logger" doc:id="eaf8ecc4-2053-4f0d-8942-ee951ba68946" config-ref="JSON_Logger_Config" message="Retrieving the sfcc information for the batch" tracePoint="BEFORE_TRANSFORM" category="${log.category}">
+		<json-logger:logger doc:name="Logger" doc:id="eaf8ecc4-2053-4f0d-8942-ee951ba68946" config-ref="JSON_Logger_Config" message="Retrieving the sfcc information for the batch" tracePoint="FLOW" category="${log.category}">
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
     //payload: JSONLoggerModule::stringifyNonJSON(payload) 
@@ -138,7 +152,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 			<ee:variables >
 				<ee:set-variable variableName="outputFileName" ><![CDATA[%dw 2.0
 import p from Mule
-var reportDateformat = now() as String {format: "ddMMyyyyHms"}
+var reportDateformat = now() as String {format: "ddMMyyyyHHmmss"}
 
 fun reportFolder(reportName) = 
 	if(payload.reportType == p('reports.dropOrderReport.reportType')) 
@@ -153,38 +167,12 @@ fun reportFolder(reportName) =
 	 	" "
 output application/java
 ---
-//reportFolder(vars.reportName) ++ (vars.reportType replace " " with "") ++ reportDateformat ++ ".csv"
 
 reportFolder(vars.reportType) ++ (vars.reportType replace " " with "") ++ reportDateformat ++ ".csv"
-
-
-
-/*fun reportFolder(reportType) = 
-	  match {
-	 	case p('dropOrderReportScheduler.reportType')    -> p('dropOrderReportScheduler.sftpOutputFileDirectory') 
-		case p('transactionsReportScheduler.reportType') -> p('transactionsReportScheduler.sftpOutputFileDirectory')
-		case p('transactionsConsolidatedReportScheduler.reportType') -> p('transactionsConsolidatedReportScheduler.sftpOutputFileDirectory')
-	}*/
-
-/*
-fun reportFolder(reportType) = 
-	if(reportType == p('dropOrderReportScheduler.reportType')) 
-		p('dropOrderReportScheduler.sftpOutputFileDirectory') 
-	else 
-		if reportType == p('transactionsReportScheduler.reportType')) 
-			p('transactionsReportScheduler.sftpOutputFileDirectory') 
-		else
-		if reportType == p('transactionsConsolidatedReportScheduler.reportType')) 
-			p('transactionsConsolidatedReportScheduler.sftpOutputFileDirectory') 		
-	
-	
-	 */
-//	folderpath =  p('dropOrderReportScheduler.sftpOutputFileDirectory') ++ reportType ++ reportDateformat ++ ".csv"
-//p('reportGenerationPath.sftpOutputFileDirectory') ++ (vars.batchTransactionData.headers.ReportType replace " " with "")  ++ "_" ++ now() as String {format: "ddMMyyyyHms"} ++ ".csv"]]></ee:set-variable>
+]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<sftp:write doc:name="WritetoSFTPfolder" doc:id="616965d0-6fcf-48aa-add2-24ba0d2cf344" config-ref="SFTP_Config" path="#[vars.outputFileName]" mode="APPEND"/>
+		<sftp:write doc:name="WritetoSFTPfolder" doc:id="616965d0-6fcf-48aa-add2-24ba0d2cf344" config-ref="SFTP_Config" path="#[vars.outputFileName]"/>
 		<flow-ref doc:name="decide-xls-creation-for-reports" doc:id="c10994df-8377-44c5-aaa1-b50776d2bd9e" name="decide-xls-creation-for-reports"/>
-		<error-handler ref="reports-global-error-handler" />
 	</flow>
 </mule>

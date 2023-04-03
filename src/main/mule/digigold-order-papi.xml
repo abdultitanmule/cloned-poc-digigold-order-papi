@@ -243,7 +243,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="a2cce765-441f-4453-bf08-c33b8c8df177" name="impl-generate-reports" />
-		<json-logger:logger doc:name="Logger" doc:id="07d30d46-6873-4a91-8c27-9f2da776c08b" config-ref="JSON_Logger_Config" tracePoint="END" message="Completion of the Drop Porder trigger process"/>
+		<json-logger:logger doc:name="Logger" doc:id="07d30d46-6873-4a91-8c27-9f2da776c08b" config-ref="JSON_Logger_Config" tracePoint="END" message="Completion of the Drop order trigger process" category="${log.category}"/>
 		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	<flow name="digigold-order-daily-transaction-report-generation" doc:id="24913856-977d-4638-8af8-59f0aaba55c0">
@@ -280,6 +280,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="bb206e3b-7480-4908-8b39-61854e2bf457" name="impl-generate-reports" />
+		<json-logger:logger doc:name="Logger" doc:id="285dcdcb-ae44-4036-9416-1d53cc5dd84d" config-ref="JSON_Logger_Config" message="Completion of the Drop order trigger process" tracePoint="END" category="${log.category}" />
 		<error-handler ref="reports-global-error-handler" />
 	</flow>
 	<flow name="digigold-order-fortnightly-transaction-consolidated-report-generation" doc:id="23fda268-7e03-4bff-ad8a-a5fd9f069adc">
@@ -315,6 +316,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 			</ee:message>
 		</ee:transform>
 		<flow-ref doc:name="impl-generate-reports" doc:id="a25abaaf-89f1-4d8f-b440-792da3f36c90" name="impl-generate-reports" />
+		<json-logger:logger doc:name="Logger" doc:id="9a8313c5-631d-43f5-b002-a22c75e90567" config-ref="JSON_Logger_Config" message="Completion of the Drop order trigger process" tracePoint="END" category="${log.category}" />
 		<error-handler ref="reports-global-error-handler" />
 	</flow>
 

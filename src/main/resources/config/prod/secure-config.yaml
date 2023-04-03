@@ -1,8 +1,8 @@
 
 # Secured Properties
 dynamodb:
-  accesskey: "![To be inserted]"
-  secretkey: "![to be inserted]"
+  accesskey: "![zWjGkmCtJxw6Fzs/R70znRIufqrqqdzfr9eUIiFOCX4=]"
+  secretkey: "![qjPMFXJHyDLwx1Iporh06p0eKxB7EafGr82823zATdinOvjaEsg9Nhni/vB93rVZ]"
 
 titan:
  sftp:
