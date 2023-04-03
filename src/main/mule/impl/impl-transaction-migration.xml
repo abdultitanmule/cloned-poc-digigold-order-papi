@@ -12,8 +12,23 @@ http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sft
 http://www.mulesoft.org/schema/mule/sftp-sapi http://www.mulesoft.org/schema/mule/sftp-sapi/current/mule-sftp-sapi.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="impl-transaction-migration" doc:id="ac59a2a4-31fc-4975-a590-5ccb84f871ec" >
-		<json-logger:logger doc:name="Logger" doc:id="fba96116-e2fe-436e-b4dc-833ae8e78cf8" config-ref="JSON_Logger_Config" message="Entering the transaction migration process" tracePoint="FLOW" category="${log.category}"/>
-		<sftp:read doc:name="Read" doc:id="276a4aa6-d728-459f-9ef8-cf9d46b9e1b7" config-ref="SFTP_Config" path="${titan.sftp.txnMigration.workingDir}/${titan.sftp.txnMigration.migrationfileName}" outputMimeType="text/csv; streaming=true"/>
+		<json-logger:logger doc:name="Logger" doc:id="fba96116-e2fe-436e-b4dc-833ae8e78cf8" config-ref="JSON_Logger_Config" message="Entering the Transaction migration process" tracePoint="FLOW" category="${log.category}">
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+{
+	eventContext: {
+	businessID: "${global.properties.businessId}",
+	clientId: attributes.headers.'x-source-channel', // Change accordingly
+	inboundURI: attributes.requestUri,
+	method: attributes.method,
+	muleCorrelationId: vars.muleCorrelationId,
+	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
+}
+}]]]></json-logger:content>
+		</json-logger:logger>
+		<set-variable value='#["Transaction Migration"]' doc:name="reportType" doc:id="be552566-1920-409e-aff6-1d07c12ead7e" variableName="reportType"/>
+		<sftp:read doc:name="Read" doc:id="276a4aa6-d728-459f-9ef8-cf9d46b9e1b7" config-ref="SFTP_Config" path="${titan.sftp.txnMigration.workingDir}/${titan.sftp.txnMigration.migrationfileName}" outputMimeType="text/csv; streaming=true; header=true">
+			<reconnect />
+		</sftp:read>
 		<batch:job jobName="digigold-order-papi-batch-job" doc:id="8ade2a70-9ade-4799-8703-acd82a1767d3" >
 			<batch:process-records >
 				<batch:step name="Batch_Step" doc:id="a00a5ad9-6028-4cb5-8345-8f1b2865b542" >
@@ -86,30 +101,12 @@ payload map ((row) -> {
 ]]></ee:set-payload>
 							</ee:message>
 						</ee:transform>
-						<json-logger:logger doc:name="Logger" doc:id="ff8ed65e-1b56-4901-86b0-8d2208cdae69" config-ref="JSON_Logger_Config" message="Before batchPut"/>
 						<dynamodb:batch-put-item doc:name="Batch put item" doc:id="eed1a485-1991-4d79-8233-7d6d6e4fba44" requestPutItems="#[payload]" config-ref="Amazon_DynamoDB_Configuration"/>
-						<json-logger:logger doc:name="ON Log" doc:id="a3a1c39a-9b22-474e-9cde-6cc18e6ac92c" config-ref="JSON_Logger_Config" message="Batch complete" tracePoint="AFTER_REQUEST" category="${log.category}" >
-							<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
-{
-	eventContext: {
-	businessID: "${global.properties.businessId}",
-	clientId: attributes.headers.'x-source-channel', // Change accordingly
-	inboundURI: attributes.requestUri,
-	method: attributes.method,
-	muleCorrelationId: vars.muleCorrelationId,
-	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
-	
-}
-  //payload: JSONLoggerModule::stringifyNonJSON(payload)
-  //Optional - DO NOT LOG whole payload as it will be huge. Log it only when necessary;
-  //No sensitive information should be logged in plain text
-}]]]></json-logger:content>
-						</json-logger:logger>
 					</batch:aggregator>
 				</batch:step>
 			</batch:process-records>
 			<batch:on-complete >
-				<json-logger:logger doc:name="ON Log" doc:id="a8c31225-59e7-406c-aac6-7733eb3d0bf5" config-ref="JSON_Logger_Config" message="Log Message" category="${log.category}" tracePoint="AFTER_REQUEST">
+				<json-logger:logger doc:name="On Complete  Log" doc:id="a8c31225-59e7-406c-aac6-7733eb3d0bf5" config-ref="JSON_Logger_Config" message="Completed Batch Job" category="${log.category}" tracePoint="FLOW">
 					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
 {
 	eventContext: {
@@ -119,11 +116,7 @@ payload map ((row) -> {
 	method: attributes.method,
 	muleCorrelationId: vars.muleCorrelationId,
 	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
-	
 }
-  //payload: JSONLoggerModule::stringifyNonJSON(payload)
-  //Optional - DO NOT LOG whole payload as it will be huge. Log it only when necessary;
-  //No sensitive information should be logged in plain text
 }]]]></json-logger:content>
 				</json-logger:logger>
 				<sftp:move doc:name="Move to Archive" doc:id="acd2f79c-0f0a-48f7-8fe2-2032d620437f" config-ref="SFTP_Config" overwrite="true" sourcePath="${titan.sftp.txnMigration.workingDir}/${titan.sftp.txnMigration.migrationfileName}" targetPath="${titan.sftp.txnMigration.archiveDir}" renameTo="#[(now() as String {format: &quot;ddMMyyyyHms&quot;}) ++ &quot;_&quot; ++ Mule::p('titan.sftp.txnMigration.migrationfileName')]" />

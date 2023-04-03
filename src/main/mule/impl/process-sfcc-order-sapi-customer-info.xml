@@ -112,7 +112,7 @@ vars.customerSearchResponse ++ ((payload.Customers map ((item, index) ->
 			</ee:variables>
 		</ee:transform>
 				</when>
-				 <when expression="#[payload.errorCode contains 'SAPI']">
+				 <when expression="#[!isEmpty(payload) and (payload.errorCode contains 'SAPI')]">
 					<ee:transform doc:name="Failure response body incase of any error post SFCC Order SAPI call" doc:id="66853e8a-bdee-4c93-9863-ebe7fbf6d2ae">
 						<ee:message>
 							<ee:set-payload><![CDATA[%dw 2.0
