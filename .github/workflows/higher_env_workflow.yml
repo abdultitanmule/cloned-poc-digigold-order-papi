@@ -30,7 +30,7 @@ jobs:
       CLOUDHUB_ENVIRONMENT: "SIT"
       GITHUB_ENVIRONMENT: "SIT"
       CLOUDHUB_REPLICAS: "${{ vars.MULE_CLOUDHUB_REPLICAS_1 }}"
-      CLOUDHUB_REPLICA_SIZE: "${{ vars.MULE_CLOUDHUB_REPLICA_SIZE_0_1 }}"
+      CLOUDHUB_REPLICA_SIZE: "${{ vars.MULE_CLOUDHUB_REPLICA_SIZE_0_2 }}"
       CLOUDHUB_PRIVATE_SPACE: "${{ vars.MULE_NONPROD_CLOUDHUB_PRIVATE_SPACE }}"
       CLOUDHUB_PUBLIC_URL: "" #Provide the Endpoint URL if custom public endpoint is needed
       GENERATE_PUBLIC_URL_FLAG: "false" #Set to true only if the app has public Endpoint URL; in all other cases this should be false
@@ -65,7 +65,7 @@ jobs:
       CLOUDHUB_ENVIRONMENT: "UAT"
       GITHUB_ENVIRONMENT: "UAT"
       CLOUDHUB_REPLICAS: "${{ vars.MULE_CLOUDHUB_REPLICAS_1 }}"
-      CLOUDHUB_REPLICA_SIZE: "${{ vars.MULE_CLOUDHUB_REPLICA_SIZE_0_1 }}"
+      CLOUDHUB_REPLICA_SIZE: "${{ vars.MULE_CLOUDHUB_REPLICA_SIZE_0_2 }}"
       CLOUDHUB_PRIVATE_SPACE: "${{ vars.MULE_NONPROD_CLOUDHUB_PRIVATE_SPACE }}"
       CLOUDHUB_PUBLIC_URL: "" #Provide the Endpoint URL if custom public endpoint is needed
       GENERATE_PUBLIC_URL_FLAG: "false" #Set to true only if the app has public Endpoint URL; in all other cases this should be false
@@ -100,7 +100,7 @@ jobs:
       CLOUDHUB_ENVIRONMENT: "PROD"
       GITHUB_ENVIRONMENT: "PROD"
       CLOUDHUB_REPLICAS: "${{ vars.MULE_CLOUDHUB_REPLICAS_1 }}"
-      CLOUDHUB_REPLICA_SIZE: "${{ vars.MULE_CLOUDHUB_REPLICA_SIZE_0_1}}"
+      CLOUDHUB_REPLICA_SIZE: "${{ vars.MULE_CLOUDHUB_REPLICA_SIZE_0_2}}"
       CLOUDHUB_PRIVATE_SPACE: "${{ vars.MULE_PROD_CLOUDHUB_PRIVATE_SPACE }}"
       CLOUDHUB_PUBLIC_URL: "" #Provide the Endpoint URL if custom public endpoint is needed
       GENERATE_PUBLIC_URL_FLAG: "false" #Set to true only if the app has public Endpoint URL; in all other cases this should be false

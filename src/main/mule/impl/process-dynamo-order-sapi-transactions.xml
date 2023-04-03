@@ -10,36 +10,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<flow-ref doc:name="call-to-order-dynamo-sapi" doc:id="6cc9d7d5-8d96-443e-b63a-4b95f2903771" name="call-to-order-dynamo-sapi"/>
 		<choice doc:name="Choice" doc:id="dd59f336-a4f5-42e2-b8b0-d7e3d2ec7198" >
 			<when expression="#[attributes.statusCode == 200]" >
-				<ee:transform doc:name="Map required fields from DynamoDb Call" doc:id="a7e1a71e-88d1-4d4d-b957-c31b501de655" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{	
-	reportType: vars.previouspayload.reportType,
-	variables: vars.previouspayload.variables default {},
-	dynamodbFetchCount: (vars.previouspayload.dynamodbFetchCount default 0 ) + 1,
-	batchCount: (vars.previouspayload.batchCount),
-    count: (vars.previouspayload.count default 0 ) + (payload.count default 0),
-    ("lastEvaluatedKey": payload.lastEvaluatedKey) if (payload.lastEvaluatedKey?),   
-    "items":  (vars.previouspayload.items default []) ++ payload.items default []
-}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables />
-				</ee:transform>
-				<json-logger:logger doc:name="Logger" doc:id="8c45bf99-3621-457e-8d30-ad2634e8fcad" config-ref="JSON_Logger_Config" message="Call to Dynamo SAPI Successful " tracePoint="FLOW" category="${log.category}">
+				<json-logger:logger doc:name="Logger" doc:id="8c45bf99-3621-457e-8d30-ad2634e8fcad" config-ref="JSON_Logger_Config" message="Call to Dynamo SAPI Successful " tracePoint="FLOW" category="${log.category}" priority="DEBUG">
 					<json-logger:content><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
-    //payload: JSONLoggerModule::stringifyNonJSON(payload) 
-    payload:  
-    	{
-			reportType: payload.reportType,
-			variables: payload.variables,
-	        dynamodbFetchCount: payload.dynamodbFetchCount,
-			batchCount: payload.batchCount,
-			count: payload.count,
-	        lastEvaluatedKey: payload.lastEvaluatedKey
-	      }
+    payload: JSONLoggerModule::stringifyNonJSON(payload)
 }]]]></json-logger:content>
 				</json-logger:logger>
 			</when>
@@ -51,7 +25,9 @@ output application/json
 ---
 payload]]></ee:set-payload>
 					</ee:message>
-					<ee:variables />
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[500]]></ee:set-variable>
+					</ee:variables>
 				</ee:transform>
 				<raise-error doc:name="CUSTOM:DYNAMODB_TRANSACTIONS_ERROR" doc:id="f0e33bf8-05b9-475a-9574-e2deb26e9fb0" type="CUSTOM:DYNAMODB_TRANSACTIONS_ERROR" description='#[write(payload,"application/json")]' />
 			
