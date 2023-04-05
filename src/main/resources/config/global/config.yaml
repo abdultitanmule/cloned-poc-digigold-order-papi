@@ -23,7 +23,8 @@ log:
 reports:
   oracleReport:
     reportType: "Oracle Report"
-    reportSequenceNumber: "0"  
+    reportSequenceNumber: "0"
+    reportOSresetDate: "0104"  #ddMM format --> 1st April
   transactionReport:
     reportType: "Transaction Report" 
   transactionConsolidatedReport:

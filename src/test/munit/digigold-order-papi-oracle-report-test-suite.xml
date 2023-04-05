@@ -68,7 +68,7 @@
 			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
-<!-- [STUDIO:"digigold-order-papi-test-suite-post:\reports:application\json:digigold-order-papi-pagination-success-test-case"]	<munit:test name="digigold-order-papi-test-suite-post:\reports:application\json:digigold-order-papi-pagination-success-test-case" doc:id="b1b9ddd5-be13-47b7-bb15-0bb7167fc363" description="Test" >
+	<munit:test name="digigold-order-papi-test-suite-post:\reports:application\json:digigold-order-papi-pagination-success-test-case" doc:id="b1b9ddd5-be13-47b7-bb15-0bb7167fc363" description="Test" >
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock apikit router" doc:id="8ea5888b-7f5c-44ab-ae8d-93acc20217bb" processor="apikit:router">
 				<munit-tools:with-attributes >
@@ -76,14 +76,16 @@
 				</munit-tools:with-attributes>
 				<munit-tools:then-call flow="post:\reports:application\json:digigold-order-papi-config" />
 			</munit-tools:mock-when>
-			<munit-tools:mock-when doc:name="Mock to Dynamo-sapi" doc:id="8db29f37-da0b-4253-90ea-58458a1481b2" processor="http:request">
-				<munit-tools:with-attributes>
-					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="dynamoSAPIRequestConfig" attributeName="config-ref" />
+			<munit-tools:mock-when doc:name="Mock to Dynamo-sapi" doc:id="8db29f37-da0b-4253-90ea-58458a1481b2" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="process-dynamo-order-sapi-transactions" attributeName="doc:name" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value='#[output application/json &#45;&#45;- readUrl("classpath://input/dynamo-sapi-pagination-success-response.json")]' mediaType="application/json" encoding="UTF-8" />
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/dynamo-sapi-pagination-success-response.json")]' mediaType="application/json" encoding="UTF-8" />
 					<munit-tools:attributes value='#[{"statusCode" : 200}]' mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:variables >
+						<munit-tools:variable key="dynamoResponse" value='#[output application/json --- readUrl("classpath://input/dynamo-sapi-pagination-success-response.json")]' mediaType="application/json" encoding="UTF-8" />
+					</munit-tools:variables>
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
 			<munit-tools:mock-when doc:name="Mock call to VM" doc:id="613f9c57-4ead-44b7-883b-fbfd06f496f6" processor="vm:publish">
@@ -91,7 +93,7 @@
 					<munit-tools:with-attribute whereValue="Publish Dynamo  Response" attributeName="doc:name" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value='#[output application/json &#45;&#45;- readUrl("classpath://input/dynamo-sapi-pagination-success-response.json")]' mediaType="application/json" />
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/dynamo-sapi-pagination-success-response.json")]' mediaType="application/json" />
 				</munit-tools:then-return>
 				<munit-tools:then-call flow="listen-dynamo-response" />
 			</munit-tools:mock-when>
@@ -101,15 +103,15 @@
 					<munit-tools:with-attribute whereValue="sftpSAPIRequestConfig" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value='#[output application/json &#45;&#45;- readUrl("classpath://input/sftp-sapi-success-response.json")]' />
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/sftp-sapi-success-response.json")]' />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
 			<munit-tools:mock-when doc:name="Mock call to dynamo sapi - listner flow" doc:id="dc1300ea-0efd-4b5f-9b88-8b013bd3de3b" processor="flow-ref">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="recall to dynamo-sapi" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="recall to process-dynamo-order-sapi-transactions" attributeName="doc:name" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value='#[output application/json &#45;&#45;- readUrl("classpath://input/dynamo-sapi-success-response.json")]' mediaType="application/json" />
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/dynamo-sapi-success-response.json")]' mediaType="application/json" />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
 			<munit-tools:mock-when doc:name="Mock republish to vm" doc:id="8ce40a80-61d7-43f5-b2ac-ce3c1d17ad9e" processor="vm:publish">
@@ -117,14 +119,9 @@
 					<munit-tools:with-attribute whereValue="Republish Dynamo  Response" attributeName="doc:name" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-return >
-					<munit-tools:payload value='#[output application/json &#45;&#45;- readUrl("classpath://input/dynamo-sapi-success-response.json")]' mediaType="application/json" />
+					<munit-tools:payload value='#[output application/json --- readUrl("classpath://input/dynamo-sapi-success-response.json")]' mediaType="application/json" />
 				</munit-tools:then-return>
 				<munit-tools:then-call flow="listen-dynamo-response" />
-			</munit-tools:mock-when>
-<!&#45;&#45; [STUDIO:"Mock create directory"]			<munit-tools:mock-when doc:name="Mock create directory" doc:id="b829ff68-76e9-4404-ad07-438d8381e7b1" processor="sftp:create-directory">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Create directory for Report Generation" attributeName="doc:name" />
-				</munit-tools:with-attributes>
 			</munit-tools:mock-when>
 		</munit:behavior>
 		<munit:execution >
@@ -146,7 +143,7 @@
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 		</munit:validation>
-	</munit:test> [STUDIO] -->
+	</munit:test>
 	<munit:test name="digigold-order-papi-test-suite-post:\reports:application\json:digigold-order-papi-zero-records-failure-test-case" doc:id="41efba54-e3b9-4a1d-92a9-c5723c0b4645" description="Test">
 		<munit:behavior >
 			<munit-tools:mock-when doc:name="Mock apikit router" doc:id="ea245e1c-9cb7-4a37-9141-14913c56463e" processor="apikit:router">
@@ -165,15 +162,6 @@
 					<munit-tools:attributes value='#[{"statusCode" : 200}]' mediaType="application/java" encoding="UTF-8" />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
-			<!-- [STUDIO:"Mock Call to dynamo-sapi"]			<munit-tools:mock-when doc:name="Mock Call to dynamo-sapi" doc:id="57bfd477-9dd5-48c4-805c-421ec9469963" processor="http:request">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Request to dynamo-sapi" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="dynamoSAPIRequestConfig" attributeName="config-ref" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:payload value='#[output application/json &#45;&#45;- readUrl("classpath://input/dynamo-sapi-zero-records-success-response.json")]' mediaType="application/json" />
-				</munit-tools:then-return>
-			</munit-tools:mock-when> [STUDIO] -->
 			<munit-tools:mock-when doc:name="Mock call to VM" doc:id="a0e35e83-93b5-44c7-a987-c339fe57be41" processor="vm:publish">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="Publish Dynamo  Response" attributeName="doc:name" />
@@ -227,16 +215,6 @@
 					</munit-tools:variables>
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
-<!-- [STUDIO:"Mock Call to dynamo-sapi"]						<munit-tools:mock-when doc:name="Mock Call to dynamo-sapi" doc:id="7286de6b-527f-4f67-a238-ccc0861b21d5" processor="http:request">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Request to dynamo-sapi" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="dynamoSAPIRequestConfig" attributeName="config-ref" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:payload value='#[output application/json &#45;&#45;- readUrl("classpath://input/dynamo-sapi-zero-records-success-response.json")]' mediaType="application/json" />
-					<munit-tools:error typeId="HTTP:CONNECTIVITY" />
-				</munit-tools:then-return>
-			</munit-tools:mock-when> [STUDIO] -->
 			<munit-tools:mock-when doc:name="Mock call to notification-sapi" doc:id="e14ef3c8-00f2-4ba4-89e3-bbf512e90aa1" processor="http:request">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="Trigger notification SAPI" attributeName="doc:name" />
@@ -257,22 +235,23 @@
 					<munit-tools:with-attribute whereValue="set email params" attributeName="doc:name" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
-<!-- [STUDIO:"Verify call to error-handler"]			<munit-tools:verify-call doc:name="Verify call to error-handler" doc:id="da277f34-4934-4073-90b2-8b71276c972e" processor="set-variable" atLeast="1">
+			<munit-tools:verify-call doc:name="Verify call to error-handler" doc:id="da277f34-4934-4073-90b2-8b71276c972e" processor="ee:transform" atLeast="1">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Set successful " attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="Prepare Error Message" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="f8292c02-6ae1-40a9-abf4-76978c12bc4a" attributeName="doc:id" />
 				</munit-tools:with-attributes>
-			</munit-tools:verify-call> [STUDIO] -->
+			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
-	<munit:test name="digigold-order-papi-test-suite-post:\reports:application\json:digigold-order-papi-sapiANY-failure-test-case" doc:id="90e8bf0f-7a7d-4bb1-9797-da0596815a3e" description="Test">
+	<munit:test name="digigold-order-papi-test-suite-post:\reports:application\json:digigold-order-papi-sapiANY-failure-test-case" doc:id="6efccaa4-6a30-40f7-9ebd-62aa939f695c" description="Test">
 		<munit:behavior >
-			<munit-tools:mock-when doc:name="Mock apikit router" doc:id="2af637cf-5727-441d-b3c6-1eff5ce3b59b" processor="apikit:router">
+			<munit-tools:mock-when doc:name="Mock apikit router" doc:id="4de6a43f-6f69-4207-9495-f9aaf50f7987" processor="apikit:router">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="digigold-order-papi-config" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 				<munit-tools:then-call flow="post:\reports:application\json:digigold-order-papi-config" />
 			</munit-tools:mock-when>
-<munit-tools:mock-when doc:name="Mock to Dynamo-sapi" doc:id="846b0765-76ad-4f3d-8353-5433e6be2c6d" processor="http:request">
+<munit-tools:mock-when doc:name="Mock to Dynamo-sapi" doc:id="b729888b-73e7-4cb0-93d9-b66a2b581ae7" processor="http:request">
 				<munit-tools:with-attributes>
 					<munit-tools:with-attribute whereValue="httpRequestToDynamoOrderSapi" attributeName="doc:name" />
 					<munit-tools:with-attribute whereValue="dynamoSAPIRequestConfig" attributeName="config-ref" />
@@ -282,42 +261,32 @@
 					<munit-tools:error typeId="ANY" />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
-			<munit-tools:mock-when doc:name="Mock call to notification-sapi" doc:id="f88f022e-82b7-4c7c-b291-8375a9bd2fee" processor="http:request">
+			<munit-tools:mock-when doc:name="Mock call to notification-sapi" doc:id="a8c9bc9c-c80a-47ca-be0a-71f3836826bd" processor="http:request">
 				<munit-tools:with-attributes>
 					<munit-tools:with-attribute whereValue="Trigger notification SAPI" attributeName="doc:name" />
 					<munit-tools:with-attribute whereValue="notificationSAPIRequestConfig" attributeName="config-ref" />
 				</munit-tools:with-attributes>
 			</munit-tools:mock-when>
-			<!-- [STUDIO:"Mock Call to dynamo-sapi"]			<munit-tools:mock-when doc:name="Mock Call to dynamo-sapi" doc:id="b9688d65-e175-41a9-aaf8-9973a333a769" processor="http:request">
-				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Request to dynamo-sapi" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="dynamoSAPIRequestConfig" attributeName="config-ref" />
-				</munit-tools:with-attributes>
-				<munit-tools:then-return >
-					<munit-tools:payload value='#[output application/json &#45;&#45;- readUrl("classpath://input/dynamo-sapi-zero-records-success-response.json")]' mediaType="application/json" />
-					<munit-tools:error typeId="ANY" />
-				</munit-tools:then-return>
-			</munit-tools:mock-when> [STUDIO] -->
 		</munit:behavior>
 		<munit:execution >
-			<munit:set-event doc:name="Set Event" doc:id="d535a004-9ee0-4ef9-9713-b378cd013093" >
+			<munit:set-event doc:name="Set Event" doc:id="1e28e254-8987-4195-8110-29564394b3e2" >
 				<munit:payload value="#[MunitTools::getResourceAsString('input/oracle-report-post-request.json')]" mediaType="application/json" />
 				<munit:attributes value="#[MunitTools::getResourceAsString('input/oracle-report-type-attribute.json')]" encoding="UTF-8" mediaType="application/json" />
 			</munit:set-event>
-			<flow-ref doc:name="Flow-ref to post:\reports:application\json:digigold-order-papi-config" doc:id="74382f8e-821e-4de6-ba85-8d4f42a13e4a" name="post:\reports:application\json:digigold-order-papi-config"/>
+			<flow-ref doc:name="Flow-ref to post:\reports:application\json:digigold-order-papi-config" doc:id="ff673e2a-1c1a-4d6b-94c3-deef4d49b28d" name="post:\reports:application\json:digigold-order-papi-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:verify-call doc:name="Verify call to on error continue Scenario" doc:id="a09f4fca-d65b-498b-9991-597605c123bd" processor="ee:transform" times="1">
+			<munit-tools:verify-call doc:name="Verify call to on error continue Scenario" doc:id="548ef18f-f25d-4155-9f9a-33c3d2268efb" processor="ee:transform" times="1">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="set email params" attributeName="doc:name" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
-<!-- [STUDIO:"Verify call to error-handler"]			<munit-tools:verify-call doc:name="Verify call to error-handler" doc:id="c7c974f7-4f0f-421a-bb30-ceec8f594b57" processor="ee:transform" atLeast="1">
+				<munit-tools:verify-call doc:name="Verify call to error-handler" doc:id="ab3ad34e-af59-41be-b7e0-de8fbd661c75" processor="ee:transform" atLeast="1">
 				<munit-tools:with-attributes >
-					<munit-tools:with-attribute whereValue="Set Error Payload" attributeName="doc:name" />
-					<munit-tools:with-attribute whereValue="8d4d963f-6c62-4eb0-8463-aa52a10eca34" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Prepare Error Message" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="e31764ec-0e7c-408c-97d6-9c5413794b59" attributeName="doc:id" />
 				</munit-tools:with-attributes>
-			</munit-tools:verify-call> [STUDIO] -->
+			</munit-tools:verify-call>
 		</munit:validation>
 	</munit:test>
 
