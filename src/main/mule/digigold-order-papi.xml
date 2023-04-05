@@ -206,6 +206,37 @@ import * from dw::core::Dates
 ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
+		<choice doc:name="Choice" doc:id="146d42a2-3463-4f1b-92a3-815f33760cb1" >
+			<when expression="#[%dw 2.0&#10;output application/json&#10;import * from dw::core::Dates&#10;---&#10;today() as Date as String{format: 'ddMM'} == p('reports.oracleReport.reportOSresetDate')  //Every 1st of April the OS is cleared.]">
+				<os:clear doc:name="Clear Object Store on 1st April Every year" doc:id="c7869ad9-76d8-4e4e-8325-7cf65108bea8" objectStore="reportNameObjectStore"/>
+				<json-logger:logger doc:name="Flow Logger" doc:id="b1304a98-b128-430a-b25f-889318e53547" config-ref="JSON_Logger_Config" message="Report Name Object Store successfully cleared" tracePoint="FLOW" category="${log.category}">
+					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+{
+	eventContext: {
+	businessID: "${global.properties.businessId}",
+	muleCorrelationId: vars.muleCorrelationId,
+	logMessage: "Report Name Object Store successfully cleared"
+	
+}
+  
+}]]]></json-logger:content>
+				</json-logger:logger>
+			</when>
+			<otherwise >
+				<json-logger:logger doc:name="Flow Logger" doc:id="eed9accf-5b17-4efd-a117-35e975e9ce4a" config-ref="JSON_Logger_Config" message="Skip clearing Object Store" tracePoint="FLOW" category="${log.category}">
+					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
+{
+	eventContext: {
+	businessID: "${global.properties.businessId}",
+	muleCorrelationId: vars.muleCorrelationId,
+	logMessage: "Skipped clearing Report Name Object Store."
+	
+}
+  
+}]]]></json-logger:content>
+				</json-logger:logger>
+			</otherwise>
+		</choice>
 		<flow-ref doc:name="call to impl-generate-oracle-report" doc:id="93368b82-3091-40a7-b199-6e2b1a71dc9e" name="impl-generate-oracle-report" />
 	</flow>
 	<flow name="digigold-order-daily-droporder-report-generation" doc:id="50127e70-92a4-4fc2-a3ad-4e3767d3201f">
