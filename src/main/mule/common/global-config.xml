@@ -7,6 +7,7 @@
 	xmlns:dynamodb="http://www.mulesoft.org/schema/mule/dynamodb"
 	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
 	xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:s3="http://www.mulesoft.org/schema/mule/s3"
 	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
   xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
@@ -18,6 +19,7 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
 http://www.mulesoft.org/schema/mule/dynamodb http://www.mulesoft.org/schema/mule/dynamodb/current/mule-dynamodb.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd
 http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
 	
 	<!-- for the Global Properties "env" and "secure.key.titan", provide it in the runtime arguments as -Denv= and -Dsecure.key.titan= respectively -->
@@ -83,6 +85,10 @@ http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sft
 	<http:request-config name="sfccOrderSapiRequestConfiguration" doc:name="HTTP Request configuration" doc:id="0a16fd91-715f-426f-be2d-c877934738a3" basePath="${sfcc-order-sapi.basePath}" >
 		<http:request-connection protocol="HTTPS" host="${sfcc-order-sapi.host}" port="${sfcc-order-sapi.port}" />
 	</http:request-config>
+	
+	<s3:config name="Amazon_S3_Configuration" doc:name="Amazon S3 Configuration" doc:id="f75db31f-3b4b-4874-b156-210dd92b515d" >
+		<s3:basic-connection accessKey="${secure::amazon-s3.accessKey}" secretKey="${secure::amazon-s3.secretKey}" region="${amazon-s3.regionEndpoint}" />
+	</s3:config>
 
 	<!-- API Gateway has to be defined pointing to corresponding API ID -->
 <!-- 	<api-gateway:autodiscovery apiId="${api.autodiscovery.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="37e06122-aa1f-4d18-87dd-793dd8fe452c" flowRef="" /> -->
