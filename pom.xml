@@ -8,7 +8,7 @@
 	<artifactId>digigold-order-papi-app</artifactId>
 	<!-- Artifact ID should always have app appended in the end.
 	Ex: If the API name is oauth-sfcc-sapi, then artifactId should be oauth-sfcc-sapi-app -->
-	<version>1.0.25</version>
+	<version>1.0.28</version>
 
 	<packaging>mule-application</packaging>
 	<name>digigold-order-papi</name>
@@ -146,7 +146,7 @@
 					</execution>
 				</executions>
 				<configuration>
-<!--  					<skipMunitTests>true</skipMunitTests>-->
+					<!--  					<skipMunitTests>true</skipMunitTests>-->
 					<coverage>
 						<runCoverage>true</runCoverage>
 						<formats>
@@ -301,6 +301,12 @@
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-file-connector</artifactId>
 			<version>1.5.0</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.connectors</groupId>
+			<artifactId>mule-amazon-s3-connector</artifactId>
+			<version>5.8.0</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>

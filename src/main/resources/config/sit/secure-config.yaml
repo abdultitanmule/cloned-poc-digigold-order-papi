@@ -15,4 +15,8 @@ digigold-order-papi:
   clientSecret: "![gemf02yqKNmnCH53L0eYojYyDQbl4ENEpDE0Fw34fbgjECDcMWTBk6uidw5kGD3t]"
   
 aes:
-  password: "![8x+qKJDdRb2mpSbTK2CcXTHnKSguV02MkQ1bUb6fb2w=]" 
+  password: "![8x+qKJDdRb2mpSbTK2CcXTHnKSguV02MkQ1bUb6fb2w=]"
+
+amazon-s3:
+  accessKey: "![knjAz/aLRirCxkXxzOZAdic6pQXQFYC8jXBI+EiY2Ho=]"
+  secretKey: "![DNyMTEpa4nNsln2MQnPu3VHvgmaHEa880h6FM1G3hJV1IfSrw+Y1UGBVKQJlJNTq]"

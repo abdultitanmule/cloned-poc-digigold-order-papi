@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
-	xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
-	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:s3="http://www.mulesoft.org/schema/mule/s3" xmlns:sftp="http://www.mulesoft.org/schema/mule/sftp"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
 http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
-http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd">
+http://www.mulesoft.org/schema/mule/sftp http://www.mulesoft.org/schema/mule/sftp/current/mule-sftp.xsd
+http://www.mulesoft.org/schema/mule/s3 http://www.mulesoft.org/schema/mule/s3/current/mule-s3.xsd">
+	
 	<flow name="impl-generate-oracle-report" doc:id="3359e058-6b64-4ad2-a9ad-e919a5e7e90e" >
 		<json-logger:logger doc:name="Flow Log" doc:id="8d827cfa-0523-43ad-b983-9f74c63b13f4" config-ref="JSON_Logger_Config" tracePoint="FLOW" category="${log.category}" message="Oracle report generation started"/>
 		<set-variable value="#[payload.reportType]" doc:name="reportType" doc:id="65a8c11e-2b56-4f88-8188-5246da41cd77" variableName="reportType" />
@@ -109,8 +111,15 @@ payload.variables.startDate as LocalDateTime {format: Mule::p('dateformat.datada
 								<ee:set-payload resource="dwl/reporting.dwl" />
 					</ee:message>
 				</ee:transform>
-<!-- [STUDIO:"Create directory for Report Generation"]						<sftp:create-directory doc:name="Create directory for Report Generation" doc:id="03676976-3dcb-422a-9d52-cdc3ae1a481e" config-ref="SFTP_Config" directoryPath="#[p('titan.sftp.oracleReport') ++ &quot;/&quot; ++ vars.folderName]" /> [STUDIO] -->
-						<flow-ref doc:name="call to sftp-sapi" doc:id="051371c4-54b7-4edd-8e64-d8a1e5194d06" name="call-to-sftp-sapi" />
+<scatter-gather doc:name="Scatter-Gather" doc:id="48318186-6ff1-478d-9b85-50cc110c2345" >
+							<route >
+								<s3:create-object doc:name="backup Report in s3" doc:id="5c1b8ca7-2d29-4a94-9654-733ec67d457a" config-ref="Amazon_S3_Configuration" bucketName="${amazon-s3.bucket}" key='#[vars.folderName ++ "/" ++ vars.outputReportName]' />
+							</route>
+							<route >
+								<flow-ref doc:name="call to sftp-sapi" doc:id="051371c4-54b7-4edd-8e64-d8a1e5194d06" name="call-to-sftp-sapi" />
+							</route>
+						</scatter-gather>
+<!-- [STUDIO:"Create directory for Report Generation"]												<sftp:create-directory doc:name="Create directory for Report Generation" doc:id="03676976-3dcb-422a-9d52-cdc3ae1a481e" config-ref="SFTP_Config" directoryPath="#[p('titan.sftp.oracleReport') ++ &quot;/&quot; ++ vars.folderName]" /> [STUDIO] -->
 						<os:store doc:name="Store outputReportSequence" doc:id="f5297d5e-d645-4a18-bdba-92c82a8438b2" key="oracleReportName" objectStore="reportNameObjectStore">
 							<os:value ><![CDATA[#[{
 	reportSequenceNumber: vars.oracleReportName.reportSequenceNumber as Number + 1,
