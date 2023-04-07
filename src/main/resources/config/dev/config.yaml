@@ -121,3 +121,9 @@ order-papi:
 until:
   retries: "2"
   millisBetweenRetries: "3000"
+  
+
+amazon-s3:
+  regionEndpoint: "ap-south-1"
+  bucket: "mule-titan-dg-preprd"
+ 
