@@ -99,7 +99,7 @@ sfcc-order-sapi:
 
 #Notification Email for Reports
 reportsEmail:
-  to: "gradhakrishna@salesforce.com,amanney@salesforce.com"
+  to: "gradhakrishna@salesforce.com,amanney@salesforce.com,skummari@salesforce.com"
   from: "ecomas@titan.co.in"
   cc: "gkadam@salesforce.com"
   ErrorSubject: "Generation Failure Notification "

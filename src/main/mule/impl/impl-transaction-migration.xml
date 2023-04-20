@@ -116,10 +116,24 @@ payload map ((row) -> {
 	method: attributes.method,
 	muleCorrelationId: vars.muleCorrelationId,
 	logMessage: vars.logMessage //Optional - include if there's any unique ID's to log
+   
+    
 }
 }]]]></json-logger:content>
 				</json-logger:logger>
 				<sftp:move doc:name="Move to Archive" doc:id="acd2f79c-0f0a-48f7-8fe2-2032d620437f" config-ref="SFTP_Config" overwrite="true" sourcePath="${titan.sftp.txnMigration.workingDir}/${titan.sftp.txnMigration.migrationfileName}" targetPath="${titan.sftp.txnMigration.archiveDir}" renameTo="#[(now() as String {format: &quot;ddMMyyyyHms&quot;}) ++ &quot;_&quot; ++ Mule::p('titan.sftp.txnMigration.migrationfileName')]" />
+				<parse-template doc:name="Parse Template Report Generation - HTML EMAIL" doc:id="ba96283a-7885-4377-99d7-421cd88f86b3" location="templates/migration-successful-notification-template.html" target="emailTemplate" targetValue="#[payload]" />
+				<ee:transform doc:name="set Email  params" doc:id="fe39ab5d-d70d-46ad-b9f1-19b7d2f6bef7">
+			<ee:message />
+			<ee:variables>
+						<ee:set-variable variableName="attachments"><![CDATA[false]]></ee:set-variable>
+						<ee:set-variable variableName="emailSubject"><![CDATA[%dw 2.0
+output application/java
+---
+vars.reportType default " " ++ " " ++ p('reportsEmail.Subject')]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+				<flow-ref doc:name="Success notification. Message" doc:id="863ba072-fe42-4940-9ee9-373b56df3969" name="call-notification-service" />
 			</batch:on-complete>
 		</batch:job>
 		<json-logger:logger doc:name="END Log" doc:id="8e07c287-7d9a-4d9d-a630-6ab2f897f5a8" config-ref="JSON_Logger_Config" message='#["Completing Digigold Migration Process. End Timestamp is: " ++ now()]' category="${log.category}" tracePoint="END">
