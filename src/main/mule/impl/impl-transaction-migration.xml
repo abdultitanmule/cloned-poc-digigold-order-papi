@@ -50,7 +50,7 @@ output application/json
 payload map ((row) -> {
 	(generateNumberField("TRANSACTION_ID",row.TRANSACTION_ID)),
 	(generateNumberField("DGORDER_ID",row.DGORDER_ID)),
-	(generateNumberField("MEMBER_ID",row.MEMBER_ID)),
+	(generateStringField("MEMBER_ID",row.MEMBER_ID)),
 	(generateNumberField("STATIC_ATTR",1)),
 	(generateStringField("TRANSACTION_TYPE",row.TRANSACTION_TYPE)),
 	(generateStringField("TRANSACTION_DATE",row.XTRANSACTION_DATE)),
