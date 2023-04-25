@@ -12,13 +12,13 @@ jobs:
     with:
       CLOUDHUB_ENVIRONMENT: "PROD"
       GITHUB_ENVIRONMENT: "PROD"
-      CLOUDHUB_REPLICAS: "${{ vars.MULE_CLOUDHUB_REPLICAS_1 }}"
+      CLOUDHUB_REPLICAS: "${{ vars.MULE_CLOUDHUB_REPLICAS_2 }}"
       CLOUDHUB_REPLICA_SIZE: "${{ vars.MULE_CLOUDHUB_REPLICA_SIZE_0_2 }}"
       CLOUDHUB_PRIVATE_SPACE: "${{ vars.MULE_PROD_CLOUDHUB_PRIVATE_SPACE }}"
       CLOUDHUB_PUBLIC_URL: "" #Provide the Endpoint URL if custom public endpoint is needed
       GENERATE_PUBLIC_URL_FLAG: "false" #Set to true only if the app has public Endpoint URL; in all other cases this should be false
       APP_LAYER: ${{ vars.MULE_PROC_API_LAYER }}
-      CLUSTER_ENABLED_FLAG: "false" #Set to true if needed;
+      CLUSTER_ENABLED_FLAG: "true" #Set to true if needed;
       #Begin S3 Logging Properties
       MULE_LOG_S3_FREQUENCY_MIN: "${{ vars.MULE_PROD_LOG_S3_FREQUENCY_MIN }}"
       MULE_LOG_S3_AWS_REGION: "${{ vars.MULE_LOG_S3_AWS_REGION }}"
