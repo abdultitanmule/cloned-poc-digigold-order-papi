@@ -57,7 +57,7 @@ dynamo-sapi:
   connectionTimeout: "60000"
   responseTimeout: "30000"
   sourceChannel: "digigoldOrderPAPI"
-  host: "dynamo-order-sapi-xuyk1p.internal-lvpvl0.sgp-s1.cloudhub.io/api/v1/transactions"
+  host: "dynamo-order-sapi-xuyk1p.internal-lvpvl0.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
   endpoints:
