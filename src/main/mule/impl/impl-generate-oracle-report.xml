@@ -45,6 +45,31 @@ output application/json
 	date: now() as Date
 }]]]></os:default-value>
 		</os:retrieve>
+		<choice doc:name="Choice" doc:id="4755b244-0586-4b8b-a210-8a44b9789b51" >
+			<when expression="#[vars.oracleReportName.reportSequenceNumber &lt; Mule::p('reports.oracleReport.reportSequenceNumber')]">
+				<ee:transform doc:name="Update Report Sequence Number" doc:id="0cf59dd5-5d8b-4a08-910f-974b372dede5" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="oracleReportName" ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	reportSequenceNumber: Mule::p('reports.oracleReport.reportSequenceNumber'),
+	date: now() as Date
+}]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise >
+				<json-logger:logger doc:name="No changes to report sequence number " doc:id="d170a526-b9fe-4b7e-9978-e620b8ba213c" config-ref="JSON_Logger_Config" message="No changes to report sequence number ">
+					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
+{
+    reportSequenceNumber: vars.oracleReportName.reportSequenceNumber
+}]]]></json-logger:content>
+				</json-logger:logger>
+			</otherwise>
+		</choice>
 		<ee:transform doc:name="Capture Previous Run Payload" doc:id="7812cd21-1d19-4b3f-8ce7-c72744e61c7b" >
 			<ee:message >
 			</ee:message>
@@ -93,8 +118,8 @@ fun getFinancialYearForReportName(date :Date) = do {
     var otherQuarter = 4 to 12
     ---
 	if (firstQuarter contains (date as String { format: "M"} as Number))
-    ((date as String {format: "yy"} as Number - 1) as String)
-    else (date as String {format: "yy"} as String)
+    (date as String {format: "yy"} as String)
+    else ((date as String {format: "yy"} as Number + 1) as String)
 
     }
 ---
