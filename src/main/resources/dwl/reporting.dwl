@@ -26,10 +26,10 @@ flatten(payload.items map using ( item = $, rootIndex = $$) (
         FIELD2:1,
         FIELD3:"INR",
         FIELD4:"DIGIGOLD",
-        FIELD5:if($$ == 0) item.TOTAL_GOLD_AMOUNT as roundUp else "",
-        FIELD6:if($$ == 1) item.TOTAL_GOLD_AMOUNT as roundUp else "",
-        FIELD7:if($$ == 0) item.TOTAL_GOLD_AMOUNT as roundUp else "",
-        FIELD8:if($$ == 1) item.TOTAL_GOLD_AMOUNT as roundUp else "",
+        FIELD5:if($$ == 0) item.TOTAL_GOLD_AMOUNT as Number as roundUp else "",
+        FIELD6:if($$ == 1) item.TOTAL_GOLD_AMOUNT as Number as roundUp else "",
+        FIELD7:if($$ == 0) item.TOTAL_GOLD_AMOUNT as Number as roundUp else "",
+        FIELD8:if($$ == 1) item.TOTAL_GOLD_AMOUNT as Number as roundUp else "",
         FIELD9:rootIndex + $,
         FIELD10:100,
         FIELD11:9081,
@@ -55,7 +55,7 @@ flatten(payload.items map using ( item = $, rootIndex = $$) (
             else if (item.TRANSACTION_STATUS ~= "buy confirmed" and $$ == 1)
                 (item.TRANSACTION_ID)
 			else item.TRANSACTION_ID),
-        FIELD24:item.DGORDER_ID,
+        FIELD24:if(item.TRANSACTION_STATUS ~= "buy confirmed") item.DGORDER_ID else item.ADDITIONAL_FIELD2,
         FIELD25:(if(item.TRANSACTION_STATUS ~= "buy confirmed") 
 				"DIGIGOLD BOND PURCHASE_ONLINE"
 			    else  "DIGIGOLD BOND REDEMPTION_UEC"),

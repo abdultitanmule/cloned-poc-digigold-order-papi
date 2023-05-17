@@ -101,7 +101,7 @@ sfcc-order-sapi:
 reportsEmail:
   to: "jeevanandhamanbu@titan.co.in,sravanijonna@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in"
   from: "ecomas@titan.co.in"
-  cc: "gkadam@salesforce.com"
+  cc: "sravanijonna@titan.co.in"
   ErrorSubject: "Generation Failure Notification "
   Subject: "Generation Notification  "
   contentType: "text/html"
