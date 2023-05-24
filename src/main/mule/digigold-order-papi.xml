@@ -195,8 +195,8 @@ import * from dw::core::Dates
 ---
 {
   variables:{
-	"startDate": (today() as Date - |P1D|) as String {format: p('dateformat.startdateformat')},
-	"endDate": (today() as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
+	"startDate": ((now() >> 'IST') as Date - |P1D|) as String {format: p('dateformat.startdateformat')},
+	"endDate": ((now() >> 'IST') as Date - |P1D|) as String {format: p('dateformat.enddateformat')}
 
 	},
   reportType: p('reports.oracleReport.reportType')
@@ -254,7 +254,7 @@ import * from dw::core::Dates
 import * from dw::core::Dates
 import p from Mule
 output application/json
-var currentDay = today()
+var currentDay = (now() >> 'IST')
 fun nullCheck(data) = if(data != null and data != "") true else false
 ---
 {
@@ -292,7 +292,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 import * from dw::core::Dates
 import p from Mule
 output application/json
-var currentDay = today()
+var currentDay = (now() >> 'IST')
 fun nullCheck(data) = if(data != null and data != "") true else false
 ---
 {
@@ -329,7 +329,7 @@ fun nullCheck(data) = if(data != null and data != "") true else false
 import * from dw::core::Dates
 import p from Mule
 output application/json
-var currentDay = today()
+var currentDay = (now() >> 'IST')
 fun nullCheck(data) = if(data != null and data != "") true else false
 ---
 {
