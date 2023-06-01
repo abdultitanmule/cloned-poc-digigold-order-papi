@@ -62,7 +62,7 @@ output application/java
 				</ee:transform>
 			</when>
 			<otherwise >
-				<json-logger:logger doc:name="No changes to report sequence number " doc:id="d170a526-b9fe-4b7e-9978-e620b8ba213c" config-ref="JSON_Logger_Config" message="No changes to report sequence number ">
+				<json-logger:logger doc:name="No changes to report sequence number " doc:id="d170a526-b9fe-4b7e-9978-e620b8ba213c" config-ref="JSON_Logger_Config" message="No changes to report sequence number " tracePoint="FLOW" category="${log.category}">
 					<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json ---
 {
     reportSequenceNumber: vars.oracleReportName.reportSequenceNumber

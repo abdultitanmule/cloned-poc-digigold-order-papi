@@ -8,7 +8,7 @@
 	<artifactId>digigold-order-papi-app</artifactId>
 	<!-- Artifact ID should always have app appended in the end.
 	Ex: If the API name is oauth-sfcc-sapi, then artifactId should be oauth-sfcc-sapi-app -->
-	<version>1.0.50</version>
+	<version>1.0.51</version>
 
 	<packaging>mule-application</packaging>
 	<name>digigold-order-papi</name>
@@ -45,7 +45,7 @@
 		<!-- set encrypt.key for decrypting secure (encryped) properties files (but don't set it here!) -->
 
 		<ap.lastmilesecurity>false</ap.lastmilesecurity>
-		<ap.objectstore.enabled>false</ap.objectstore.enabled>
+		<ap.objectstore.enabled>true</ap.objectstore.enabled>
 		<ap.forwardSslSession>false</ap.forwardSslSession>
 		<ap.generateDefaultPublicUrl>false</ap.generateDefaultPublicUrl>
 		<deployment.name>${project.name}</deployment.name>
