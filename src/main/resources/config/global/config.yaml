@@ -25,6 +25,7 @@ reports:
     reportType: "Oracle Report"
     reportSequenceNumber: "0"
     reportOSresetDate: "0104"  #ddMM format --> 1st April
+    reportName: "SDIGIGL"
   transactionReport:
     reportType: "Transaction Report" 
   transactionConsolidatedReport:

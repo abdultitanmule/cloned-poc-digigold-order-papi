@@ -123,7 +123,7 @@ fun getFinancialYearForReportName(date :Date) = do {
 
     }
 ---
-'DIGIGL' ++ getFinancialYearForReportName(now() as Date) ++ (dw::core::Strings::leftPad(vars.oracleReportName.reportSequenceNumber +1,6,0))
+Mule::p('reports.oracleReport.reportName') ++ getFinancialYearForReportName(now() as Date) ++ (dw::core::Strings::leftPad(vars.oracleReportName.reportSequenceNumber +1,6,0))
     ]]></ee:set-variable>
 								<ee:set-variable variableName="folderName" ><![CDATA[%dw 2.0
 output application/json
