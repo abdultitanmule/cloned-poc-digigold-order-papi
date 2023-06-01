@@ -142,7 +142,7 @@ payload.variables.startDate as LocalDateTime {format: Mule::p('dateformat.datada
 								<flow-ref doc:name="call to sftp-sapi" doc:id="051371c4-54b7-4edd-8e64-d8a1e5194d06" name="call-to-sftp-sapi" />
 							</route>
 							<route >
-								<s3:put-object doc:name="Backup Report in s3" doc:id="8fd709f5-19b2-494a-a08b-5add918c713b" config-ref="Amazon_S3_Configuration" bucketName="${amazon-s3.bucket}" key='#[vars.folderName ++ "/" ++ vars.outputReportName]'/>
+								<s3:put-object doc:name="Backup Report in s3" doc:id="8fd709f5-19b2-494a-a08b-5add918c713b" config-ref="Amazon_S3_Configuration" bucketName="${amazon-s3.bucket}" key='#[vars.folderName ++ "/" ++ vars.outputReportName ++ ".txt"]'/>
 							</route>
 						</scatter-gather>
 <!-- [STUDIO:"Create directory for Report Generation"]												<sftp:create-directory doc:name="Create directory for Report Generation" doc:id="03676976-3dcb-422a-9d52-cdc3ae1a481e" config-ref="SFTP_Config" directoryPath="#[p('titan.sftp.oracleReport') ++ &quot;/&quot; ++ vars.folderName]" /> [STUDIO] -->
