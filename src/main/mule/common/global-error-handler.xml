@@ -18,7 +18,7 @@ http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/m
 	import doc:name="Import" doc:id="64e8336e-4459-4891-8414-e880ddcd591e" file="error-common.xml"
 	-->
 	<error-handler doc:id="88c0d363-d0e2-4a13-a08d-4aa6b14cd1a5" name="sapi-request-error-handler">
-	<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="90d0bcb0-df99-4f94-8631-973c6b6f6870" type="ANY" when="#[(['TOO_MANY_REQUESTS','SERVICE_UNAVAILABLE','TIMEOUT','CONNECTIVITY'] contains error.errorType.identifier)]">
+	<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="90d0bcb0-df99-4f94-8631-973c6b6f6870" type="ANY" when="#[(['TOO_MANY_REQUESTS','SERVICE_UNAVAILABLE','TIMEOUT','CONNECTIVITY','BAD_GATEWAY'] contains error.errorType.identifier)]">
 			<set-variable value="#[false]" doc:name="Set Successful" doc:id="ea1150f3-c964-4a7d-a63f-ae5735eb86fa" variableName="successful" />
 					</on-error-propagate>
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="e2e19e75-6e5c-4042-bac6-6974917d8525" type="ANY">
