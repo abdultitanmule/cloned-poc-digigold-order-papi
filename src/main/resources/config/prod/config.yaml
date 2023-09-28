@@ -99,14 +99,30 @@ sfcc-order-sapi:
 
 #Notification Email for Reports
 reportsEmail:
-  to: "jeevanandhamanbu@titan.co.in,sravanijonna@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,balajitkj@titan.co.in,antarjyami@titan.co.in"
   from: "ecomas@titan.co.in"
-  cc: "sravanijonna@titan.co.in"
   ErrorSubject: "Generation Failure Notification "
   Subject: "Generation Notification "
   contentType: "text/html"
   body: "Please find the attachment of the report generated "
   noDataBody: "There is no data to generate "
+  oracleReport:
+    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in"
+    cc: "sravanijonna@titan.co.in"
+  dropOrderReport:
+    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in,sravanijonna@titan.co.in"
+    cc: "veera.kanda2@tcs.com,srilakshmi.nidikonda2@tcs.com,singh.japveer@tcs.com,biswas.ripan@tcs.com,swetha.jallu@tcs.com,sengupta.soham@tcs.com,chayan.m@tcs.com"
+  txnReport:
+    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in,sravanijonna@titan.co.in,balajitkj@titan.co.in,antarjyami@titan.co.in"
+    cc: "veera.kanda2@tcs.com,srilakshmi.nidikonda2@tcs.com,singh.japveer@tcs.com,biswas.ripan@tcs.com,swetha.jallu@tcs.com,sengupta.soham@tcs.com,chayan.m@tcs.com"
+  ConTxnReport:
+    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in,balajitkj@titan.co.in,antarjyami@titan.co.in"
+    cc: "sravanijonna@titan.co.in"
+  titanSupport:
+    to: "sravanijonna@titan.co.in,suwathi@titan.co.in"
+    cc: "rajasekhar@titan.co.in,perumal@titan.co.in"
+  txnMigration:
+    to: "jeevanandhamanbu@titan.co.in,sravanijonna@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,balajitkj@titan.co.in,antarjyami@titan.co.in"
+    cc: "sravanijonna@titan.co.in"
   
   
 order-papi:

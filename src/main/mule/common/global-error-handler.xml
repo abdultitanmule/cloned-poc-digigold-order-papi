@@ -158,6 +158,22 @@ output text/plain
 ---
 vars.reportType default " " ++ " " ++ p('reportsEmail.ErrorSubject')]]></ee:set-variable>
 					<ee:set-variable variableName="attachments" ><![CDATA[false]]></ee:set-variable>
+					<ee:set-variable variableName="emailTo" ><![CDATA[%dw 2.0
+output text/plain
+---
+if (vars.reportType == p('reports.transactionReport.reportType')) p('reportsEmail.txnReport.to')
+else if (vars.reportType == p('reports.transactionConsolidatedReport.reportType')) p('reportsEmail.ConTxnReport.to')
+else if (vars.reportType == p('reports.dropOrderReport.reportType')) p('reportsEmail.dropOrderReport.to') 
+else p('reportsEmail.titanSupport.to')
+]]></ee:set-variable>
+					<ee:set-variable variableName="emailCC" ><![CDATA[%dw 2.0
+output text/plain
+---
+if (vars.reportType == p('reports.transactionReport.reportType')) p('reportsEmail.txnReport.cc')
+else if (vars.reportType == p('reports.transactionConsolidatedReport.reportType')) p('reportsEmail.ConTxnReport.cc')
+else if (vars.reportType == p('reports.dropOrderReport.reportType')) p('reportsEmail.dropOrderReport.cc') 
+else p('reportsEmail.titanSupport.cc')
+]]></ee:set-variable>
 				</ee:variables>
 			</ee:transform>
 			<parse-template doc:name="Parse Technical Error Template - HTML EMAIL" doc:id="3437b9c8-6e13-4ae6-a5bc-59607be39170" location="templates/technical-notification-template.html" target="emailTemplate" targetValue="#[payload]" />

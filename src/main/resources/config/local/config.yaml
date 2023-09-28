@@ -99,7 +99,6 @@ sfcc-order-sapi:
 
 #Notification Email for Reports
 reportsEmail:
-  to: "gradhakrishna@salesforce.com,amanney@salesforce.com"
   from: "ecomas@titan.co.in"
   cc: "gkadam@salesforce.com"
   ErrorSubject: "Generation Failure Notification "
@@ -107,6 +106,24 @@ reportsEmail:
   contentType: "text/html"
   body: "Please find the attachment of the report generated "
   noDataBody: "There is no data to generate "
+  oracleReport:
+    to: "sbhaskara@salesforce.com"
+    cc: "pawandeep.kaur@salesforce.com"
+  dropOrderReport:
+    to: "sbhaskara@salesforce.com"
+    cc: "pawandeep.kaur@salesforce.com"
+  txnReport:
+    to: "sbhaskara@salesforce.com"
+    cc: "pawandeep.kaur@salesforce.com"
+  ConTxnReport:
+    to: "sbhaskara@salesforce.com"
+    cc: "pawandeep.kaur@salesforce.com"
+  titanSupport:
+    to: "sravanijonna@titan.co.in,suwathi@titan.co.in"
+    cc: "rajasekhar@titan.co.in,perumal@titan.co.in"
+  txnMigration:
+    to: "sbhaskara@salesforce.com"
+    cc: "pawandeep.kaur@salesforce.com"
   
   
 order-papi:

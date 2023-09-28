@@ -167,6 +167,14 @@ output text/plain
 ---
 error.description default "Skipped Oracle Report Generation - No Records"]]></ee:set-variable>
 								<ee:set-variable variableName="attachments" ><![CDATA[false]]></ee:set-variable>
+								<ee:set-variable variableName="emailTo" ><![CDATA[%dw 2.0
+output text/plain
+---
+p('reportsEmail.oracleReport.to')]]></ee:set-variable>
+								<ee:set-variable variableName="emailCC" ><![CDATA[%dw 2.0
+output text/plain
+---
+p('reportsEmail.oracleReport.cc')]]></ee:set-variable>
 							</ee:variables>
 						</ee:transform>
 						<parse-template doc:name="Parse Technical Error Template - HTML EMAIL" doc:id="d65179f5-8ae0-4ae6-95bb-c2b7b384d8ae" location="templates/technical-notification-template.html" target="emailTemplate" targetValue="#[payload]" />
@@ -188,6 +196,14 @@ output text/plain
 ---
 error.description default "Encountered Invalid Case"]]></ee:set-variable>
 						<ee:set-variable variableName="attachments" ><![CDATA[false]]></ee:set-variable>
+						<ee:set-variable variableName="emailTo" ><![CDATA[%dw 2.0
+output text/plain
+---
+p('reportsEmail.oracleReport.to')]]></ee:set-variable>
+						<ee:set-variable variableName="emailCC" ><![CDATA[%dw 2.0
+output text/plain
+---
+p('reportsEmail.oracleReport.cc')]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
 				<parse-template doc:name="Parse Technical Error Template - HTML EMAIL" doc:id="6c80ecfc-abae-48bc-ad5f-3282add00629" location="templates/technical-notification-template.html" target="emailTemplate" targetValue="#[payload]" />
