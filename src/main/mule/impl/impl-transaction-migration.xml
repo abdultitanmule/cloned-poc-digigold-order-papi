@@ -131,6 +131,14 @@ payload map ((row) -> {
 output application/java
 ---
 vars.reportType default " " ++ " " ++ p('reportsEmail.Subject')]]></ee:set-variable>
+						<ee:set-variable variableName="emailTo" ><![CDATA[%dw 2.0
+output text/plain
+---
+p('reportsEmail.txnMigration.to')]]></ee:set-variable>
+						<ee:set-variable variableName="emailCC" ><![CDATA[%dw 2.0
+output text/plain
+---
+p('reportsEmail.txnMigration.cc')]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 				<flow-ref doc:name="Success notification. Message" doc:id="863ba072-fe42-4940-9ee9-373b56df3969" name="call-notification-service" />

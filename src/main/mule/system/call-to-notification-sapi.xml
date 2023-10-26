@@ -18,8 +18,8 @@ import toBase64 from dw::core::Binaries
 ---
 {
   from: p('reportsEmail.from'),
-  (to: (p('reportsEmail.to') splitBy  "," ) )  if (!isEmpty(p('reportsEmail.to')) ),  
-  (cc: (p('reportsEmail.cc') splitBy  "," ) )  if (!isEmpty(p('reportsEmail.cc')) ),  				
+  (to: (vars.emailTo splitBy  "," ) )  if (!isEmpty(vars.emailTo) ),  
+  (cc: (vars.emailCC splitBy  "," ) )  if (!isEmpty(vars.emailCC) ),  				
   subject:  upper(p('env')) ++ ": "++ vars.emailSubject,
   body: vars.emailTemplate,
   bodyType: p('reportsEmail.contentType'),
