@@ -109,10 +109,10 @@ reportsEmail:
     to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in"
     cc: "sravanijonna@titan.co.in"
   dropOrderReport:
-    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in,sravanijonna@titan.co.in"
+    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in,sravanijonna@titan.co.in,vishalr@titan.co.in,chethansagar@titan.co.in,sunitagoenka@titan.co.in"
     cc: "veera.kanda2@tcs.com,srilakshmi.nidikonda2@tcs.com,singh.japveer@tcs.com,biswas.ripan@tcs.com,swetha.jallu@tcs.com,sengupta.soham@tcs.com,chayan.m@tcs.com"
   txnReport:
-    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in,sravanijonna@titan.co.in,balajitkj@titan.co.in,antarjyami@titan.co.in"
+    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in,sravanijonna@titan.co.in,balajitkj@titan.co.in,antarjyami@titan.co.in,vishalr@titan.co.in,chethansagar@titan.co.in,sunitagoenka@titan.co.in"
     cc: "veera.kanda2@tcs.com,srilakshmi.nidikonda2@tcs.com,singh.japveer@tcs.com,biswas.ripan@tcs.com,swetha.jallu@tcs.com,sengupta.soham@tcs.com,chayan.m@tcs.com"
   ConTxnReport:
     to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in,balajitkj@titan.co.in,antarjyami@titan.co.in"
