@@ -36,6 +36,8 @@ output application/json
 "PRE_GST_BUY_PRICE":payload.PreGstBuyPrice,
 "GST_AMOUNT":payload.GstAmount,
 "INVOICE_ID": payload.InvoiceId,
+"ORDER_ID" :payload.OrderId,
+"PAYMENT_ID" :payload.PaymentId,
 "ADDITIONAL_FIELD1":"",
 "ADDITIONAL_FIELD2":payload.SalesOrderId,
 "ADDITIONAL_FIELD3":payload.PaymentId,
