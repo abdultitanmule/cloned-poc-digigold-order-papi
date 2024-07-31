@@ -40,7 +40,7 @@ output application/json
 "PAYMENT_ID" :payload.PaymentId,
 "ADDITIONAL_FIELD1":"",
 "ADDITIONAL_FIELD2":payload.SalesOrderId,
-"ADDITIONAL_FIELD3":payload.PaymentId,
+"ADDITIONAL_FIELD3":"",
 "ADDITIONAL_FIELD4":"",
 "ADDITIONAL_FIELD5":"",
 "ADDITIONAL_FIELD6":""
