@@ -107,24 +107,23 @@ reportsEmail:
   body: "Please find the attachment of the report generated "
   noDataBody: "There is no data to generate "
   oracleReport:
-    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in"
-    cc: "sravanijonna@titan.co.in"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   dropOrderReport:
-    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in"
-    cc: "sravanijonna@titan.co.in"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   txnReport:
-    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in"
-    cc: "sravanijonna@titan.co.in"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   ConTxnReport:
-    to: "jeevanandhamanbu@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,sandhiyaganesan@titan.co.in"
-    cc: "sravanijonna@titan.co.in"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   titanSupport:
     to: "sravanijonna@titan.co.in,suwathi@titan.co.in"
-    cc: "rajasekhar@titan.co.in,perumal@titan.co.in"
+    cc: ""
   txnMigration:
-    to: "jeevanandhamanbu@titan.co.in,sravanijonna@titan.co.in,suwathi@titan.co.in,nehajain@titan.co.in,balajitkj@titan.co.in,antarjyami@titan.co.in"
-    cc: "sravanijonna@titan.co.in"
-  
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   
 order-papi:
   buyConfirmed:

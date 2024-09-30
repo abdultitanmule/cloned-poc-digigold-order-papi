@@ -107,23 +107,23 @@ reportsEmail:
   body: "Please find the attachment of the report generated "
   noDataBody: "There is no data to generate "
   oracleReport:
-    to: "sbhaskara@salesforce.com"
-    cc: "pawandeep.kaur@salesforce.com"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   dropOrderReport:
-    to: "sbhaskara@salesforce.com"
-    cc: "pawandeep.kaur@salesforce.com"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   txnReport:
-    to: "sbhaskara@salesforce.com"
-    cc: "pawandeep.kaur@salesforce.com"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   ConTxnReport:
-    to: "sbhaskara@salesforce.com"
-    cc: "pawandeep.kaur@salesforce.com"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   titanSupport:
     to: "sravanijonna@titan.co.in,suwathi@titan.co.in"
-    cc: "rajasekhar@titan.co.in,perumal@titan.co.in"
+    cc: ""
   txnMigration:
-    to: "sbhaskara@salesforce.com"
-    cc: "pawandeep.kaur@salesforce.com"
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: ""
   
   
 order-papi:
