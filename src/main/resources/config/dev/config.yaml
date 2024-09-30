@@ -100,7 +100,7 @@ sfcc-order-sapi:
 #Notification Email for Reports
 reportsEmail:
   from: "ecomas@titan.co.in"
-  cc: "gkadam@salesforce.com"
+  cc: "nafisamukhtarm@titan.co.in"
   ErrorSubject: "Generation Failure Notification "
   Subject: "Generation Notification "
   contentType: "text/html"
@@ -108,22 +108,22 @@ reportsEmail:
   noDataBody: "There is no data to generate "
   oracleReport:
     to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
-    cc: ""
+    cc: "nafisamukhtarm@titan.co.in"
   dropOrderReport:
     to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
-    cc: ""
+    cc: "nafisamukhtarm@titan.co.in"
   txnReport:
     to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
-    cc: ""
+    cc: "nafisamukhtarm@titan.co.in"
   ConTxnReport:
     to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
-    cc: ""
+    cc: "nafisamukhtarm@titan.co.in"
   titanSupport:
-    to: "sravanijonna@titan.co.in,suwathi@titan.co.in"
-    cc: ""
+    to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
+    cc: "nafisamukhtarm@titan.co.in"
   txnMigration:
     to: "shaik_abdulla@cloudodyssey.co,tirumal.rao@cloudodyssey.co,srilakshmi.nidikonda2@tcs.com"
-    cc: ""
+    cc: "nafisamukhtarm@titan.co.in"
   
   
 order-papi:
