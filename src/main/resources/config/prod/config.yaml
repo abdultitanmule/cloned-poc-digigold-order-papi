@@ -106,22 +106,22 @@ reportsEmail:
   body: "Please find the attachment of the report generated "
   noDataBody: "There is no data to generate "
   oracleReport:
-    to: "suwathi@titan.co.in, ruchikachordia@titan.co.in, sandhiyaganesan@titan.co.in ,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
+    to: "suwathi@titan.co.in,ruchikachordia@titan.co.in,sandhiyaganesan@titan.co.in,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
     cc: "rajasekhar@titan.co.in,mulecoe@titan.co.in,nafisamukhtarm@titan.co.in"
   dropOrderReport:
-    to: "suwathi@titan.co.in, ruchikachordia@titan.co.in, sandhiyaganesan@titan.co.in ,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
+    to: "suwathi@titan.co.in,ruchikachordia@titan.co.in,sandhiyaganesan@titan.co.in,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
     cc: "rajasekhar@titan.co.in,mulecoe@titan.co.in,nafisamukhtarm@titan.co.in"
   txnReport:
-    to: "suwathi@titan.co.in, ruchikachordia@titan.co.in, sandhiyaganesan@titan.co.in ,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
+    to: "suwathi@titan.co.in,ruchikachordia@titan.co.in,sandhiyaganesan@titan.co.in,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
     cc: "rajasekhar@titan.co.in,mulecoe@titan.co.in,nafisamukhtarm@titan.co.in"
   ConTxnReport:
-    to: "suwathi@titan.co.in, ruchikachordia@titan.co.in, sandhiyaganesan@titan.co.in ,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
+    to: "suwathi@titan.co.in,ruchikachordia@titan.co.in,sandhiyaganesan@titan.co.in,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
     cc: "rajasekhar@titan.co.in,mulecoe@titan.co.in,nafisamukhtarm@titan.co.in"
   titanSupport:
-    to: "suwathi@titan.co.in, ruchikachordia@titan.co.in, sandhiyaganesan@titan.co.in ,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
+    to: "suwathi@titan.co.in,ruchikachordia@titan.co.in,sandhiyaganesan@titan.co.in,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
     cc: "rajasekhar@titan.co.in,mulecoe@titan.co.in,nafisamukhtarm@titan.co.in"
   txnMigration:
-    to: "suwathi@titan.co.in, ruchikachordia@titan.co.in, sandhiyaganesan@titan.co.in ,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
+    to: "suwathi@titan.co.in,ruchikachordia@titan.co.in,sandhiyaganesan@titan.co.in,Titan.muleSupport@TCS.com,titanecom@titan.co.in,ecomitsupport@titan.co.in,srilakshmi.nidikonda2@tcs.com"
     cc: "rajasekhar@titan.co.in,mulecoe@titan.co.in,nafisamukhtarm@titan.co.in"
   
   
