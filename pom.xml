@@ -15,7 +15,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<app.runtime>4.4.0</app.runtime>
+		<app.runtime>4.6.9</app.runtime>
 		<mule.maven.plugin.version>4.1.0</mule.maven.plugin.version>
 		<munit.version>2.3.12</munit.version>
 		<http.version>1.7.3</http.version>
@@ -76,6 +76,7 @@
 						<environment>${ap.environment}</environment>
 						<target>${ch.space}</target>
 						<muleVersion>${app.runtime}</muleVersion>
+						<releaseChannel>LTS</releaseChannel>
 						<provider>MC</provider>
 						<replicas>${ch.replicas}</replicas>
 						<vCores>${ch.vCores}</vCores>
