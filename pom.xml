@@ -8,7 +8,7 @@
 	<artifactId>digigold-order-papi-app</artifactId>
 	<!-- Artifact ID should always have app appended in the end.
 	Ex: If the API name is oauth-sfcc-sapi, then artifactId should be oauth-sfcc-sapi-app -->
-	<version>1.0.86</version>
+	<version>1.0.87</version>
 
 	<packaging>mule-application</packaging>
 	<name>digigold-order-papi</name>
@@ -95,14 +95,7 @@
 							<anypoint.platform.client_id>${ap.client_id}</anypoint.platform.client_id>
 							<anypoint.platform.client_secret>${ap.client_secret}</anypoint.platform.client_secret>
 
-							<log.s3.frequency>${log.s3.frequency}</log.s3.frequency>
-							<log.s3.aws.region>${log.s3.aws.region}</log.s3.aws.region>
-							<log.s3.bucket>${log.s3.bucket}</log.s3.bucket>
-							<log.s3.compress>${log.s3.compress}</log.s3.compress>
-							<log.s3.storageClass>${log.s3.storageClass}</log.s3.storageClass>
-							<log.s3.aws.accessKey>${log.s3.aws.accessKey}</log.s3.aws.accessKey>
-							<log.s3.aws.secureKey>${log.s3.aws.secureKey}</log.s3.aws.secureKey>
-							<deployment.name>${deployment.name}</deployment.name>
+						<deployment.name>${deployment.name}</deployment.name>
 							<!-- concrete Mule apps can provide their own props which will be merged with the props given here -->
 						</properties>
 						<secureProperties>
@@ -280,11 +273,6 @@
 					<artifactId>elasticsearch-rest-high-level-client</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.12.261</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mule.modules</groupId>

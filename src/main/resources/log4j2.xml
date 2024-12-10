@@ -10,19 +10,7 @@
             <PatternLayout pattern="%-5p %d [%t] [processor: %X{processorPath}; event: %X{correlationId}] %c: %m%n" />
             <SizeBasedTriggeringPolicy size="10 MB" />
             <DefaultRolloverStrategy max="10"/>
-        </RollingFile>
-        <Log4j2Appender name="S3Appender">
-			<PatternLayout pattern="%d{HH:mm:ss,SSS} [%t] %-5p %c{36} - %m%n"/>
-			<verbose>false</verbose>
-			<stagingBufferAge>${sys:log.s3.frequency}</stagingBufferAge>
-			<s3Bucket>${sys:log.s3.bucket}</s3Bucket>
-			<s3Path>${sys:deployment.name}</s3Path>	
-			<s3Region>${sys:log.s3.aws.region}</s3Region>
-			<s3Compression>${sys:log.s3.compress}</s3Compression>
-			<s3StorageClass>${sys:log.s3.storageClass}</s3StorageClass>
-			<s3AwsKey>${sys:log.s3.aws.accessKey}</s3AwsKey>
-			<s3AwsSecret>${sys:log.s3.aws.secureKey}</s3AwsSecret>
-		</Log4j2Appender>        
+        </RollingFile>      
     </Appenders>
     <Loggers>
         
@@ -36,7 +24,6 @@
  
         <AsyncRoot level="INFO">
             		<AppenderRef ref="file" />
-            		<AppenderRef ref="S3Appender" />
         	</AsyncRoot>
     </Loggers>
 </Configuration>
