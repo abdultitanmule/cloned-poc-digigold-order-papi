@@ -129,6 +129,23 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	      }
 }]]]></json-logger:content>
 		</json-logger:logger>
+		<http:request method="GET" doc:name="Request SFTP Sapi Auth Details" doc:id="48470497-6f8a-4dd6-a5ba-c2e189e74e8f" config-ref="sftpSAPIRequestConfig" target="authDetails" url="${sftp-sapi.url}${sftp-sapi.auth}">
+			<http:headers><![CDATA[#[output application/java
+import * from dw::core::Strings
+---
+{
+	
+	"client_secret" : p('secure::digigold-order-papi.clientSecret'),
+	"x-source-channel" : p('sftp-sapi.sourceChannel'),
+	"client_id" : p('secure::digigold-order-papi.clientId')
+	
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"realm" : "Jewellery"
+}]]]></http:query-params>
+		</http:request>
 		<flow-ref doc:name="process-sfcc-order-sapi-customer-info" doc:id="1800eae8-ce12-4afa-9705-f1b542b16596" name="process-sfcc-order-sapi-customer-info"/>
 		<json-logger:logger doc:name="Logger" doc:id="9e696ccc-09df-4d86-a9cd-d878f1b4bf7e" config-ref="JSON_Logger_Config" message='Combining Transaction and SFCC Customer Info' tracePoint="BEFORE_TRANSFORM" category="${log.category}">
 			<json-logger:content><![CDATA[#[import modules::JSONLoggerModule output application/json ---

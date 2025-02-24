@@ -14,6 +14,23 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 		<vm:listener queueName="xlsReportsGenerationQueue" doc:name="xlsReportsGenerationQueue" doc:id="2d79f460-4398-4d3a-b64b-d4deedf8cba7" config-ref="transactions_vm_Config" />
 		<json-logger:logger doc:name="Logger" doc:id="87160c8e-ebb6-4a29-b9e6-8a1ed7ac9cb6" config-ref="JSON_Logger_Config" message='#["Starting Conversion of csv to xls process for report: " ++ payload.reportType]' category="${log.category}">
 		</json-logger:logger>
+		<http:request method="GET" doc:name="Request SFTP Sapi Auth Details" doc:id="6af3ab77-1fc2-401b-9909-7ad4716a5177" config-ref="sftpSAPIRequestConfig" target="authDetails" url="${sftp-sapi.url}${sftp-sapi.auth}">
+			<http:headers><![CDATA[#[output application/java
+import * from dw::core::Strings
+---
+{
+	
+	"client_secret" : p('secure::digigold-order-papi.clientSecret'),
+	"x-source-channel" : p('sftp-sapi.sourceChannel'),
+	"client_id" : p('secure::digigold-order-papi.clientId')
+	
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"realm" : "Jewellery"
+}]]]></http:query-params>
+		</http:request>
 		<set-variable value="#[payload.reportType]" doc:name="reportType" doc:id="2c73ab30-74bb-4ac4-9d67-667c217a688f" variableName="reportType" />
 		<set-variable value="#[%dw 2.0&#10;output application/java&#10;---&#10;	if(payload.reportType == p('reports.dropOrderReport.reportType')) &#10;		p('titan.sftp.dropOrderReport') &#10;	else &#10;	if (payload.reportType == p('reports.transactionReport.reportType')) &#10;		p('titan.sftp.transactionReport') &#10;	else&#10;	if (payload.reportType == p('reports.transactionConsolidatedReport.reportType')) &#10;		p('titan.sftp.transactionConsolidatedReport') &#10;	else&#10;	 	&quot; &quot;]" doc:name="folderPath" doc:id="6c85089f-d29f-40a7-b7d6-cfac7df1d62f" variableName="folderPath" />
 		<set-variable value='#[payload.reportType replace " " with ""]' doc:name="reportName" doc:id="5d8e4bb2-4c1d-4409-b540-e3b717df2806" variableName="reportName" />

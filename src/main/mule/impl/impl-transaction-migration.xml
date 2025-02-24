@@ -25,6 +25,23 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 }
 }]]]></json-logger:content>
 		</json-logger:logger>
+		<http:request method="GET" doc:name="Request SFTP Sapi Auth Details" doc:id="b27099ee-bf49-4e64-adbd-ab2e75c7c702" config-ref="sftpSAPIRequestConfig" target="authDetails" url="${sftp-sapi.url}${sftp-sapi.auth}">
+			<http:headers><![CDATA[#[output application/java
+import * from dw::core::Strings
+---
+{
+	
+	"client_secret" : p('secure::digigold-order-papi.clientSecret'),
+	"x-source-channel" : p('sftp-sapi.sourceChannel'),
+	"client_id" : p('secure::digigold-order-papi.clientId')
+	
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"realm" : "Jewellery"
+}]]]></http:query-params>
+		</http:request>
 		<set-variable value='#["Transaction Migration"]' doc:name="reportType" doc:id="be552566-1920-409e-aff6-1d07c12ead7e" variableName="reportType"/>
 		<sftp:read doc:name="Read" doc:id="276a4aa6-d728-459f-9ef8-cf9d46b9e1b7" config-ref="SFTP_Config" path="${titan.sftp.txnMigration.workingDir}/${titan.sftp.txnMigration.migrationfileName}" outputMimeType="text/csv; streaming=true; header=true">
 			<reconnect />
