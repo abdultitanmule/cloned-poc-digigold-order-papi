@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/fil
 		<vm:listener queueName="xlsReportsGenerationQueue" doc:name="xlsReportsGenerationQueue" doc:id="2d79f460-4398-4d3a-b64b-d4deedf8cba7" config-ref="transactions_vm_Config" />
 		<json-logger:logger doc:name="Logger" doc:id="87160c8e-ebb6-4a29-b9e6-8a1ed7ac9cb6" config-ref="JSON_Logger_Config" message='#["Starting Conversion of csv to xls process for report: " ++ payload.reportType]' category="${log.category}">
 		</json-logger:logger>
-		<http:request method="GET" doc:name="Request SFTP Sapi Auth Details" doc:id="6af3ab77-1fc2-401b-9909-7ad4716a5177" config-ref="sftpSAPIRequestConfig" target="authDetails" url="${sftp-sapi.url}${sftp-sapi.auth}">
+		<http:request method="GET" doc:name="Request SFTP Sapi Auth Details" doc:id="6af3ab77-1fc2-401b-9909-7ad4716a5177" config-ref="sftpSAPIRequestConfig" target="authDetails" path="${sftp-sapi.auth}">
 			<http:headers><![CDATA[#[output application/java
 import * from dw::core::Strings
 ---

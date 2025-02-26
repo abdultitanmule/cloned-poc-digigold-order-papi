@@ -129,7 +129,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	      }
 }]]]></json-logger:content>
 		</json-logger:logger>
-		<http:request method="GET" doc:name="Request SFTP Sapi Auth Details" doc:id="48470497-6f8a-4dd6-a5ba-c2e189e74e8f" config-ref="sftpSAPIRequestConfig" target="authDetails" url="${sftp-sapi.url}${sftp-sapi.auth}">
+		<http:request method="GET" doc:name="Request SFTP Sapi Auth Details" doc:id="48470497-6f8a-4dd6-a5ba-c2e189e74e8f" config-ref="sftpSAPIRequestConfig" target="authDetails" path="${sftp-sapi.auth}">
 			<http:headers><![CDATA[#[output application/java
 import * from dw::core::Strings
 ---
