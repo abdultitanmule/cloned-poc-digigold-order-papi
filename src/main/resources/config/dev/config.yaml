@@ -47,6 +47,7 @@ sftp-sapi:
   host: "sftp-sapi-dev-iyctld.internal-1zj8l2.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
+  auth: "/authDetails"
   endpoints:
     post:
       sftpWrite: "/write"
