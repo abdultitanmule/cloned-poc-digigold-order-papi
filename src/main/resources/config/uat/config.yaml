@@ -41,6 +41,7 @@ titan:
 #COMMON SFTP SAPI
 
 sftp-sapi:
+  url: "https://sftp-sapi-uat-xzqc7g.internal-1zj8l2.sgp-s1.cloudhub.io/api/v1"
   connectionTimeout: "60000"
   responseTimeout: "60000"
   sourceChannel: "digigoldOrderPAPI"

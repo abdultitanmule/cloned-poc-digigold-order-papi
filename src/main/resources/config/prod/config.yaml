@@ -44,6 +44,7 @@ sftp-sapi:
   connectionTimeout: "60000"
   responseTimeout: "60000"
   sourceChannel: "digigoldOrderPAPI"
+  url: "https://sftp-sapi-p53l8f.internal-lvpvl0.sgp-s1.cloudhub.io/api/v1"
   host: "sftp-sapi-p53l8f.internal-lvpvl0.sgp-s1.cloudhub.io"
   port: "443"
   basePath: "/api/v1"
