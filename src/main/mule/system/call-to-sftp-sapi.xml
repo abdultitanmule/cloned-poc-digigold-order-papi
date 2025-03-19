@@ -9,7 +9,23 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/crypto http://www.mulesoft.org/schema/mule/crypto/current/mule-crypto.xsd">
 	<sub-flow name="call-to-sftp-sapi" doc:id="212cad62-f20a-41f3-bb72-17b71f8b4d80" >
 		<json-logger:logger doc:name="BEFORE REQUEST sftp-sapi" doc:id="3a3dc858-6b95-4b9d-b9c9-f377d1521025" config-ref="JSON_Logger_Config" message="BEFORE REQUEST  write to sftp location" tracePoint="BEFORE_REQUEST" priority="DEBUG" category="${log.category}"/>
-		<ee:transform doc:name="Set SFTP SAPI Params" doc:id="2bf863ae-8437-4f05-ad16-2aa2410323bd">
+		<http:request method="GET" doc:name="Request SFTP Sapi Auth Details" doc:id="a832f57b-8e2f-4d52-98e8-dd6d8d52f080" config-ref="sftpSAPIRequestConfig" target="authDetails" path="${sftp-sapi.auth}">
+			<http:headers><![CDATA[#[output application/java
+import * from dw::core::Strings
+---
+{
+	
+	"client_secret" : p('secure::digigold-order-papi.clientSecret'),
+	"x-source-channel" : p('sftp-sapi.sourceChannel'),
+	"client_id" : p('secure::digigold-order-papi.clientId')
+	
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"realm" : "Jewellery"
+}]]]></http:query-params>
+		</http:request><ee:transform doc:name="Set SFTP SAPI Params" doc:id="2bf863ae-8437-4f05-ad16-2aa2410323bd">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -36,7 +52,7 @@ output application/java
 ---
 // Define payload in below format only while encryption
 
-p('secure::titan.sftp.username') ++ ":" ++ p('secure::titan.sftp.password')]]></ee:set-variable>
+vars.authDetails[0] ++ ":" ++ vars.authDetails[1]]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<flow-ref doc:name="Prepare encrypted &amp; encoded sftp credentials" doc:id="7f549a0e-ec09-4cc8-8f07-a1d7fa81bc6d" name="encrypt-sftp-credentials"/>
