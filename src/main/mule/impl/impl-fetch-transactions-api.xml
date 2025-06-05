@@ -58,6 +58,7 @@ payload - "items" ++
             "GstAmount": item.GST_AMOUNT,
             "InvoiceId": item.INVOICE_ID,
             "SalesOrderId": item.ADDITIONAL_FIELD2, 
+            "AdditionalField": item.ADDITIONAL_FIELD,
             "PaymentId": item.ADDITIONAL_FIELD3 
 } filterObject ((value, key, index) -> value != null)) 
 })

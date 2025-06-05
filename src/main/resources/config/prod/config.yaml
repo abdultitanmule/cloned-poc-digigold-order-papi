@@ -57,7 +57,7 @@ sftp-sapi:
 #Dynamo Order SAPI
 dynamo-sapi:
   connectionTimeout: "60000"
-  responseTimeout: "30000"
+  responseTimeout: "300000"
   sourceChannel: "digigoldOrderPAPI"
   host: "dynamo-order-sapi-xuyk1p.internal-lvpvl0.sgp-s1.cloudhub.io"
   port: "443"

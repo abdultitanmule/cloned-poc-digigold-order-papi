@@ -38,6 +38,7 @@ output application/json
 "INVOICE_ID": payload.InvoiceId,
 "ORDER_ID" :payload.OrderId,
 "PAYMENT_ID" :payload.PaymentId,
+"ADDITIONAL_FIELD":payload.AdditionalField,
 "ADDITIONAL_FIELD1":"",
 "ADDITIONAL_FIELD2":payload.SalesOrderId,
 "ADDITIONAL_FIELD3":"",

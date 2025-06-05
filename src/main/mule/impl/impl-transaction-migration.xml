@@ -86,6 +86,7 @@ payload map ((row) -> {
 	(generateNumberField("PRE_GST_BUY_PRICE",row.PRE_GST_BUY_PRICE)),
 	(generateNumberField("GST_AMOUNT",row.GST_AMOUNT)),
 	(generateStringField("INVOICE_ID",row.INVOICE_ID)),
+	(generateStringField("ADDITIONAL_FIELD",row.ADDITIONAL_FIELD)),
 	(generateStringField("ADDITIONAL_FIELD1",row.ADDITIONAL_FIELD1)),
 	(generateStringField("ADDITIONAL_FIELD2",row.ADDITIONAL_FIELD2)),
 	(generateStringField("ADDITIONAL_FIELD3",row.ADDITIONAL_FIELD3)),
