@@ -73,37 +73,13 @@ p('notification-sapi.endpoints.post.notificationMethod')]]></ee:set-variable>
 	
 }]]]></json-logger:content>
 		</json-logger:logger>
-		<scatter-gather doc:name="Scatter-Gather" doc:id="a0324556-f2d7-4d9e-b300-d081c225ec60" >
-			<route >
-				<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="2dafabf4-86c3-4dd1-a493-679bddd719fc" millisBetweenRetries="${until.millisBetweenRetries}">
-			<try doc:name="Try" doc:id="53614bac-d91e-4541-9160-8329c2481788">
-				<http:request method="#[vars.notificationMethod]" doc:name="Trigger notification SAPI" doc:id="ca5f8618-d601-418a-8a37-acfa1727df1a" config-ref="notificationSAPIRequestConfig" path="#[vars.notificationPath]" sendCorrelationId="ALWAYS">
-					<http:headers><![CDATA[#[import p from Mule
-output application/java
----
-{
-	"client_secret" : p('secure::digigold-order-papi.clientSecret'),
-	"X-Correlation-Id" : correlationId,
-	"x-source-channel" : p('notification-sapi.sourceChannel'),
-	"client_id" : p('secure::digigold-order-papi.clientId')
-	
-}]]]></http:headers>
-					<http:query-params><![CDATA[#[output application/java
----
-{
-	"type": p("notification-sapi.endpoints.post.queryParameter")
-}]]]></http:query-params>
-				</http:request>
-				<error-handler ref="sapi-request-error-handler" />
-			</try>
-		</until-successful>
-			</route>
-			<route >
+		<choice doc:name="Choice" doc:id="25a95b57-71ee-4b47-bd95-043f1bd30284" >
+			<when expression="#[vars.reportType == p('reports.transactionReport.reportType')]">
 				<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="eded3c62-53b3-41b3-ab48-ae9bfccd0c5f" millisBetweenRetries="${until.millisBetweenRetries}">
 			<try doc:name="Try" doc:id="bc79a266-7a1f-490c-87a0-6757de25f230">
-			<ee:transform doc:name="Transform Message" doc:id="463edc33-0556-4317-89f6-1428e56b936a" >
-							<ee:message >
-								<ee:set-payload ><![CDATA[%dw 2.0
+			<ee:transform doc:name="Transform Message" doc:id="463edc33-0556-4317-89f6-1428e56b936a">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -129,12 +105,37 @@ output application/json
 }]]></ee:set-payload>
 							</ee:message>
 						</ee:transform>
-						<outlook365:send-mail doc:name="Send mail" doc:id="9b7eaa4a-76f7-4e8f-8cc8-2b3b3aa4900b" config-ref="Outlook365_Outlook365_Config" userId="${smtp.username}"/>
+						
+						<outlook365:send-mail doc:name="Send mail" doc:id="9b7eaa4a-76f7-4e8f-8cc8-2b3b3aa4900b" config-ref="Outlook365_Outlook365_Config" userId="${smtp.username}" />
 			<error-handler ref="sapi-request-error-handler" />
 		</try>
 		</until-successful>
-			</route>
-		</scatter-gather>
+			</when>
+			<otherwise >
+				<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="da1ee9fd-e9a1-49eb-a653-9eb721538667" millisBetweenRetries="${until.millisBetweenRetries}">
+			<try doc:name="Try" doc:id="bc0a51f0-bdd7-44c7-bc69-73dd380c0d5f">
+				<http:request method="#[vars.notificationMethod]" doc:name="Trigger notification SAPI" doc:id="0feaff40-88f3-4667-8e6f-e3e36de88b42" config-ref="notificationSAPIRequestConfig" path="#[vars.notificationPath]" sendCorrelationId="ALWAYS">
+					<http:headers><![CDATA[#[import p from Mule
+output application/java
+---
+{
+	"client_secret" : p('secure::digigold-order-papi.clientSecret'),
+	"X-Correlation-Id" : correlationId,
+	"x-source-channel" : p('notification-sapi.sourceChannel'),
+	"client_id" : p('secure::digigold-order-papi.clientId')
+	
+}]]]></http:headers>
+					<http:query-params><![CDATA[#[output application/java
+---
+{
+	"type": p("notification-sapi.endpoints.post.queryParameter")
+}]]]></http:query-params>
+				</http:request>
+				<error-handler ref="sapi-request-error-handler" />
+			</try>
+		</until-successful>
+			</otherwise>
+		</choice>
 		<json-logger:logger doc:name="After Request Log" doc:id="ae049fbf-a405-42bd-bb90-ba554941f6d2" config-ref="JSON_Logger_Config" message="After Request Call - notification-sapi" tracePoint="AFTER_REQUEST" priority="DEBUG" category="${log.category}">
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
 {
