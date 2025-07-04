@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:outlook365="http://www.mulesoft.org/schema/mule/outlook365"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd 
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/outlook365 http://www.mulesoft.org/schema/mule/outlook365/current/mule-outlook365.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+
+	
+	  <outlook365:outlook365-config name="Outlook365_Outlook365_Config" doc:name="Outlook365 Outlook365 Config" doc:id="12d7c466-68b8-46ab-9477-7a3098c2eaa8" >
+		<outlook365:oauth-client-credentials-connection >
+			<outlook365:oauth-client-credentials clientId="${smtp.clientId}" clientSecret="${secure::smtp.clientsecret}" tokenUrl="https://login.microsoftonline.com/${smtp.tenantId}/oauth2/v2.0/token" scopes="https://graph.microsoft.com/.default" />
+			<outlook365:oauth-store-config objectStore="Object_store" />
+		</outlook365:oauth-client-credentials-connection>
+	</outlook365:outlook365-config>
+
+	<os:object-store name="Object_store" doc:name="Object store" doc:id="c9ad6ae5-6e6f-44f0-a92f-256a2d13c6bb" />
 	<sub-flow name="call-notification-service" doc:id="34bda21c-f7f3-441f-9137-713f286e3548" >
 		<ee:transform doc:name="Prepare notification payload" doc:id="19121a79-87c0-4edc-b6a3-a64cf8c68839">
 			<ee:message>
@@ -59,10 +73,12 @@ p('notification-sapi.endpoints.post.notificationMethod')]]></ee:set-variable>
 	
 }]]]></json-logger:content>
 		</json-logger:logger>
-		<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="2dafabf4-86c3-4dd1-a493-679bddd719fc" millisBetweenRetries="${until.millisBetweenRetries}">
-			<try doc:name="Try" doc:id="53614bac-d91e-4541-9160-8329c2481788" >
-				<http:request method="#[vars.notificationMethod]" doc:name="Trigger notification SAPI" doc:id="ca5f8618-d601-418a-8a37-acfa1727df1a" config-ref="notificationSAPIRequestConfig" path="#[vars.notificationPath]" sendCorrelationId="ALWAYS" >
-					<http:headers ><![CDATA[#[import p from Mule
+		<scatter-gather doc:name="Scatter-Gather" doc:id="a0324556-f2d7-4d9e-b300-d081c225ec60" >
+			<route >
+				<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="2dafabf4-86c3-4dd1-a493-679bddd719fc" millisBetweenRetries="${until.millisBetweenRetries}">
+			<try doc:name="Try" doc:id="53614bac-d91e-4541-9160-8329c2481788">
+				<http:request method="#[vars.notificationMethod]" doc:name="Trigger notification SAPI" doc:id="ca5f8618-d601-418a-8a37-acfa1727df1a" config-ref="notificationSAPIRequestConfig" path="#[vars.notificationPath]" sendCorrelationId="ALWAYS">
+					<http:headers><![CDATA[#[import p from Mule
 output application/java
 ---
 {
@@ -72,7 +88,7 @@ output application/java
 	"client_id" : p('secure::digigold-order-papi.clientId')
 	
 }]]]></http:headers>
-					<http:query-params ><![CDATA[#[output application/java
+					<http:query-params><![CDATA[#[output application/java
 ---
 {
 	"type": p("notification-sapi.endpoints.post.queryParameter")
@@ -81,6 +97,44 @@ output application/java
 				<error-handler ref="sapi-request-error-handler" />
 			</try>
 		</until-successful>
+			</route>
+			<route >
+				<until-successful maxRetries="${until.retries}" doc:name="Until Successful" doc:id="eded3c62-53b3-41b3-ab48-ae9bfccd0c5f" millisBetweenRetries="${until.millisBetweenRetries}">
+			<try doc:name="Try" doc:id="bc79a266-7a1f-490c-87a0-6757de25f230">
+			<ee:transform doc:name="Transform Message" doc:id="463edc33-0556-4317-89f6-1428e56b936a" >
+							<ee:message >
+								<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+"message" :{
+  "subject" : payload.subject ++ "DIGIGOLD PAPI",
+   "body" : {
+       "contentType" : "Html",
+       "content" : payload.body },
+"toRecipients" : payload.to map {"emailAddress" : {"address" : $}},
+(if (payload.cc != null and sizeOf(payload.cc) > 0)
+  "ccRecipients" : payload.cc map {"emailAddress" : {"address" : $}}
+     else {}),
+(if (payload.attachments != null and sizeOf(payload.attachments) > 0)
+ { "attachments" :  payload.attachments map      {
+        "@odata.type": "#microsoft.graph.fileAttachment",
+        "name": $.name,
+        "contentType": $.contentType, //"text/plain"
+        "contentBytes": $.content
+      }
+}
+     else {})
+}
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<outlook365:send-mail doc:name="Send mail" doc:id="9b7eaa4a-76f7-4e8f-8cc8-2b3b3aa4900b" config-ref="Outlook365_Outlook365_Config" userId="${smtp.username}"/>
+			<error-handler ref="sapi-request-error-handler" />
+		</try>
+		</until-successful>
+			</route>
+		</scatter-gather>
 		<json-logger:logger doc:name="After Request Log" doc:id="ae049fbf-a405-42bd-bb90-ba554941f6d2" config-ref="JSON_Logger_Config" message="After Request Call - notification-sapi" tracePoint="AFTER_REQUEST" priority="DEBUG" category="${log.category}">
 			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule output application/json skipNullOn = "everywhere" ---
 {
