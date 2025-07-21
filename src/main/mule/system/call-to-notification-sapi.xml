@@ -84,7 +84,7 @@ output application/json
 ---
 {
 "message" :{
-  "subject" : payload.subject ++ "DIGIGOLD PAPI",
+  "subject" : payload.subject,
    "body" : {
        "contentType" : "Html",
        "content" : payload.body },
